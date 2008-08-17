@@ -1,0 +1,34 @@
+{extends "admin/base.html"}
+
+{block breadcrumbs} <a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; {$classname}{/block}
+
+
+{block content}
+
+<div id="ipfcontent">
+    <h1>{$page_title}</h1>
+    <ul class="object-tools"><li><a href="add/" class="addlink">Add {$classname}</a></li></ul>
+    <div id="changelist">
+        <table>
+            <thead>
+                <tr>
+                {foreach $header as $h}
+                    <th>{$h.title}</th>
+                {/foreach}
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $objects as $o}
+                <tr>
+                    {foreach $o.ModelAdmin().ListRow($o) as $v}
+                    <td>{$v|safe}</td>
+                    {/foreach}
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{/block}
+

@@ -1,0 +1,29 @@
+AdminLog:
+    tableName: admin_log
+    actAs: 
+        Timestampable:
+            updated:
+                disabled: true
+    columns:
+        username: string(32)
+        user_id: integer
+        object_id: integer
+        object_class: string(200)
+        object_repr: string(200)
+        action_flag: integer
+        change_message: string(200)
+
+    indexes:
+        idx_object_id: 
+            fields: object_id
+        idx_object_class: 
+            fields: object_class
+        idx_created_at: 
+            fields: created_at
+        idx_action_flag: 
+            fields: action_flag
+
+    options:
+        type: INNODB
+        collate: utf8_unicode_ci
+        charset: utf8

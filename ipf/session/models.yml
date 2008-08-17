@@ -1,0 +1,9 @@
+---
+Session:
+  columns:
+    session_key:
+      primary: true
+      type: string(40)
+    session_data: string
+    expire_data: timestamp
+

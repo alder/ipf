@@ -1,0 +1,26 @@
+{extends 'admin/base-simple.html'}
+
+{block body}
+
+<div style="text-align:center; margin-top:100px;">
+<div style="margin-left:auto;margin-right:auto; width:300px; text-align:left;">
+    <h1>{$page_title}</h1>
+    
+    <form method="post">
+    <fieldset>
+    {if $form.message}<ul class="errorlist"><li>{$form.message}</li></ul>{/if}
+    <table>
+    {$form.render_table}
+    </table>
+    </fieldset>
+
+    <div class="submit-row">
+        <input type="submit" value="Sign In" class="default" />
+    </div>
+    </form>    
+    
+</div>
+</div>
+
+
+{/block}

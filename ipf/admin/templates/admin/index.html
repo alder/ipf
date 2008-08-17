@@ -1,0 +1,36 @@
+{extends "admin/base.html"}
+
+{block content}
+
+<div id="ipfcontent" class="colMS">
+    <h1>{$page_title}</h1>
+    <div id="ipfcontent-main">
+        <div class="module">
+            {foreach $app_list as $app}
+            <h2>{$app.name|escxml}</h2>
+            <table>
+            {foreach $app.models as $model}
+            <tr>
+                <th><a href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{$model.name}</a></th>
+                <td><a class="addlink" href="{url 'IPF_Admin_Views_AddItem', array($app.path, $model.path)}">{trans 'Add'}</a></td>
+                <td><a class="changelink" href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{trans 'Change'}</a></td>
+            </tr>
+            {/foreach}
+            </table>
+            {/foreach}
+        </div>
+    </div>
+    <div id="ipfcontent-related">
+        <div class="module" id="ipfrecent-actions-module">
+            <h2>Recent Actions</h2>
+            <ul class="actionlist">
+            {foreach $admin_log as $log}
+            <li class="{if $log.is_addition()}addlink{/if}{if $log.is_change()}changelink{/if}{if $log.is_deletion()}deletelink{/if}">{if !$log.is_deletion()}<a href="{$log.getAdminUrl()}">{/if}{$log.object_repr}{if !$log.is_deletion()}</a>{/if}<br /><span class="mini quiet">{$log.object_class} at {$log.created_at|date} by {$log.username}</span></li>
+            {/foreach}
+            </ul>
+        </div>
+    </div>
+    <br class="clear" />
+</div>
+{/block}
+

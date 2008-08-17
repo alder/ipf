@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/style.css" />
+  <title>{$page_title} - IPF Administration</title>
+</head>
+
+<body class="dashboard">
+
+<!-- Container -->
+<div id="ipfcontainer">
+    <!-- Header -->
+    <div id="ipfheader">
+        <div id="ipfbranding">
+            <h1 id="ipfsite-name">{trans 'IPF Administration'}</h1>
+        </div>
+        <div id="ipfuser-tools">Welcome, <strong>{$user}</strong>. <a href="{url 'IPF_Admin_Views_Logout'}">Log out</a><br /><span id="ipfver">Version: {$IPF_VER}</span></div>
+        <br class="clear" />
+    </div>
+    <!-- END Header -->
+    
+    <div class="breadcrumbs">
+    {block breadcrumbs} <a href="{url 'IPF_Admin_Views_Index'}">Home</a>{/block}
+    </div>
+
+    {block content}{/block}
+
+    <div id="ipffooter"></div>
+</div>
+<!-- END Container -->
+{block scripts}{/block}
+</body>
+</html>
