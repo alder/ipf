@@ -5,7 +5,7 @@ class IPF_Cli{
     protected $commands;
 
     public function __construct(){
-        $this->commands = array('help','sql','buildmodels','syncdb');
+        $this->commands = array('help','sql','buildmodels','syncdb', 'createsuperuser');
     }
     
     protected function usage(&$args){
@@ -37,6 +37,24 @@ class IPF_Cli{
     protected function buildmodels(&$args){
         print "Build All Model Classses\n";
         IPF_Project::getInstance()->generateModels();
+    }
+
+    protected function createSuperUser(&$args){
+        print "Create SuperUser\n";
+        
+        $username = '';  while ($username==''){  print "  Username: "; $username = trim(fgets(STDIN)); };
+        $password = '';  while ($password==''){  print "  Password: "; $password = trim(fgets(STDIN)); };
+        $email = '';  while ($email==''){  print "  e-mail: "; $email = trim(fgets(STDIN)); };
+        
+        $su = new User();
+        $su->username = $username;
+        $su->email = $email;
+        $su->is_staff = true;
+        $su->is_active = true;
+        $su->is_superuser = true;
+        $su->setPassword($password);
+        $su->save();
+        print "Done\n";
     }
 
     public function run(){
