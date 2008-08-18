@@ -1,7 +1,6 @@
 <?php
 
-class IPF_ORM_Template_Timestampable extends IPF_ORM_Template
-{
+class IPF_ORM_Template_Timestampable extends IPF_ORM_Template{
     protected $_options = array('created' =>  array('name'          =>  'created_at',
                                                     'type'          =>  'timestamp',
                                                     'format'        =>  'Y-m-d H:i:s',

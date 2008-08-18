@@ -58,7 +58,7 @@ final class IPF{
             if (array_search('IPF_Admin',IPF::$settings['applications']))
                 IPF::$settings['template_dirs'][] = IPF::$settings['ipf_path'].DIRECTORY_SEPARATOR.'ipf'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'templates';
         }
-
+        
         if (!isset(IPF::$settings['debug'])){
             IPF::$settings['debug'] = true;
         }
