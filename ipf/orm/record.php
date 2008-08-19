@@ -1259,8 +1259,14 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
     function SetFromFormData($cleaned_values)
     {
+        //$relations = $this->getTable()->getRelations();
         foreach ($cleaned_values as $key=>$val) {
-            $this->$key = $val;
+            /*
+            if (array_key_exists($key,$relations)){
+                
+                
+            }else*/
+                $this->$key = $val;
         }
     }
 }

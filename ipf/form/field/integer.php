@@ -9,6 +9,11 @@ class IPF_Form_Field_Integer extends IPF_Form_Field
     public function clean($value)
     {
         parent::clean($value);
+
+        if (($this->required==false) and in_array($value, $this->empty_values)) {
+            return null;
+        }
+        
         if (in_array($value, $this->empty_values)) {
             $value = '';
         }

@@ -17,14 +17,19 @@ class IPF_Form_DB
 
     function formField($def, $form_field='IPF_Form_Field_Varchar')
     {
-        $defaults = array('required' => !$def['blank'], 
-                          'label' => IPF_Utils::humanTitle($def['verbose']), 
-                          'help_text' => $def['help_text']);
+        $defaults = array(
+            'required' => !$def['blank'], 
+            'label' => IPF_Utils::humanTitle($def['verbose']), 
+            'help_text' => $def['help_text'],
+            'type'=>$this->type,
+        );
+                          
         unset($def['blank'], $def['verbose'], $def['help_text']);
         if (isset($def['default'])) {
             $defaults['initial'] = $def['default'];
             unset($def['default']);
         }
+        /*
         if (isset($def['choices'])) {
             $defaults['widget'] = 'IPF_Form_Widget_SelectInput';
             if (isset($def['widget_attrs'])) {
@@ -39,6 +44,7 @@ class IPF_Form_DB
                 unset($def[$key]);
             }
         }
+        */
         $params = array_merge($defaults, $def);
         return new $form_field($params);
     }

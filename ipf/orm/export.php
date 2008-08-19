@@ -363,7 +363,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
     {
         $sql  = $this->getForeignKeyBaseDeclaration($definition);
         $sql .= $this->getAdvancedForeignKeyOptions($definition);
-
         return $sql;
     }
 

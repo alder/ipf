@@ -408,7 +408,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         }
 
         $options['primary'] = $primary;
-
+        
         return array('tableName' => $this->getOption('tableName'),
                      'columns'   => $columns,
                      'options'   => array_merge($this->getOptions(), $options));
