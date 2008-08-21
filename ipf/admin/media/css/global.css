@@ -88,19 +88,20 @@ table thead th.ascending a { background:url(../img/arrow-down.gif) right .4em no
 table thead th.descending a { background:url(../img/arrow-up.gif) right .4em no-repeat; }
 
 /*  MODULES  */
-.module	{ border:1px solid #ABB0BE; margin-bottom:5px;  }
+.module	{ border:1px solid #ABB0BE; margin-bottom:5px; border-top:none; }
 .module p, .module ul, .module h3, .module h4, .module dl, .module pre { padding-left:10px; padding-right:10px; }
 .module blockquote { margin-left:12px; }
 .module ul, .module ol { margin-left:1.5em; }
-.module h2, .module caption { border-bottom:1px solid #ABB0BE; margin:0; padding:2px 5px 3px 5px; font-size:11px; text-align:left; background:url(../img/hbg.gif) left top repeat-x; color:#444444; font-weight:bold; }
+.module h2, .module caption { border-bottom:1px solid #ABB0BE; border-top:1px solid #ABB0BE; margin:0; padding:2px 5px 3px 5px; font-size:11px; text-align:left; background:url(../img/hbg.gif) left top repeat-x; color:#444444; font-weight:bold; }
 .module caption	{ border:1px solid #ABB0BE; }
 .module h3 { margin-top:.6em; }
 #ipfcontent-related .module h2	{ background:#eee url(../img/nav-bg.gif) bottom left repeat-x; color:#666; }
 #ipfcontent-main .verbose .actionlist { float:right; font-size:10px; width:17em; position:relative; top:-1.6em; margin:0 8px; }
 
 /* DASHBOARD */
-.dashboard .module table th { width:100%; }
-.dashboard .module table td { white-space:nowrap; }
+
+.dashboard .module table th { width:100%;}
+.dashboard .module table td { white-space:nowrap;}
 .dashboard .module table td a { display:block; padding-right:.6em; }
 
 /*  RECENT ACTIONS MODULE  */

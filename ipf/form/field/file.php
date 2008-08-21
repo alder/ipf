@@ -9,7 +9,11 @@ class IPF_Form_Field_File extends IPF_Form_Field
 
     function clean($value)
     {
+        if ($value['name']=='')
+            return '';
+
         parent::clean($value);
+        
         $errors = array();
         $no_files = false;
         switch ($value['error']) {
@@ -52,8 +56,8 @@ function IPF_Form_Field_moveToUploadFolder($value, $params=array())
     if (isset($params['upload_path'])) {
         $upload_path = $params['upload_path'];
     }
-    $dest = $upload_path.'/'.$name;
-    if (!@move_uploaded_file($value['tmp_name'], $dest)) {
+    $dest = $upload_path.DIRECTORY_SEPARATOR.$name;
+    if (!move_uploaded_file($value['tmp_name'], $dest)) {
         throw new IPF_Exception_Form(__('An error occured when upload the file. Please try to send the file again.'));
     } 
     @chmod($dest, 0666);

@@ -1257,16 +1257,15 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         return null;
     }
 
-    function SetFromFormData($cleaned_values)
+    public function SetFromFormData($cleaned_values)
     {
-        //$relations = $this->getTable()->getRelations();
         foreach ($cleaned_values as $key=>$val) {
-            /*
-            if (array_key_exists($key,$relations)){
-                
-                
-            }else*/
-                $this->$key = $val;
+            $validators = $this->getTable()->getFieldValidators($key);
+            if (array_key_exists('image',$validators) || array_key_exists('file',$validators)){
+                if ($val=='')
+                    continue;
+            }
+            $this->$key = $val;
         }
     }
 }

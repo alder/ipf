@@ -1271,6 +1271,10 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         $columnName = $this->getColumnName($fieldName);
         // this loop is a dirty workaround to get the validators filtered out of
         // the options, since everything is squeezed together currently
+        
+        if (!isset($this->_columns[$columnName]))
+            return array();
+        
         foreach ($this->_columns[$columnName] as $name => $args) {
              if (empty($name)
                     || $name == 'primary'

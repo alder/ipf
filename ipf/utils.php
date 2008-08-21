@@ -58,7 +58,7 @@ class IPF_Utils {
     }
     
     static function humanTitle($s){
-        return ucfirst(str_replace('_',' ',$s));
+        return ucfirst(str_replace('_',' ',str_replace('_id','',$s)));
     }
 
     static function randomString($len=35)

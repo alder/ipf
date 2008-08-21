@@ -14,6 +14,7 @@ class IPF_Form implements Iterator
     public $label_suffix = ':';
 
     protected $is_valid = null;
+    
 
     function __construct($data=null, $extra=array(), $label_suffix=null)
     {
@@ -38,6 +39,15 @@ class IPF_Form implements Iterator
             return $this->prefix.'-'.$field_name;
         }
         return $field_name;
+    }
+    
+    function hasFileField(){
+        foreach($this->fields as $field){
+            if (is_a($field,'IPF_Form_Field_File')){
+                return true;
+            }
+        }
+        return false;
     }
 
     function isValid()

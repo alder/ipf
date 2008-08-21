@@ -53,6 +53,16 @@ class User extends BaseUser
             return 'Anonymous';
         return $s;
     }
+
+    public function smartName() {
+        $username = $this->username;
+        if ($username===null)
+            return __('Anonymous');
+        $name = $this->first_name.' '.$this->last_name;
+        if (trim($name)=='')
+            return $username;
+        return $name;
+    }
     
     static function createUser($username, $password=null, $email=null, $first_name=null, $last_name=null, $is_active=false, $is_staff=false, $is_superuser=false){
         $user = new User();
@@ -130,4 +140,4 @@ class User extends BaseUser
     }
 }
 
-IPF_Admin_Model::register(User,AdminUser);
+IPF_Admin_Model::register('User','AdminUser');

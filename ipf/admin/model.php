@@ -108,7 +108,7 @@ class IPF_Admin_Model{
     public function AddItem($request, $lapp, $lmodel){
         $model = new $this->modelName();
         if ($request->method == 'POST'){
-            $form = IPF_Shortcuts::GetFormForModel($model,$request->POST,array('user_fields'=>$this->fields()));
+            $form = IPF_Shortcuts::GetFormForModel($model,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
             $this->_setupAddForm(&$form);
             if ($form->isValid()) {
                 $item = $form->save();
@@ -134,7 +134,7 @@ class IPF_Admin_Model{
 
     public function EditItem($request, $lapp, $lmodel, $o){
         if ($request->method == 'POST'){
-            $form = IPF_Shortcuts::GetFormForModel($o,$request->POST,array('user_fields'=>$this->fields()));
+            $form = IPF_Shortcuts::GetFormForModel($o,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
             $this->_setupEditForm(&$form);
             if ($form->isValid()) {
                 $item = $form->save();
@@ -146,6 +146,7 @@ class IPF_Admin_Model{
         else{
             $form = IPF_Shortcuts::GetFormForModel($o,$o->getData(),array('user_fields'=>$this->fields()));
             $this->_setupEditForm(&$form);
+            $dd = $o->getData();
         }
         $context = array(
             'page_title'=>'Edit '.$this->modelName, 

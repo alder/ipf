@@ -1,9 +1,16 @@
 <?php
 
 function checkAdminAuth($request){
+    $ok = true;
     if ($request->user->isAnonymous())
+        $ok = false;
+    elseif ( (!$request->user->is_staff) && (!$request->user->is_superuser) )
+        $ok = false;
+    
+    if ($ok)
+        return true;
+    else
         return new IPF_HTTP_Response_Redirect(IPF_HTTP_URL_urlForView('IPF_Admin_Views_Login'));
-    return true;
 }
 
 function IPF_Admin_Views_Index($request, $match){
@@ -175,11 +182,7 @@ function IPF_Admin_Views_Login($request, $match){
             if (false === ($user = $users->checkCreditentials($form->cleaned_data['username'], $form->cleaned_data['password']))) {
                 $form->message = __('The login or the password is not valid. The login and the password are case sensitive.');
             } else {
-                $request->user = $user;
-                $request->session->clear();
-                $request->session->setData('login_time', gmdate('Y-m-d H:i:s'));
-                $user->last_login = gmdate('Y-m-d H:i:s');
-                $user->save();
+                IPF_Auth_App::login($request, $user);
                 return new IPF_HTTP_Response_Redirect($success_url);
             }
         }
@@ -194,10 +197,7 @@ function IPF_Admin_Views_Login($request, $match){
 }
 
 function IPF_Admin_Views_Logout($request, $match){
-    $request->user = new User();
-    $request->session->clear();
-    $request->session->setData('logout_time', gmdate('Y-m-d H:i:s'));
-
+    IPF_Auth_App::logout($request);
     $context = array(
        'page_title' => __('IPF Administration'),
     );

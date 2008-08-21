@@ -11,15 +11,18 @@ final class IPF_Shortcuts{
         throw new IPF_HTTP_Error404();
     }
 
-    static function RenderToResponse($tplfile, $params, $request=null)
-    {
+    static function RenderToResponse($tplfile, $params=array(), $request=null){
+        return new IPF_HTTP_Response(IPF_Shortcuts::RenderToString($tplfile, $params, $request));
+    }
+
+    static function RenderToString($tplfile, $params=array(), $request=null){
         $tmpl = new IPF_Template($tplfile);
         if (is_null($request)) {
             $context = new IPF_Template_Context($params);
         } else {
             $context = new IPF_Template_Context_Request($request, $params);
         }
-        return new IPF_HTTP_Response($tmpl->render($context));
+        return $tmpl->render($context);
     }
 
     static function GetFormForModel($model, $data=null, $extra=array(), $label_suffix=null)

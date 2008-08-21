@@ -10,5 +10,14 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
         $value = '';
         return parent::render($name, $value, $extra_attrs);
     }
+    
+    public function valueFromFormData($name, $data)
+    {
+        if (isset($data[$name])) {
+            return $data[$name];
+        }
+        return null;
+    }
+    
 
 }

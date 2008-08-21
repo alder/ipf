@@ -20,14 +20,15 @@ class IPF_Form_Field
         $default = array();
         foreach ($params as $key=>$in) {
             if ($key !== 'widget_attrs')
-                $default[$key] = $this->$key; 
+                if (isset($this->$key))
+                    $default[$key] = $this->$key; 
         }
         $m = array_merge($default, $params);
         foreach ($params as $key=>$in) {
             if ($key !== 'widget_attrs')
                 $this->$key = $m[$key];
         }
-        $widget_name = $this->widget;
+        $widget_name = $this->getWidget();
         if (isset($params['widget_attrs'])) {
             $attrs = $params['widget_attrs'];
         } else {
@@ -47,6 +48,10 @@ class IPF_Form_Field
             throw new IPF_Exception_Form(__('This field is required.'));
         }
         return $value;
+    }
+    
+    protected function getWidget(){
+        return $this->widget;
     }
 
     public function widgetAttrs($widget)

@@ -26,5 +26,11 @@ class IPF_Form_Field_Varchar extends IPF_Form_Field{
         }
         return array();
     }
+    
+    protected function getWidget(){
+        if ($this->max_length>255)
+            return 'IPF_Form_Widget_TextAreaInput';
+        return $this->widget;
+    }
 }
 

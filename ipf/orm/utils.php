@@ -54,6 +54,8 @@ class IPF_ORM_Utils {
             'unique',
             'unsigned',
             'usstate',
+            'file',
+            'image',
         );
     }
 

@@ -27,14 +27,16 @@ class IPF_Form_Model extends IPF_Form
         }
         else{
             foreach($user_fields as $uname){
+                $add_method = 'add__'.$uname.'__field';
+                if (method_exists($this->model,$add_method)){
+                    //print $add_method;
+                    $this->$add_method();
+                    continue;
+                }
                 if (array_key_exists($uname,$db_columns))
                     $this->addDBField($uname,$db_columns[$uname]);
                 elseif (array_key_exists($uname,$db_relations))
                     $this->addDBRelation($uname,$db_relations[$uname]);
-                else{
-                    $add_method = 'add__'.$uname.'__field';
-                    $this->$add_method();
-                }
             }
         }
     }
@@ -55,11 +57,21 @@ class IPF_Form_Model extends IPF_Form
             $defaults['max_length'] = (int)($col['length']);
         if (isset($col['email']))
             $type = 'email';
+
+        if (isset($col['file']))
+            $type = 'file';
+
+        if (isset($col['image']))
+            $type = 'image';
+
         $cn = 'IPF_Form_DB_'.$type;
         
         $db_field = new $cn('', $name);
         //echo $name;
         //print_r($defaults);
+
+
+
         
         if (null !== ($form_field=$db_field->formField($defaults))) {
             $this->fields[$name] = $form_field;
@@ -68,7 +80,7 @@ class IPF_Form_Model extends IPF_Form
 
     function addDBRelation($name,$relation){
         if ($relation->getType()==IPF_ORM_Relation::ONE_AGGREGATE){
-            //$name .= "_id";
+            $name .= "_id";
             $db_field = new IPF_Form_DB_Foreignkey('',$name);
             $defaults = array('blank' => true, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
             $form_field = $db_field->formField($defaults);
@@ -97,9 +109,19 @@ class IPF_Form_Model extends IPF_Form
             }
             */
             
-            $this->model->save();
-            return $this->model;
+            try{
+                $this->model->save();
+                return $this->model;
+            } catch(IPF_ORM_Exception_Validator $e) {
+                $erecords = $e->getInvalidRecords();
+                $errors = $erecords[0]->getErrorStack();
+                print_r($this->cleaned_data);
+                foreach($errors as $k=>$v){
+                    print_r($v);
+                }
+                //die('zz');
+            }
         }
-        throw new Exception(__('Cannot save the model from an invalid form.'));
+        throw new IPF_Exception_Form(__('Cannot save the model from an invalid form.'));
     }
 }

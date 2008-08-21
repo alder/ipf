@@ -9,12 +9,14 @@ class IPF_Form_Field_Float extends IPF_Form_Field
     public function clean($value)
     {
         parent::clean($value);
+        
         if (in_array($value, $this->empty_values)) {
             $value = '';
         }
         $_value = $value;
         $value = (float) $value;
-        if ((string) $value !== (string) $_value) {
+        
+        if (!is_numeric($value)) {
             throw new IPF_Exception_Form(__('Enter a number.'));
         }
         if ($this->max_value !== null and $this->max_value < $value) {
