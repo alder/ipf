@@ -170,6 +170,7 @@ function IPF_Admin_Views_ChangePassword($request, $match){
 
 
 function IPF_Admin_Views_Login($request, $match){
+    $success_url = '';
     if (!empty($request->REQUEST['next']))
         $success_url = $request->REQUEST['next'];
     if (trim($success_url)=='')

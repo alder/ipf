@@ -19,3 +19,8 @@ function IPF_Context_Version($request)
 {
     return array('IPF_VER' => IPF_Version::$name);
 }
+
+function IPF_Context_Upload($request)
+{
+    return array('UPLOAD_URL' => IPF::get('upload_url'));
+}

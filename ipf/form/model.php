@@ -28,8 +28,7 @@ class IPF_Form_Model extends IPF_Form
         else{
             foreach($user_fields as $uname){
                 $add_method = 'add__'.$uname.'__field';
-                if (method_exists($this->model,$add_method)){
-                    //print $add_method;
+                if (method_exists($this,$add_method)){
                     $this->$add_method();
                     continue;
                 }
