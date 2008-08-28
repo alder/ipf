@@ -8,12 +8,33 @@
 <div id="ipfcontent">
     <h1>{$page_title}</h1>
     
-    <form method="post" {if $form.hasFileField() }enctype="multipart/form-data"{/if}>
+    <form method="post" {if $form.hasFileField()}enctype="multipart/form-data"{/if}>
     <fieldset>
     <table>
     {$form.render_table}
     </table>
     </fieldset>
+    {foreach $inlineInstances as $inline}
+    <fieldset class="inlineTabular">
+    <legend>{$inline->getLegend()}</legend>
+    <table>
+    {foreach $inline.formset as $formset}
+    {if $formset.isFirst}
+    <tr>
+    {foreach $formset.fields as $fieldname=>$field}
+    <th>{$formset.field($fieldname).labelTag()|safe}</th>
+    {/foreach}
+    </tr>
+    {/if}
+    <tr>
+    {foreach $formset.fields as $fieldname=>$field}
+    <td>{$formset.field($fieldname)|safe}</td>
+    {/foreach}
+    </tr>
+    {/foreach}
+    </table>
+    </fieldset>
+    {/foreach}
 
     <div class="submit-row">
         <p class="float-left"><a href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.id)}" class="deletelink">Delete</a></p>

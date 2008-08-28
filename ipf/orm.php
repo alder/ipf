@@ -258,13 +258,11 @@ final class IPF_ORM {
                         $className = $e[0];
                         if ($modelLoading == IPF_ORM::MODEL_LOADING_CONSERVATIVE) {
                             self::loadModel($className, $file->getPathName());
-
                             $loadedModels[$className] = $className;
                         } else {
                             //$declaredBefore = get_declared_classes();
                             require_once($file->getPathName());
                             $loadedModels[$className] = $className; // !!!
-
                             /*
                             //$declaredAfter = get_declared_classes();
                             //$foundClasses = array_slice($declaredAfter, count($declaredBefore) - 1);

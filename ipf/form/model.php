@@ -16,12 +16,21 @@ class IPF_Form_Model extends IPF_Form
         $db_columns = $this->model->getTable()->getColumns();
         $db_relations = $this->model->getTable()->getRelations();
         
-        
         if ($user_fields===null){
+
+            if (isset($extra['exclude'])) 
+                $exclude = $extra['exclude'];
+            else
+                $exclude = array();
+                
             foreach($db_columns as $name=>$col){
+                if (array_search($name,$exclude)!==false)
+                    continue;
                 $this->addDBField($name,$col);
             }
             foreach($db_relations as $name => $relation){
+                if (array_search($name,$exclude)!==false)
+                    continue;
                 $this->addDBRelation($name,$relation);
 		    }
         }
@@ -68,8 +77,6 @@ class IPF_Form_Model extends IPF_Form
         $db_field = new $cn('', $name);
         //echo $name;
         //print_r($defaults);
-
-
 
         
         if (null !== ($form_field=$db_field->formField($defaults))) {

@@ -9,7 +9,7 @@ function __autoload( $class_name ){
             $s .= '/';                                                  
         $s .= strtolower( $folder );                                            
     }
-    require_once($s.'.php');                                 
+    require_once($s.'.php');
 }
 
 final class IPF{
@@ -67,6 +67,10 @@ final class IPF{
             IPF::$settings['app_base'] = '/index.php';
         }
 
+        if (!isset(IPF::$settings['append_slash'])){
+            IPF::$settings['append_slash'] = true;
+        }
+
         if (!isset(IPF::$settings['media_url'])){
             IPF::$settings['media_url'] = '/media/';
         }
@@ -115,7 +119,6 @@ final class IPF{
         array_pop($elts);
         $file = strtolower(implode(DIRECTORY_SEPARATOR, $elts)).'.php';
         @include $file;
-
         if (!function_exists($function))
             throw new IPF_Exception('Impossible to load the function: '.$function.' in '.$file);
     }

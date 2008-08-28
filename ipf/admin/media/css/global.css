@@ -118,6 +118,9 @@ input[type=submit], input[type=button], .submit-row input { background:white url
 input[type=submit]:active, input[type=button]:active { background-image:url(../img/nav-bg.gif); background-position:bottom; }
 input[type=submit].default, .submit-row input.default { border:2px solid #888; background: url(../img/hbg.gif) center repeat-x; font-weight:bold; color:#888; }
 input[type=submit].default:active { background-image:url(../img/default-bg-reverse.gif); background-position:top; }
+
+a.button { background:white url(../img/nav-bg.gif) bottom repeat-x; padding:2px; color:black; }
+
 .submit-row { padding:5px 7px; text-align:right; background:url(../img/topbg.gif) top left repeat-x; border:1px solid #ABB0BE; margin:5px 0; }
 .submit-row input { margin:0 0 0 5px; }
 .submit-row .float-left { padding-top:.1em; }

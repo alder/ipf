@@ -29,6 +29,23 @@ class IPF_HTTP_Request
         $this->uri = $_SERVER['REQUEST_URI'];
         $this->remote_addr = $_SERVER['REMOTE_ADDR'];
         $this->http_host = $_SERVER['HTTP_HOST'];
+        if (isset($_SERVER['PATH_INFO']))
+            $this->path_info = $_SERVER['PATH_INFO'];
+        else
+            $this->path_info = '/';
+        
         $this->SERVER =& $_SERVER;
+    }
+    
+    function isSecure(){
+        return false; // # FIXME 
+    }
+    
+    function addUrlrotocol($uri){
+        if ($this->isSecure())
+            $proto = 'https';
+        else
+            $proto = 'http';
+        return $proto.'://'.$uri;
     }
 }

@@ -10,7 +10,6 @@ class AdminUser extends IPF_Admin_Model{
     }
 
     public function AddItem($request, $lapp, $lmodel){
-        $model = new $this->modelName();
         if ($request->method == 'POST'){
             $form = new IPF_Auth_Forms_UserCreation($request->POST);
             if ($form->isValid()) {
@@ -24,6 +23,7 @@ class AdminUser extends IPF_Admin_Model{
                     $form->cleaned_data['is_staff'],
                     $form->cleaned_data['is_superuser']
                 );
+                AdminLog::logAction($request, $user, AdminLog::ADDITION);
                 $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }

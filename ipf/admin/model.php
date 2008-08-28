@@ -2,6 +2,7 @@
 
 class IPF_Admin_Model{
     static $models = array();
+    
     public static function register($classModel, $classAdmin){
         IPF_Admin_Model::$models[$classModel] = new $classAdmin($classModel);
     }
@@ -13,30 +14,60 @@ class IPF_Admin_Model{
     }
 
     public static function getModelAdmin($classModel){
-        if (array_key_exists($classModel, IPF_Admin_Model::$models))
-            return IPF_Admin_Model::$models[$classModel];
+        if (array_key_exists($classModel, IPF_Admin_Model::$models)){
+            $ma = IPF_Admin_Model::$models[$classModel];
+            $ma->setUp();
+            return $ma;
+        }
         return null;
     }
     
     var $modelName = null;
-    
+    var $model = null;
+    var $inlineInstances = array();
+
     public function __construct($modelName){
         $this->modelName = $modelName;
     }
     
+    public function setUp(){
+        $this->model = new $this->modelName;
+    }
+    
+    protected function setInlines(&$instance=null){
+        $il = $this->inlines();
+        if (is_array($il)){
+            foreach($il as $inlineName=>$inlineClassName){
+                $this->inlineInstances[] = new $inlineClassName(&$this->model,&$instance);
+            }
+        }
+    }
+    
     protected function _setupEditForm(&$form){
         $this->_setupForm(&$form);
+        $this->setInlines($this->instance);
     }
 
     protected function _setupAddForm(&$form){
         $this->_setupForm(&$form);
+        $this->setInlines();
     }
 
     protected function _setupForm(&$form){
     }
     
-    public function fields(){
-        return null;
+    public function fields(){return null;}
+
+    public function inlines(){return null;}
+    
+    public function isValidInlines(){
+        if ($this->inlineInstances==null)
+            return true;
+        foreach($this->inlineInstances as &$il){
+            if ($il->isValid()===false)
+                return false;
+        }
+        return true;
     }
 
     public function ListItemsHeader(){
@@ -106,9 +137,8 @@ class IPF_Admin_Model{
     
     // Views Function
     public function AddItem($request, $lapp, $lmodel){
-        $model = new $this->modelName();
         if ($request->method == 'POST'){
-            $form = IPF_Shortcuts::GetFormForModel($model,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
+            $form = IPF_Shortcuts::GetFormForModel($this->model,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
             $this->_setupAddForm(&$form);
             if ($form->isValid()) {
                 $item = $form->save();
@@ -118,9 +148,8 @@ class IPF_Admin_Model{
             }
         }
         else{
-            $form = IPF_Shortcuts::GetFormForModel($model,null,array('user_fields'=>$this->fields()));
+            $form = IPF_Shortcuts::GetFormForModel($this->model,null,array('user_fields'=>$this->fields()));
             $this->_setupAddForm(&$form);
-            
         }
         $context = array(
             'page_title'=>'Add '.$this->modelName, 
@@ -136,7 +165,7 @@ class IPF_Admin_Model{
         if ($request->method == 'POST'){
             $form = IPF_Shortcuts::GetFormForModel($o,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
             $this->_setupEditForm(&$form);
-            if ($form->isValid()) {
+            if ( ($form->isValid()) && ($this->isValidInlines()) ) {
                 $item = $form->save();
                 AdminLog::logAction($request, $item, AdminLog::CHANGE);
                 $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
@@ -146,13 +175,14 @@ class IPF_Admin_Model{
         else{
             $form = IPF_Shortcuts::GetFormForModel($o,$o->getData(),array('user_fields'=>$this->fields()));
             $this->_setupEditForm(&$form);
-            $dd = $o->getData();
         }
+        
         $context = array(
             'page_title'=>'Edit '.$this->modelName, 
             'classname'=>$this->modelName,
             'object'=>$o,
             'form'=>$form,
+            'inlineInstances'=>$this->inlineInstances,
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
         );
@@ -170,7 +200,6 @@ class IPF_Admin_Model{
             'page_title'=>'Delete '.$this->modelName, 
             'classname'=>$this->modelName,
             'object'=>$o,
-            'form'=>$form,
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
             'affected'=>array(),

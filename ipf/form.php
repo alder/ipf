@@ -222,7 +222,6 @@ class IPF_Form implements Iterator
     public function field($key)
     {
         return new IPF_Form_BoundField($this, $this->fields[$key], $key);
-
     }
 
  	public function current()

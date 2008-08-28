@@ -37,3 +37,10 @@
 .change-list ul.toplinks li { float: left; width: 9em; padding:3px 6px; font-weight: bold; list-style-type:none; }
 .change-list ul.toplinks .date-back a { color:#999; }
 .change-list ul.toplinks .date-back a:hover { color:#036; }
+
+/*  INLINE TABULAR  */
+fieldset.inlineTabular {margin-top:5px; padding-top:5px;}
+fieldset.inlineTabular legend{font-size:11pt; color:#888;}
+fieldset.inlineTabular table{width:auto;}
+fieldset.inlineTabular table th{font-weight:bold; color:#666; padding:2px 5px; font-size:11px; background:url(../img/hbg.gif) top left repeat-x; border:1px solid #ABB0BE;}
+fieldset.inlineTabular table td{border:1px solid #DDD;}
