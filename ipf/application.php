@@ -60,8 +60,6 @@ abstract class IPF_Application{
     }
     
     public function generateModels(){
-        //if (count($this->models)==0)
-        //   return;
         IPF_ORM::generateModelsFromYaml($this->path.'models.yml', $this->path.'models');
     }
 

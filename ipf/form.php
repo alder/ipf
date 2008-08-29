@@ -194,14 +194,12 @@ class IPF_Form implements Iterator
 
     public function render_p()
     {
-        return $this->htmlOutput('<p>%1$s%2$s %3$s%4$s</p>', '%s', '</p>', 
-                                 ' %s', true);
+        return $this->htmlOutput('<p>%1$s%2$s %3$s%4$s</p>', '%s', '</p>', ' %s', true);
     }
 
     public function render_ul()
     {
-        return $this->htmlOutput('<li>%1$s%2$s %3$s%4$s</li>', '<li>%s</li>', 
-                                 '</li>', ' %s', false);
+        return $this->htmlOutput('<li>%1$s%2$s %3$s%4$s</li>', '<li>%s</li>', '</li>', ' %s', false);
     }
 
     public function render_table()
@@ -266,3 +264,4 @@ function IPF_Form_renderErrorsAsHTML($errors)
     }
     return '<ul class="errorlist">'.implode("\n", $tmp).'</ul>';
 }
+

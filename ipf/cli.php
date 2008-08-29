@@ -26,6 +26,7 @@ class IPF_Cli{
     
     protected function sql(&$args){
         print "Show All Sql DDL From Model Classes\n";
+        IPF_Project::getInstance()->loadModels();
         print IPF_Project::getInstance()->generateSql();
     }
 

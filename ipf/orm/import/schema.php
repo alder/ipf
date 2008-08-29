@@ -72,12 +72,12 @@ class IPF_ORM_Import_Schema
                                                           'keyValue'));
 
     protected $_validators = array();
+
     public function getValidators()
     {
         if (empty($this->_validators)) {
             $this->_validators = IPF_ORM_Utils::getValidators();
         }
-
         return $this->_validators;
     }
 
@@ -142,12 +142,13 @@ class IPF_ORM_Import_Schema
         $builder->setOptions($this->getOptions());
         
         $array = $this->buildSchema($schema, $format);
-        
+
         foreach ($array as $name => $definition) {
+            
             if ( ! empty($models) && !in_array($definition['className'], $models)) {
                 continue;
             }
-            print "  $name\n";
+            print "    $name\n";
             $builder->buildRecord($definition);
         }
     }
@@ -338,6 +339,8 @@ class IPF_ORM_Import_Schema
         $moves = array('columns' => array());
         
         foreach ($array as $className => $definition) {
+            if (!isset($definition['className']))
+                continue;
             $parent = $this->_findBaseSuperClass($array, $definition['className']);
             // Move any definitions on the schema to the parent
             if (isset($definition['inheritance']['extends']) && isset($definition['inheritance']['type']) && ($definition['inheritance']['type'] == 'simple' || $definition['inheritance']['type'] == 'column_aggregation')) {
@@ -401,7 +404,7 @@ class IPF_ORM_Import_Schema
             
             foreach ($relations as $alias => $relation) {
                 $class = isset($relation['class']) ? $relation['class']:$alias;
-                if ( ! isset($array[$class])) {
+                if (!isset($array[$class])) {
                     continue;
                 }
                 $relation['class'] = $class;
@@ -444,6 +447,7 @@ class IPF_ORM_Import_Schema
         // Make sure we do not have any duplicate relations
         $this->_fixDuplicateRelations();
 
+        //$array['relations'];
         // Set the full array of relationships for each class to the final array
         foreach ($this->_relations as $className => $relations) {
             $array[$className]['relations'] = $relations;
@@ -531,7 +535,6 @@ class IPF_ORM_Import_Schema
         }
 
         $validation = array_flip($validation);
-        
         foreach ($element as $key => $value) {
             if ( ! isset($validation[$value])) {
                 throw new IPF_ORM_Exception(sprintf('Invalid schema element named "' . $value . '" 

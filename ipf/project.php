@@ -3,6 +3,7 @@
 final class IPF_Project{
 	
 	private $apps = array();
+	public $sqlProfiler = null;
 	
 	static private $instance = NULL;
 
@@ -66,7 +67,7 @@ final class IPF_Project{
 	    return $sql;
 	}
 
-    private function loadModels(){
+    public function loadModels(){
 	    foreach( $this->apps as $appname=>&$app){
 	        $this->getApp($appname)->loadModels();
 	    }
@@ -81,12 +82,18 @@ final class IPF_Project{
 	    $dsn = IPF::get('dsn');
 	    if ($dsn=='')
 	        throw new IPF_Exception_Panic('Specify dsn in config file');
-        IPF_ORM_Manager::connection($dsn);
-        $this->loadModels();
+        $conn = IPF_ORM_Manager::connection($dsn);
+
+	    if (IPF::get('debug')){
+            $this->sqlProfiler = new IPF_ORM_Connection_Profiler();
+            IPF_ORM_Manager::getInstance()->getCurrentConnection()->setListener($this->sqlProfiler);
+        }
+        
         if (php_sapi_name()=='cli'){
             $this->cli();
             return;
         }
+        $this->loadModels();
         IPF_ORM_Manager::getInstance()->setAttribute(IPF_ORM::ATTR_VALIDATE, IPF_ORM::VALIDATE_ALL);
         $this->router = new IPF_Router();
         $this->router->dispatch(IPF_HTTP_URL::getAction()); 
