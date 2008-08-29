@@ -30,6 +30,11 @@ final class IPF_Project{
 	}
 	
 	public function appList(){
+	    foreach($this->apps as $appName=>&$app){
+	        if ($app==null){
+	            $app = $this->getApp($appName);
+	        }
+	    }
 	    return $this->apps;
 	}
 	
@@ -50,27 +55,40 @@ final class IPF_Project{
 	}
 
 	public function generateModels(){
-	    foreach( $this->apps as $appname=>&$app)
-	        $this->getApp($appname)->generateModels();
+	    foreach( $this->apps as $appname=>&$app){
+	        if (substr($appname,0,4)=='IPF_')
+	            $this->getApp($appname)->generateModels();
+	    }
+        IPF_ORM::generateModelsFromYaml(
+            IPF::get('project_path').DIRECTORY_SEPARATOR.'models.yml',
+            IPF::get('project_path').DIRECTORY_SEPARATOR.'models'
+        );
 	}
 	
     public function createTablesFromModels(){
-	    foreach( $this->apps as $appname=>&$app)
-	        $this->getApp($appname)->createTablesFromModels();
+	    foreach( $this->apps as $appname=>&$app){
+	        if (substr($appname,0,4)=='IPF_')
+	            $this->getApp($appname)->createTablesFromModels();
+	    }
+        return IPF_ORM::createTablesFromModels(IPF::get('project_path').DIRECTORY_SEPARATOR.'models');
     }	
 
 	public function generateSql(){
 	    $sql = '';
-	    foreach( $this->apps as $appname=>&$app)
-	        $sql .= $this->getApp($appname)->generateSql();
-	        $sql .= "\n\n";
+	    foreach( $this->apps as $appname=>&$app){
+	        if (substr($appname,0,4)=='IPF_')
+	            $sql .= $this->getApp($appname)->generateSql()."\n";
+	    }
+	    $sql .= IPF_ORM::generateSqlFromModels(IPF::get('project_path').DIRECTORY_SEPARATOR.'models')."\n";
 	    return $sql;
 	}
 
     public function loadModels(){
 	    foreach( $this->apps as $appname=>&$app){
-	        $this->getApp($appname)->loadModels();
+	        if (substr($appname,0,4)=='IPF_')
+	            $this->getApp($appname)->loadModels();
 	    }
+	    IPF_ORM::loadModels(IPF::get('project_path').DIRECTORY_SEPARATOR.'models');
     }	
 	
 	private function cli(){

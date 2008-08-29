@@ -60,7 +60,7 @@ final class IPF{
         }
         
         if (!isset(IPF::$settings['debug'])){
-            IPF::$settings['debug'] = true;
+            IPF::$settings['debug'] = false;
         }
 
         if (!isset(IPF::$settings['app_base'])){

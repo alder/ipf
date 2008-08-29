@@ -26,7 +26,6 @@ class IPF_Cli{
     
     protected function sql(&$args){
         print "Show All Sql DDL From Model Classes\n";
-        IPF_Project::getInstance()->loadModels();
         print IPF_Project::getInstance()->generateSql();
     }
 
@@ -42,7 +41,9 @@ class IPF_Cli{
 
     protected function createSuperUser(&$args){
         print "Create SuperUser\n";
-        
+
+        IPF_Project::getInstance()->loadModels();
+
         $username = '';  while ($username==''){  print "  Username: "; $username = trim(fgets(STDIN)); };
         $password = '';  while ($password==''){  print "  Password: "; $password = trim(fgets(STDIN)); };
         $email = '';  while ($email==''){  print "  e-mail: "; $email = trim(fgets(STDIN)); };

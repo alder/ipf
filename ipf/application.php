@@ -15,7 +15,7 @@ abstract class IPF_Application{
             }
         }
     }
-
+    
     protected function setName(){
         $this->name = str_replace('_App', '', get_class($this)); 
         if (strpos($this->name,'IPF_')===0)
