@@ -88,27 +88,29 @@ class IPF_Admin_Model{
     }
 
     public function ListItemsQuery(){
-        $query = IPF_ORM_Query::create();
-        $this->q = $query->select("o.*")->from($this->modelName.' o');
+        $this->q = IPF_ORM_Query::create()->from($this->modelName);
     }
     
     public function ListRow($o){
         $row = array();
         
         foreach($this->header as &$h){
-            $t = $o->getTable()->getTypeOf($h['name']);
-            $str = $o->$h['name'];
-            if ($t=='boolean'){
-                if ($str) 
-                    $str = '<img src="'.IPF::get('admin_media_url').'img/icon-yes.gif" alt="True">';
-                else 
-                    $str = '<img src="'.IPF::get('admin_media_url').'img/icon-no.gif" alt="True">';
+            $listMethod = 'column_'.$h['name'];
+            if (method_exists($this,$listMethod))
+                $str = $this->$listMethod(&$o);
+            else{
+                $t = $o->getTable()->getTypeOf($h['name']);
+                $str = $o->$h['name'];
+                if ($t=='boolean'){
+                    if ($str) 
+                        $str = '<img src="'.IPF::get('admin_media_url').'img/icon-yes.gif" alt="True" />';
+                    else 
+                        $str = '<img src="'.IPF::get('admin_media_url').'img/icon-no.gif" alt="False" />';
+                }
             }
             $row[$h['name']] = $str;
         }
         $this->LinksRow(&$row, &$o);
-        
-    
         return $row;
     }
     
