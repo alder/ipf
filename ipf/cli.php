@@ -19,9 +19,9 @@ class IPF_Cli{
             print "  $command\n";
     }
     
-    protected function help(&$args){
+    protected function help($args){
         if (count($args)==2)
-            $this->main_help(&$args);
+            $this->main_help($args);
     }
     
     protected function sql(&$args){
@@ -69,17 +69,17 @@ class IPF_Cli{
         $args = $opt->readPHPArgv();
         if (count($args)==1)
         {
-            $this->usage(&$args);
+            $this->usage($args);
             return;
         }
             
         if (in_array($args[1],$this->commands))
         {
-            eval('$this->'.$args[1].'(&$args);');
+            eval('$this->'.$args[1].'($args);');
             return;
         }
         
         print "Unknown command: '".$args[1]."'\n";
-        $this->usage(&$args);
+        $this->usage($args);
     }
 }
