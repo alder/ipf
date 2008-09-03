@@ -9,6 +9,11 @@ function __autoload( $class_name ){
             $s .= '/';                                                  
         $s .= strtolower( $folder );                                            
     }
+    if ($s=='basesession'){
+       //print_r( debug_backtrace(false));
+       debug_print_backtrace();
+       die ('zzz');
+    }
     require_once($s.'.php');
 }
 

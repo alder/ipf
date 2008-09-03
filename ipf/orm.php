@@ -242,43 +242,22 @@ final class IPF_ORM {
 
     public static function loadModels($directory, $modelLoading = null)
     {
-        $manager = IPF_ORM_Manager::getInstance();
-        
-        $modelLoading = $modelLoading === null ? $manager->getAttribute(IPF_ORM::ATTR_MODEL_LOADING):$modelLoading;
         $loadedModels = array();
-        if ($directory !== null) {
-            foreach ((array) $directory as $dir) {
-                if ( ! is_dir($dir)) {
-                    throw new IPF_ORM_Exception('You must pass a valid path to a directory containing IPF_ORM models');
-                }
-                $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY);
-                foreach ($it as $file) {
-                    $e = explode('.', $file->getFileName());
-                    if (end($e) === 'php' && strpos($file->getFileName(), '.inc') === false) {
-                        $className = $e[0];
-                        if ($modelLoading == IPF_ORM::MODEL_LOADING_CONSERVATIVE) {
-                            self::loadModel($className, $file->getPathName());
-                            $loadedModels[$className] = $className;
-                        } else {
-                            //$declaredBefore = get_declared_classes();
-                            require_once($file->getPathName());
-                            $loadedModels[$className] = $className; // !!!
-                            /*
-                            //$declaredAfter = get_declared_classes();
-                            //$foundClasses = array_slice($declaredAfter, count($declaredBefore) - 1);
-                            if ($foundClasses) {
-                                foreach ($foundClasses as $className) {
-                                    if (self::isValidModelClass($className)) {
-                                        $loadedModels[$className] = $className;
-
-                                        self::loadModel($className, $file->getPathName());
-                                    }
-                                }
-                            }
-                            */
-                        }
-                    }
-                }
+        $it = new DirectoryIterator($directory.DIRECTORY_SEPARATOR.'_generated');
+        foreach ($it as $file) {
+            $e = explode('.', $file->getFileName());
+            if (end($e) === 'php') {
+               $className = $e[0];
+               require_once($file->getPathName());
+            }
+        }
+        $it = new DirectoryIterator($directory);
+        foreach ($it as $file) {
+            $e = explode('.', $file->getFileName());
+            if (end($e) === 'php') {
+               $className = $e[0];
+               require_once($file->getPathName());
+               $loadedModels[$className] = $className;
             }
         }
         return $loadedModels;
