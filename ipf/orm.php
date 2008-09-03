@@ -189,6 +189,8 @@ final class IPF_ORM {
     const IDENTIFIER_COMPOSITE      = 4;
     const MODEL_LOADING_AGGRESSIVE   = 1;
     const MODEL_LOADING_CONSERVATIVE= 2;
+    
+    const BASE_CLASSES_DIRECTORY    = '_generated';
 
     private static $_loadedModelFiles = array();
 
@@ -244,7 +246,7 @@ final class IPF_ORM {
     {
         $loadedModels = array();
         try{
-            $it = new DirectoryIterator($directory.DIRECTORY_SEPARATOR.'_generated');
+            $it = new DirectoryIterator($directory.DIRECTORY_SEPARATOR.IPF_ORM::BASE_CLASSES_DIRECTORY);
         }catch(RuntimeException $e){
             return $loadedModels;
         }
