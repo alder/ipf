@@ -38,22 +38,22 @@ class IPF_Admin_Model{
         $il = $this->inlines();
         if (is_array($il)){
             foreach($il as $inlineName=>$inlineClassName){
-                $this->inlineInstances[] = new $inlineClassName(&$this->model,&$instance);
+                $this->inlineInstances[] = new $inlineClassName($this->model,$instance);
             }
         }
     }
     
-    protected function _setupEditForm(&$form){
-        $this->_setupForm(&$form);
+    protected function _setupEditForm($form){
+        $this->_setupForm($form);
         $this->setInlines($this->instance);
     }
 
-    protected function _setupAddForm(&$form){
-        $this->_setupForm(&$form);
+    protected function _setupAddForm($form){
+        $this->_setupForm($form);
         $this->setInlines();
     }
 
-    protected function _setupForm(&$form){
+    protected function _setupForm($form){
     }
     
     public function fields(){return null;}
@@ -97,7 +97,7 @@ class IPF_Admin_Model{
         foreach($this->header as &$h){
             $listMethod = 'column_'.$h['name'];
             if (method_exists($this,$listMethod))
-                $str = $this->$listMethod(&$o);
+                $str = $this->$listMethod($o);
             else{
                 $t = $o->getTable()->getTypeOf($h['name']);
                 $str = $o->$h['name'];
@@ -110,11 +110,11 @@ class IPF_Admin_Model{
             }
             $row[$h['name']] = $str;
         }
-        $this->LinksRow(&$row, &$o);
+        $this->LinksRow($row, $o);
         return $row;
     }
     
-    protected function LinksRow(&$row, &$o){
+    protected function LinksRow($row, $o){
         if (method_exists($this,'list_display_links')){
             $links_display = $this->list_display_links();
         }else{
@@ -124,10 +124,10 @@ class IPF_Admin_Model{
         foreach($row as $name=>&$v){
             if ($links_display){
                 if (array_search($name, $links_display)!==false)
-                    $v = '<a href="'.$this->UrlForResult(&$o).'">'.$v.'</a>';
+                    $v = '<a href="'.$this->UrlForResult($o).'">'.$v.'</a>';
             }else{
                 if ($i==1)
-                    $v = '<a href="'.$this->UrlForResult(&$o).'">'.$v.'</a>';
+                    $v = '<a href="'.$this->UrlForResult($o).'">'.$v.'</a>';
                 $i++;
             }
         }
@@ -141,7 +141,7 @@ class IPF_Admin_Model{
     public function AddItem($request, $lapp, $lmodel){
         if ($request->method == 'POST'){
             $form = IPF_Shortcuts::GetFormForModel($this->model,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
-            $this->_setupAddForm(&$form);
+            $this->_setupAddForm($form);
             if ($form->isValid()) {
                 $item = $form->save();
                 AdminLog::logAction($request, $item, AdminLog::ADDITION);
@@ -151,7 +151,7 @@ class IPF_Admin_Model{
         }
         else{
             $form = IPF_Shortcuts::GetFormForModel($this->model,null,array('user_fields'=>$this->fields()));
-            $this->_setupAddForm(&$form);
+            $this->_setupAddForm($form);
         }
         $context = array(
             'page_title'=>'Add '.$this->modelName, 
@@ -166,7 +166,7 @@ class IPF_Admin_Model{
     public function EditItem($request, $lapp, $lmodel, $o){
         if ($request->method == 'POST'){
             $form = IPF_Shortcuts::GetFormForModel($o,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
-            $this->_setupEditForm(&$form);
+            $this->_setupEditForm($form);
             if ( ($form->isValid()) && ($this->isValidInlines()) ) {
                 $item = $form->save();
                 AdminLog::logAction($request, $item, AdminLog::CHANGE);
@@ -176,7 +176,7 @@ class IPF_Admin_Model{
         }
         else{
             $form = IPF_Shortcuts::GetFormForModel($o,$o->getData(),array('user_fields'=>$this->fields()));
-            $this->_setupEditForm(&$form);
+            $this->_setupEditForm($form);
         }
         
         $context = array(
