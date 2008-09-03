@@ -246,9 +246,9 @@ final class IPF_ORM {
         try{
             $it = new DirectoryIterator($directory.DIRECTORY_SEPARATOR.'_generated');
         }catch(RuntimeException $e){
-      	    return $loadedModels;
+            return $loadedModels;
         }
-	foreach ($it as $file) {
+        foreach ($it as $file) {
             $e = explode('.', $file->getFileName());
             if (end($e) === 'php') {
                $className = $e[0];

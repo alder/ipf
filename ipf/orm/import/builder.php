@@ -10,7 +10,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
     protected $_generateBaseClasses = true;
     protected $_generateTableClasses = false;
     protected $_baseClassPrefix = 'Base';
-    protected $_baseClassesDirectory = '_generated';
+    protected $_baseClassesDirectory = IPF_ORM::BASE_CLASSES_DIRECTORY;
     protected $_baseClassName = 'IPF_ORM_Record';
     protected $_generateAccessors = false;
     protected static $_tpl;
@@ -79,7 +79,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
         return $this->_baseClassPrefix;
     }
 
-    public function setBaseClassesDirectory($baseClassesDirectory)
+    public function setbaseClassesDirectory($baseClassesDirectory)
     {
         $this->_baseClassesDirectory = $baseClassesDirectory;
     }

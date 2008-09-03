@@ -12,7 +12,7 @@ class IPF_ORM_Import_Schema
                                 'generateTableClasses'  =>  false,
                                 'generateAccessors'     =>  false,
                                 'baseClassesPrefix'     =>  'Base',
-                                'baseClassesDirectory'  =>  '_generated',
+                                'baseClassesDirectory'  =>  IPF_ORM::BASE_CLASSES_DIRECTORY,
                                 'baseClassName'         =>  'IPF_ORM_Record');
 
     protected $_validation = array('root'       =>  array('abstract',
