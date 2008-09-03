@@ -243,8 +243,12 @@ final class IPF_ORM {
     public static function loadModels($directory, $modelLoading = null)
     {
         $loadedModels = array();
-        $it = new DirectoryIterator($directory.DIRECTORY_SEPARATOR.'_generated');
-        foreach ($it as $file) {
+        try{
+            $it = new DirectoryIterator($directory.DIRECTORY_SEPARATOR.'_generated');
+        }catch(RuntimeException $e){
+      	    return $loadedModels;
+        }
+	foreach ($it as $file) {
             $e = explode('.', $file->getFileName());
             if (end($e) === 'php') {
                $className = $e[0];
