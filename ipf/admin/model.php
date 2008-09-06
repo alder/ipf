@@ -88,7 +88,7 @@ class IPF_Admin_Model{
     }
 
     public function ListItemsQuery(){
-        $this->q = IPF_ORM_Query::create()->from($this->modelName);
+        $this->q = IPF_ORM_Query::create()->from($this->modelName)->orderby('id desc');
     }
     
     public function ListRow($o){
@@ -114,7 +114,7 @@ class IPF_Admin_Model{
         return $row;
     }
     
-    protected function linksRow(&$row, $o){
+    protected function linksRow($row, $o){
         if (method_exists($this,'list_display_links')){
             $links_display = $this->list_display_links();
         }else{

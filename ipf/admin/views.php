@@ -39,7 +39,7 @@ function IPF_Admin_Views_Index($request, $match){
         }
     }
     
-    $admin_log = IPF_ORM_Query::create()->select("*")->from('AdminLog')->orderby('created_at desc')->limit(10)->execute();
+    $admin_log = IPF_ORM_Query::create()->select("*")->from('AdminLog')->orderby('created_at desc')->limit(8)->execute();
     
     $context = array(
         'page_title' => __('Administration'), 
