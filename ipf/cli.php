@@ -5,7 +5,7 @@ class IPF_Cli{
     protected $commands;
 
     public function __construct(){
-        $this->commands = array('help','sql','buildmodels','syncdb', 'createsuperuser');
+        $this->commands = array('help','sql','buildmodels','buildcontribmodels','syncdb', 'createsuperuser');
     }
     
     protected function usage(&$args){
@@ -38,6 +38,12 @@ class IPF_Cli{
         print "Build All Model Classses\n";
         IPF_Project::getInstance()->generateModels();
     }
+
+    protected function buildcontribmodels(&$args){
+        print "Build All Contrib Model Classses\n";
+        IPF_Project::getInstance()->generateContribModels();
+    }
+
 
     protected function createSuperUser(&$args){
         print "Create SuperUser\n";

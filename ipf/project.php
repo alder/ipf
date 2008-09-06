@@ -55,14 +55,17 @@ final class IPF_Project{
 	}
 
 	public function generateModels(){
-	    foreach( $this->apps as $appname=>&$app){
-	        if (substr($appname,0,4)=='IPF_')
-	            $this->getApp($appname)->generateModels();
-	    }
         IPF_ORM::generateModelsFromYaml(
             IPF::get('project_path').DIRECTORY_SEPARATOR.'models.yml',
             IPF::get('project_path').DIRECTORY_SEPARATOR.'models'
         );
+	}
+
+	public function generateContribModels(){
+	    foreach( $this->apps as $appname=>&$app){
+	        if (substr($appname,0,4)=='IPF_')
+	            $this->getApp($appname)->generateModels();
+	    }
 	}
 	
     public function createTablesFromModels(){

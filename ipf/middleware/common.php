@@ -4,7 +4,6 @@ class IPF_Middleware_Common
 {
     function processRequest(&$request)
     {
-        //print_r($request);
         if (IPF::get('append_slash')){
             $url = $request->http_host.IPF_HTTP_URL::getAction();
             if (substr($url,-1)!='/'){
