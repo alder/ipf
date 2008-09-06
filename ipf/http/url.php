@@ -23,11 +23,12 @@ class IPF_HTTP_URL
 
     public static function getAction()
     {
-        if (isset($_SERVER['ORIG_PATH_INFO'])) {
-            return $_SERVER['ORIG_PATH_INFO'];
-        }
-        if (isset($_SERVER['PATH_INFO'])) {
-            return $_SERVER['PATH_INFO'];
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $uri = $_SERVER['REQUEST_URI'];
+            $pq = strpos($uri,'?');
+            if ($pq!==false)
+                $uri = substr($uri,0,$pq);
+            return $uri;
         }
         return '/';
     }
