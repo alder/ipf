@@ -2,7 +2,6 @@
 
 class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
 {
-    public $tiny_mceurl = IPF::get('media_url').'/js/editor/tiny_mce.js';
     public $mode = 'textareas';
     public $theme = 'simple';
     public $include_tinymce = true;
@@ -49,14 +48,32 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
         // The special include for tinyMCE
         $out = '';
         if ($this->include_tinymce) {
-            $out .= '<script language="javascript" type="text/javascript" src="'.$this->tinymce_url.'"></script>'."\n";
+            $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('admin_media_url').'tiny_mce/tiny_mce.js"></script>'."\n";
         }
         $out .='<script language="javascript" type="text/javascript">
 	tinyMCE.init({
-		mode : "'.$this->mode.'",
-		theme : "'.$this->theme.'"'.$extra_config.'
+        mode : "textareas",
+     	theme : "advanced",
+ 	    theme_advanced_toolbar_location : "top",
+     	theme_advanced_toolbar_align: "left",
+        theme_advanced_buttons1 : "bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, separator, selectall, removeformat, separator,sub,sup,separator, forecolor, backcolor",
+        theme_advanced_buttons2 : "", 
+        theme_advanced_buttons3 : "",
+     	convert_urls:"false",
+        plugins : "paste, table",
+        button_tile_map : true,
+        fix_list_elements : true,
+        gecko_spellcheck : true,
+        verify_html : true,
+        dialog_type : "modal",
+        height : "800",
+        height : "300"
 	});
 </script>';
+
+// buttons: code, separator pastetext, pasteword, 
+//plugins : "inlinepopups, paste, table, fullscreen, preview, print, charmap, separator, ",
+
         return new IPF_Template_SafeString(
                        $out.sprintf('<textarea%s>%s</textarea>',
                                IPF_Form_Widget_Attrs($final_attrs),

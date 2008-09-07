@@ -121,11 +121,9 @@ class IPF_Form_Model extends IPF_Form
             } catch(IPF_ORM_Exception_Validator $e) {
                 $erecords = $e->getInvalidRecords();
                 $errors = $erecords[0]->getErrorStack();
-                print_r($this->cleaned_data);
                 foreach($errors as $k=>$v){
-                    print_r($v);
+                    print($v);
                 }
-                //die('zz');
             }
         }
         throw new IPF_Exception_Form(__('Cannot save the model from an invalid form.'));
