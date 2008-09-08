@@ -24,9 +24,18 @@ function IPF_Admin_Views_Index($request, $match){
             $models = new IPF_Template_ContextVars();
             $models_found = false;
             foreach($app->modelList() as $m){
-                if (IPF_Admin_Model::isModelRegister($m)){
-                    $models[] = new IPF_Template_ContextVars(array('name'=>$m, 'path'=>strtolower($m)));
-                    $models_found = true;
+                
+                $ma = IPF_Admin_Model::getModelAdmin($m);
+                if ($ma!==null){
+                    $perms = $ma->getPerms($request);
+                    if (array_search('view', $perms)!==false){
+                        $models[] = new IPF_Template_ContextVars(array(
+                            'name'=>$m, 
+                            'path'=>strtolower($m),
+                            'perms'=>$perms,
+                        ));
+                        $models_found = true;
+                    }
                 }
             }
             if ($models_found){

@@ -12,8 +12,8 @@
             {foreach $app.models as $model}
             <tr>
                 <th><a href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{$model.name}</a></th>
-                <td><a class="addlink" href="{url 'IPF_Admin_Views_AddItem', array($app.path, $model.path)}">{trans 'Add'}</a></td>
-                <td><a class="changelink" href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{trans 'Change'}</a></td>
+                <td>{if array_search('add',$model['perms'])!==false}<a class="addlink" href="{url 'IPF_Admin_Views_AddItem', array($app.path, $model.path)}">{trans 'Add'}</a>{/if}</td>
+                <td>{if array_search('change',$model['perms'])!==false}<a class="changelink" href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{trans 'Change'}</a>{/if}</td>
             </tr>
             {/foreach}
             </table>

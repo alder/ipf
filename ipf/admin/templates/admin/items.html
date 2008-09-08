@@ -7,7 +7,7 @@
 
 <div id="ipfcontent">
     <h1>{$page_title}</h1>
-    <ul class="object-tools"><li><a href="add/" class="addlink">Add {$classname}</a></li></ul>
+    <ul class="object-tools">{if array_search('add',$perms)!==false}<li><a href="add/" class="addlink">Add {$classname}</a></li>{/if}</ul>
     <div id="changelist">
         <table>
             <thead>

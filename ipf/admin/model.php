@@ -33,6 +33,10 @@ class IPF_Admin_Model{
     public function setUp(){
         $this->model = new $this->modelName;
     }
+
+    public function getPerms($request){
+        return array('view', 'add', 'change', 'delete');
+    }
     
     protected function setInlines(&$instance=null){
         $il = $this->inlines();
@@ -186,6 +190,7 @@ class IPF_Admin_Model{
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
             'lapp'=>$lapp,
+            'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
         );
         return IPF_Shortcuts::RenderToResponse('admin/change.html', $context, $request);
@@ -213,13 +218,13 @@ class IPF_Admin_Model{
         $this->ListItemsQuery();
         $this->qe = $this->q->execute();
         $this->ListItemsHeader();
-        //print_r($this->qe->getTable()->getIdentifier());
         $context = array(
             'page_title'=>$this->modelName.' List', 
             'header'=>$this->header,
             'classname'=>$this->modelName,
             'objects'=>$this->qe,
             'classname'=>$this->modelName,
+            'perms'=>$this->getPerms($request),
         );
         return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
     }

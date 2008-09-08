@@ -24,3 +24,8 @@ function IPF_Context_Upload($request)
 {
     return array('UPLOAD_URL' => IPF::get('upload_url'));
 }
+
+function IPF_Context_Current($request)
+{
+    return array('CURRENT_URL' => IPF_HTTP_URL::getAction());
+}

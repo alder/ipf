@@ -37,7 +37,7 @@
     {/foreach}
 
     <div class="submit-row">
-        <p class="float-left"><a href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.id)}" class="deletelink">Delete</a></p>
+        {if array_search('delete',$perms)!==false}<p class="float-left"><a href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.id)}" class="deletelink">Delete</a></p>{/if}
         <input type="submit" value="Save" class="default" />
     </div>
     </form>    
