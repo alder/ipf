@@ -52,7 +52,8 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
         }
         $out .='<script language="javascript" type="text/javascript">
 	tinyMCE.init({
-        mode : "textareas",
+        mode : "specific_textareas",
+        editor_selector : "htmlEditor",
      	theme : "advanced",
  	    theme_advanced_toolbar_location : "top",
      	theme_advanced_toolbar_align: "left",
@@ -75,7 +76,7 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
 //plugins : "inlinepopups, paste, table, fullscreen, preview, print, charmap, separator, ",
 
         return new IPF_Template_SafeString(
-                       $out.sprintf('<textarea%s>%s</textarea>',
+                       $out.sprintf('<textarea%s class="htmlEditor">%s</textarea>',
                                IPF_Form_Widget_Attrs($final_attrs),
                                htmlspecialchars($value, ENT_COMPAT, 'UTF-8')),
                        true);
