@@ -13,7 +13,7 @@ class IPF_Auth_Forms_UserCreation extends IPF_Form_Model{
     function addDBField($name,$col){
         parent::addDBField($name, $col);
         if ($name=='username')
-            $this->fields['username']->help_text = 'Required. 32 characters or fewer. Alphanumeric characters only (letters, digits and underscores).';
+            $this->fields['username']->help_text = 'Required. 32 characters or less. Alphanumeric characters only (letters, digits and underscores).';
     }
     
     function add__password1__field(){

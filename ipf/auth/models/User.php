@@ -5,7 +5,7 @@ class AdminUser extends IPF_Admin_Model{
     public function fields(){return array('username','password','email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser');}
     
     protected function _setupForm($form){
-        $form->fields['username']->help_text = 'Required. 32 characters or fewer. Alphanumeric characters only (letters, digits and underscores).';
+        $form->fields['username']->help_text = 'Required. 32 characters or less. Alphanumeric characters only (letters, digits and underscores).';
         $form->fields['password']->help_text = "Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change password form</a>.";
     }
 
