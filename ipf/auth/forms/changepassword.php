@@ -14,7 +14,7 @@ class IPF_Auth_Forms_ChangePassword extends IPF_Form{
             if ($this->cleaned_data['password1']!=$this->cleaned_data['password2']){
                 $this->is_valid = false;
                 $this->errors['password2'][] = "The two password fields didn't match.";
-                return false;
+                $ok = false;
             }
         }
         return $ok;
