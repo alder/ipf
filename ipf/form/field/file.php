@@ -5,13 +5,12 @@ class IPF_Form_Field_File extends IPF_Form_Field
     public $widget = 'IPF_Form_Widget_FileInput';
     public $move_function = 'IPF_Form_Field_moveToUploadFolder';
     public $remove_function = 'IPF_Form_Field_removeFile';
-    public $max_size = 2097152; // 2MB
+    public $max_size =  8388608; // 8MB
     public $move_function_params = array();
 
     function clean($value)
     {
-        if ($value['remove']==1){
-            //print_r($value);
+        if ($value['remove']===true){
             IPF::loadFunction($this->remove_function);
             return call_user_func($this->remove_function, $value['data']);
         }
@@ -61,11 +60,11 @@ class IPF_Form_Field_File extends IPF_Form_Field
 
 function IPF_Form_Field_moveToUploadFolder($value, $params=array())
 {
-    $name = IPF_Utils::cleanFileName($value['name']);
     $upload_path = IPF::get('upload_path', '/tmp');
     if (isset($params['upload_path'])) {
         $upload_path = $params['upload_path'];
     }
+    $name = IPF_Utils::cleanFileName($value['name'], $upload_path);
     $dest = $upload_path.DIRECTORY_SEPARATOR.$name;
     if (!move_uploaded_file($value['tmp_name'], $dest)) {
         throw new IPF_Exception_Form(__('An error occured when upload the file. Please try to send the file again.'));

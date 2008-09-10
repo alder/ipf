@@ -19,7 +19,10 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
     public function valueFromFormData($name, $data)
     {
         if (isset($data[$name])) {
-            $remove = (int)$data[$name.'_remove'];
+            $remove = false;
+            if (isset($data[$name.'_remove']))
+                if ($data[$name.'_remove']==1)
+                    $remove = true;
             $res = array('data'=>$data[$name], 'remove'=>$remove);
             return $res;
         }

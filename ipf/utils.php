@@ -43,10 +43,27 @@ class IPF_Utils {
         return $mysize;
     }
 	
-    static function cleanFileName($name)
+    static function cleanFileName($name, $path)
     {
         $name = mb_strtolower($name, 'UTF-8');
-        return mb_ereg_replace("/\015\012|\015|\012|\s|[^A-Za-z0-9\.\-\_]/", '_', $name);
+        $name = mb_ereg_replace("/\015\012|\015|\012|\s|[^A-Za-z0-9\.\-\_]/", '_', $name);
+
+        while(file_exists($path.$name)){
+            $pathinfo = pathinfo($name);
+            $filename = $pathinfo['filename'];
+            $split = split('_', $filename);
+            $n = count($split);
+            if ($n<2){
+                $filename .= '_2';
+            }
+            else{
+                $x = (int)$split[$n-1];
+                $y = $x+1;
+                $filename = str_replace('_'.$x, '_'.$y, $filename);
+            }
+            $name = $filename.'.'.$pathinfo['extension'];
+        }
+        return $name;
     }
     
     static function isValidUrl($url)
