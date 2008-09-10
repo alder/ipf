@@ -1262,7 +1262,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         foreach ($cleaned_values as $key=>$val) {
             $validators = $this->getTable()->getFieldValidators($key);
             if (array_key_exists('image',$validators) || array_key_exists('file',$validators)){
-                if ($val=='')
+                if (($val!==null) && ($val==''))
                     continue;
             }
             $this->$key = $val;
