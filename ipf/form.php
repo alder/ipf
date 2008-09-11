@@ -50,8 +50,7 @@ class IPF_Form implements Iterator
         return false;
     }
 
-    function isValid()
-    {
+    function isValid(){
         if ($this->is_valid !== null) {
             return $this->is_valid;
         }

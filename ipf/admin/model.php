@@ -140,11 +140,23 @@ class IPF_Admin_Model{
     protected function UrlForResult(&$o){
         return  $o->__get($this->qe->getTable()->getIdentifier()).'/';
     }
+
+    protected function _getForm($model_obj, $data, $extra){
+        return IPF_Shortcuts::GetFormForModel($model_obj,$data,$extra);
+    }
+
+    protected function _getEditForm($model_obj, $data, $extra){
+        return $this->_getForm($model_obj, $data, $extra);
+    }
+
+    protected function _getAddForm($model_obj, $data, $extra){
+        return $this->_getForm($model_obj, $data, $extra);
+    }
     
     // Views Function
     public function AddItem($request, $lapp, $lmodel){
         if ($request->method == 'POST'){
-            $form = IPF_Shortcuts::GetFormForModel($this->model,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
+            $form = $this->_getAddForm($this->model,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
             $this->_setupAddForm($form);
             if ($form->isValid()) {
                 $item = $form->save();
@@ -154,7 +166,7 @@ class IPF_Admin_Model{
             }
         }
         else{
-            $form = IPF_Shortcuts::GetFormForModel($this->model,null,array('user_fields'=>$this->fields()));
+            $form = $this->_getAddForm($this->model,null,array('user_fields'=>$this->fields()));
             $this->_setupAddForm($form);
         }
         $context = array(
@@ -169,7 +181,7 @@ class IPF_Admin_Model{
 
     public function EditItem($request, $lapp, $lmodel, $o){
         if ($request->method == 'POST'){
-            $form = IPF_Shortcuts::GetFormForModel($o,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
+            $form = $this->_getEditForm($o,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
             if ( ($form->isValid()) && ($this->isValidInlines()) ) {
                 $item = $form->save();
@@ -179,7 +191,7 @@ class IPF_Admin_Model{
             }
         }
         else{
-            $form = IPF_Shortcuts::GetFormForModel($o,$o->getData(),array('user_fields'=>$this->fields()));
+            $form = $this->_getEditForm($o,$o->getData(),array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
         }
         

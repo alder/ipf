@@ -8,10 +8,7 @@ class IPF_Form_Field_Image extends IPF_Form_Field_File{
 function IPF_Form_Field_moveImageToUploadFolder($value, $params=array())
 {
     $name = IPF_Form_Field_moveToUploadFolder($value, $params);
-    $upload_path = IPF::get('upload_path', '/tmp');
-    if (isset($params['upload_path'])) {
-        $upload_path = $params['upload_path'];
-    }
+    $upload_path = IPF::getUploadPath($params);
     $image = $upload_path.DIRECTORY_SEPARATOR.$name;
 
     if(!getimagesize($image))

@@ -7,10 +7,13 @@ class IPF_Form_Model extends IPF_Form
 
     function initFields($extra=array())
     {
-        $this->model = $extra['model'];
+        if (isset($extra['model']))
+            $this->model = $extra['model'];
+        else
+            throw new IPF_Exception_Form(__('Unknown model for form'));
+        
         if (isset($extra['user_fields']))
             $this->user_fields = $extra['user_fields'];
-            
         
         $user_fields = $this->fields();
         $db_columns = $this->model->getTable()->getColumns();

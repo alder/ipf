@@ -9,11 +9,6 @@ function __autoload( $class_name ){
             $s .= '/';                                                  
         $s .= strtolower( $folder );                                            
     }
-    if ($s=='basesession'){
-       //print_r( debug_backtrace(false));
-       debug_print_backtrace();
-       die ('zzz');
-    }
     require_once($s.'.php');
 }
 
@@ -139,6 +134,14 @@ final class IPF{
         if ($params !== null)
             return new $model($params);
         return new $model();
+    }
+
+    public static function getUploadPath($params=array()){
+        $upload_path = IPF::get('upload_path', '/tmp');
+        if (isset($params['upload_path'])) {
+            $upload_path = $params['upload_path'];
+        }
+        return $upload_path;
     }
 }
 

@@ -60,10 +60,7 @@ class IPF_Form_Field_File extends IPF_Form_Field
 
 function IPF_Form_Field_moveToUploadFolder($value, $params=array())
 {
-    $upload_path = IPF::get('upload_path', '/tmp');
-    if (isset($params['upload_path'])) {
-        $upload_path = $params['upload_path'];
-    }
+    $upload_path = IPF::getUploadPath($params);
     $name = IPF_Utils::cleanFileName($value['name'], $upload_path);
     $dest = $upload_path.DIRECTORY_SEPARATOR.$name;
     if (!move_uploaded_file($value['tmp_name'], $dest)) {

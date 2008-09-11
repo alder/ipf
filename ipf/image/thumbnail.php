@@ -6,10 +6,14 @@ class IPF_Image_Thumbnail {
     protected $ThumbnailWidth, $ThumbnailHeight;
     protected $SourceWidth, $SourceHeight, $SourceType;
     protected $file_permission, $dir_permission;
+    protected $sourceRemove;
         
-    public function __construct($source, $thumnbail, $width=null, $height=null, $dir_permission=null, $file_permission=null){
+    public function __construct($source, $width=null, $height=null, $thumbnail=null, $sourceRemove=false, $dir_permission=null, $file_permission=null){
         $this->Source = $source;
-        $this->Thumbnail = $thumbnail;
+        if ($thumbnail)
+            $this->Thumbnail = $thumbnail;
+        else
+            $this->Thumbnail = $source;
 
         if (($width==null) && ($height==null))
             throw new IPF_Exception_Image(__('Please Specify width or height'));
@@ -26,6 +30,8 @@ class IPF_Image_Thumbnail {
             $this->file_permission = $file_permission;
         else
             $this->file_permission = IPF::get('file_permission');
+            
+        $this->sourceRemove = $sourceRemove;
     }
         
     public function execute(){
@@ -80,10 +86,10 @@ class IPF_Image_Thumbnail {
                 $this->ThumbnailWidth, $this->ThumbnailHeight, 
                 $this->SourceWidth, $this->SourceHeight
             );
-
-            if (!@unlink($this->Thumbnail))
-                throw new IPF_Exception_Image(sprintf(__('Cannot delete %s'), $this->Thumbnail));
-
+            if ($this->sourceRemove){
+                if (!@unlink($this->Thumbnail))
+                    throw new IPF_Exception_Image(sprintf(__('Cannot delete %s'), $this->Thumbnail));
+            }
             $dir_thumbnail = dirName($this->Thumbnail);
             if (!IPF_Utils::makeDirectories(dirName($this->Thumbnail), $this->dir_permission))
                 throw new IPF_Exception_Image(sprintf(__('Cannot create path %s'), $dir_thumbnail));
