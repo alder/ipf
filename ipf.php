@@ -88,10 +88,10 @@ final class IPF{
         }
 
         if (!isset(IPF::$settings['dir_permission']))
-            IPF::$settings['dir_permission'] = 0770;
+            IPF::$settings['dir_permission'] = 0777;
 
         if (!isset(IPF::$settings['file_permission']))
-            IPF::$settings['file_permission'] = 0660;
+            IPF::$settings['file_permission'] = 0666;
 
         //print_r(IPF::$settings);
     }

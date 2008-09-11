@@ -152,6 +152,14 @@ class IPF_Admin_Model{
     protected function _getAddForm($model_obj, $data, $extra){
         return $this->_getForm($model_obj, $data, $extra);
     }
+
+    protected function _getAddTemplate(){
+        return 'admin/change.html';
+    }
+
+    protected function _getChangeTemplate(){
+        return 'admin/change.html';
+    }
     
     // Views Function
     public function AddItem($request, $lapp, $lmodel){
@@ -176,9 +184,9 @@ class IPF_Admin_Model{
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
         );
-        return IPF_Shortcuts::RenderToResponse('admin/add.html', $context, $request);
+        return IPF_Shortcuts::RenderToResponse($this->_getAddTemplate(), $context, $request);
     }
-
+    
     public function EditItem($request, $lapp, $lmodel, $o){
         if ($request->method == 'POST'){
             $form = $this->_getEditForm($o,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
@@ -205,7 +213,7 @@ class IPF_Admin_Model{
             'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
         );
-        return IPF_Shortcuts::RenderToResponse('admin/change.html', $context, $request);
+        return IPF_Shortcuts::RenderToResponse($this->_getAddTemplate(), $context, $request);
     }
 
     public function DeleteItem($request, $lapp, $lmodel, $o){
