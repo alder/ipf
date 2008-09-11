@@ -5,16 +5,14 @@ abstract class IPF_Admin_ModelInline{
     var $model = null;
     var $parentModel = null;
     var $formset = null;
-    var $parentInstance = null;
-    
-    function __construct(&$parentModel,$parentInstance=null){
+
+    function __construct($parentModel,$data){
         $this->parentModel = $parentModel;
-        $this->parentInstance = $parentInstance;
         
         $modelName = $this->getModelName();
         $this->model = new $modelName();
         
-        $this->createFormSet();
+        $this->createFormSet($data);
     }
 
     abstract function getModelName();
@@ -50,11 +48,13 @@ abstract class IPF_Admin_ModelInline{
         throw new IPF_Exception('Cannot get fkLocal for '.$this->getModelName());
     }
 
-    function createFormSet(){
+    function createFormSet(&$data){
         $this->formset = array();
         for($i=0; $i<$this->getAddNum(); $i++ ){
             $form = IPF_Shortcuts::GetFormForModel($this->model, null, array('exclude'=>array($this->getFkName(),$this->getFkLocal())));
-            $form->prefix = "add-$i";
+            $form->fields = array_merge(array(new IPF_Form_Field_Boolean(array('label'=>'Del','name'=>'delete_', 'widget_attrs'=>array('disabled'=>'disabled')))),$form->fields);
+            $form->prefix = 'add_'.get_class($this->model).'_'.$i;
+            $form->data = $data;
             if ($i==0)
                 $form->isFirst = true;
             else
@@ -62,5 +62,9 @@ abstract class IPF_Admin_ModelInline{
             //print_r($form->fields);
             $this->formset[] = $form;
         }
+    }
+    
+    function save(){
+        
     }
 }

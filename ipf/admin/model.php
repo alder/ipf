@@ -47,6 +47,12 @@ class IPF_Admin_Model{
         }
     }
     
+    protected function saveInlines($obj){
+        foreach($this->inlineInstances as $inlineInstance){
+            $inlineInstance->save($obj);
+        }
+    }
+    
     protected function _setupEditForm($form){
         $this->_setupForm($form);
         $this->setInlines($this->instance);
@@ -65,11 +71,10 @@ class IPF_Admin_Model{
     public function inlines(){return null;}
     
     public function isValidInlines(){
-        if ($this->inlineInstances==null)
-            return true;
         foreach($this->inlineInstances as &$il){
-            if ($il->isValid()===false)
-                return false;
+            if ($il->isValid()===false){
+                //return false;
+            }
         }
         return true;
     }
@@ -154,7 +159,7 @@ class IPF_Admin_Model{
     }
 
     protected function _getAddTemplate(){
-        return 'admin/change.html';
+        return 'admin/add.html';
     }
 
     protected function _getChangeTemplate(){
@@ -193,6 +198,7 @@ class IPF_Admin_Model{
             $this->_setupEditForm($form);
             if ( ($form->isValid()) && ($this->isValidInlines()) ) {
                 $item = $form->save();
+                $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::CHANGE);
                 $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
@@ -213,7 +219,7 @@ class IPF_Admin_Model{
             'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
         );
-        return IPF_Shortcuts::RenderToResponse($this->_getAddTemplate(), $context, $request);
+        return IPF_Shortcuts::RenderToResponse($this->_getChangeTemplate(), $context, $request);
     }
 
     public function DeleteItem($request, $lapp, $lmodel, $o){
