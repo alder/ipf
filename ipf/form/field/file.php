@@ -69,24 +69,12 @@ function IPF_Form_Field_moveToUploadFolder($value, $params=array())
     if (!move_uploaded_file($value['tmp_name'], $dest)) {
         throw new IPF_Exception_Form(__('An error occured when upload the file. Please try to send the file again.'));
     } 
-    @chmod($dest, 0666);
+    @chmod($dest, IPF::get('file_permission'));
     return $name;
 }
 
 
 function IPF_Form_Field_removeFile($value, $params=array())
 {
-    /*
-    $name = IPF_Utils::cleanFileName($value['name']);
-    $upload_path = IPF::get('upload_path', '/tmp');
-    if (isset($params['upload_path'])) {
-        $upload_path = $params['upload_path'];
-    }
-    $dest = $upload_path.DIRECTORY_SEPARATOR.$name;
-    if (!move_uploaded_file($value['tmp_name'], $dest)) {
-        throw new IPF_Exception_Form(__('An error occured when upload the file. Please try to send the file again.'));
-    } 
-    @chmod($dest, 0666);
-    */
     return null;
 }
