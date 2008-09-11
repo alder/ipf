@@ -661,7 +661,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
                                        null
                                        );
 
-        IPF_ORM_Utils::makeDirectories($path);
+        IPF_Utils::makeDirectories($path);
 
         $writePath = $path . DIRECTORY_SEPARATOR . $className . $this->_suffix;
 
@@ -716,12 +716,12 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
 
         // If we have a writePath from the if else conditionals above then use it
         if (isset($writePath)) {
-            IPF_ORM_Utils::makeDirectories($writePath);
+            IPF_Utils::makeDirectories($writePath);
 
             $writePath .= DIRECTORY_SEPARATOR . $fileName;
         // Otherwise none of the conditions were met and we aren't generating base classes
         } else {
-            IPF_ORM_Utils::makeDirectories($this->_path);
+            IPF_Utils::makeDirectories($this->_path);
 
             $writePath = $this->_path . DIRECTORY_SEPARATOR . $fileName;
         }

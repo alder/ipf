@@ -91,7 +91,13 @@ final class IPF{
         if (!isset(IPF::$settings['session_cookie_id'])){
             IPF::$settings['session_cookie_id'] = 'sessionid';
         }
-        
+
+        if (!isset(IPF::$settings['dir_permission']))
+            IPF::$settings['dir_permission'] = 0770;
+
+        if (!isset(IPF::$settings['file_permission']))
+            IPF::$settings['file_permission'] = 0660;
+
         //print_r(IPF::$settings);
     }
 

@@ -118,5 +118,58 @@ class IPF_Utils {
         }
         return '';
     }
+    
+    public static function makeDirectories($path, $mode = 0777){
+        if ( ! $path) {
+            return false;
+        }
+        if (is_dir($path) || is_file($path)) {
+            return true;
+        }
+        return mkdir(trim($path), $mode, true);
+    }
+    
+    public static function removeDirectories($folderPath){
+        if (is_dir($folderPath)){
+            foreach (scandir($folderPath) as $value){
+                if ($value != '.' && $value != '..'){
+                    $value = $folderPath . "/" . $value;
+                    if (is_dir($value)) {
+                        self::removeDirectories($value);
+                    } else if (is_file($value)) {
+                        unlink($value);
+                    }
+                }
+            }
+            return rmdir($folderPath);
+        } else {
+            return false;
+        }
+    }
+
+    public static function copyDirectory($source, $dest){
+        // Simple copy for a file
+        if (is_file($source)) {
+            return copy($source, $dest);
+        }
+        // Make destination directory
+        if (!is_dir($dest)) {
+            mkdir($dest);
+        }
+        // Loop through the folder
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()){
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+            // Deep copy directories
+            if ($dest !== "$source/$entry") {
+                self::copyDirectory("$source/$entry", "$dest/$entry");
+            }
+        }
+        $dir->close();
+        return true;
+    }
 }
 
