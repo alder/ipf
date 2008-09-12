@@ -95,7 +95,7 @@ class User extends BaseUser
             // Inspect user errors 
             foreach($userErrors as $fieldName => $errorCodes) {
                 echo "Error:".$fieldName;
-                print_r($errorCodes);
+                //print_r($errorCodes);
             }
         }
         return $user;

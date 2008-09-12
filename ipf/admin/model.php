@@ -38,11 +38,11 @@ class IPF_Admin_Model{
         return array('view', 'add', 'change', 'delete');
     }
     
-    protected function setInlines(&$instance=null){
+    protected function setInlines($model, &$data){
         $il = $this->inlines();
         if (is_array($il)){
             foreach($il as $inlineName=>$inlineClassName){
-                $this->inlineInstances[] = new $inlineClassName($this->model,$instance);
+                $this->inlineInstances[] = new $inlineClassName($model,$data);
             }
         }
     }
@@ -55,12 +55,10 @@ class IPF_Admin_Model{
     
     protected function _setupEditForm($form){
         $this->_setupForm($form);
-        $this->setInlines($this->instance);
     }
 
     protected function _setupAddForm($form){
         $this->_setupForm($form);
-        $this->setInlines();
     }
 
     protected function _setupForm($form){
@@ -73,7 +71,7 @@ class IPF_Admin_Model{
     public function isValidInlines(){
         foreach($this->inlineInstances as &$il){
             if ($il->isValid()===false){
-                //return false;
+                return false;
             }
         }
         return true;
@@ -142,7 +140,7 @@ class IPF_Admin_Model{
         }
     }
     
-    protected function UrlForResult(&$o){
+    protected function UrlForResult($o){
         return  $o->__get($this->qe->getTable()->getIdentifier()).'/';
     }
 
@@ -169,8 +167,10 @@ class IPF_Admin_Model{
     // Views Function
     public function AddItem($request, $lapp, $lmodel){
         if ($request->method == 'POST'){
-            $form = $this->_getAddForm($this->model,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
+            $data = $request->POST+$request->FILES;
+            $form = $this->_getAddForm($this->model, &$data, array('user_fields'=>$this->fields()));
             $this->_setupAddForm($form);
+            $this->setInlines($this->model, &$data);
             if ($form->isValid()) {
                 $item = $form->save();
                 AdminLog::logAction($request, $item, AdminLog::ADDITION);
@@ -181,6 +181,7 @@ class IPF_Admin_Model{
         else{
             $form = $this->_getAddForm($this->model,null,array('user_fields'=>$this->fields()));
             $this->_setupAddForm($form);
+            $this->setInlines($this->model, null);
         }
         $context = array(
             'page_title'=>'Add '.$this->modelName, 
@@ -194,9 +195,13 @@ class IPF_Admin_Model{
     
     public function EditItem($request, $lapp, $lmodel, $o){
         if ($request->method == 'POST'){
-            $form = $this->_getEditForm($o,$request->POST+$request->FILES,array('user_fields'=>$this->fields()));
+            $data = $request->POST+$request->FILES;
+            $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
+            $this->setInlines($o, &$data);
+            
             if ( ($form->isValid()) && ($this->isValidInlines()) ) {
+                //print_r($form->cleaned_data);
                 $item = $form->save();
                 $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::CHANGE);
@@ -205,8 +210,10 @@ class IPF_Admin_Model{
             }
         }
         else{
-            $form = $this->_getEditForm($o,$o->getData(),array('user_fields'=>$this->fields()));
+            $data = $o->getData();
+            $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
+            $this->setInlines($o, &$data);
         }
         
         $context = array(

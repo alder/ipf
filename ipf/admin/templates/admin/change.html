@@ -15,7 +15,7 @@
     </table>
     </fieldset>
     {foreach $inlineInstances as $inline}
-    <fieldset class="inlineTabular">
+    <fieldset class="inlineTabular" style="border:none; width:auto; float:left; padding:0; margin:10px 10px 10px 0;">
     <legend>{$inline->getLegend()}</legend>
     <table>
     {foreach $inline.formset as $formset}
@@ -28,13 +28,14 @@
     {/if}
     <tr>
     {foreach $formset.fields as $fieldname=>$field}
-    <td>{$formset.field($fieldname)|safe}</td>
+    <td>{$formset.field($fieldname).fieldErrors()}{$formset.field($fieldname)|safe}</td>
     {/foreach}
     </tr>
     {/foreach}
     </table>
     </fieldset>
     {/foreach}
+    <div style="clear:both;"></div>
 
     <div class="submit-row">
         {if array_search('delete',$perms)!==false}<p class="float-left"><a href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.id)}" class="deletelink">Delete</a></p>{/if}

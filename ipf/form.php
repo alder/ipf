@@ -36,7 +36,7 @@ class IPF_Form implements Iterator
     function addPrefix($field_name)
     {
         if ('' !== $this->prefix) {
-            return $this->prefix.'-'.$field_name;
+            return $this->prefix.$field_name;
         }
         return $field_name;
     }

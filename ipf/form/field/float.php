@@ -11,10 +11,8 @@ class IPF_Form_Field_Float extends IPF_Form_Field
         parent::clean($value);
         
         if (in_array($value, $this->empty_values)) {
-            $value = '';
+            return null;
         }
-        $_value = $value;
-        $value = (float) $value;
         
         if (!is_numeric($value)) {
             throw new IPF_Exception_Form(__('Enter a number.'));

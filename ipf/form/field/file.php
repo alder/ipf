@@ -14,7 +14,6 @@ class IPF_Form_Field_File extends IPF_Form_Field
             IPF::loadFunction($this->remove_function);
             return call_user_func($this->remove_function, $value['data']);
         }
-
         $value = $value['data'];
 
         if ($value['name']=='')
