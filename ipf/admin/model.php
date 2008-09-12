@@ -181,7 +181,8 @@ class IPF_Admin_Model{
         else{
             $form = $this->_getAddForm($this->model,null,array('user_fields'=>$this->fields()));
             $this->_setupAddForm($form);
-            $this->setInlines($this->model, null);
+            $data = array();
+            $this->setInlines($this->model, &$data);
         }
         $context = array(
             'page_title'=>'Add '.$this->modelName, 

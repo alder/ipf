@@ -102,22 +102,7 @@ class IPF_Form_Model extends IPF_Form
     function save($commit=true)
     {
         if ($this->isValid()) {
-            
-            //print_r($this->cleaned_data);
-            
-            //print ($this->cleaned_data['category']);
-            
             $this->model->SetFromFormData($this->cleaned_data);
-            
-            //print_r($this->model->data);
-            /*
-            if ($commit && $this->model->id) {
-                $this->model->update();
-            } elseif ($commit) {
-                $this->model->create();
-            }
-            */
-            
             try{
                 $this->model->save();
                 return $this->model;
@@ -125,7 +110,7 @@ class IPF_Form_Model extends IPF_Form
                 $erecords = $e->getInvalidRecords();
                 $errors = $erecords[0]->getErrorStack();
                 foreach($errors as $k=>$v){
-                    print($v);
+                    print($k);
                 }
             }
         }
