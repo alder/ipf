@@ -30,6 +30,14 @@ class IPF_Form_Widget
         return null;
     }
 
+    public function valueToFormData($name, $data)
+    {
+        if (isset($data[$name])) {
+            return $data[$name];
+        }
+        return null;
+    }
+
     public function idForLabel($id)
     {
         return $id;

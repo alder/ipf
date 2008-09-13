@@ -40,7 +40,7 @@ class IPF_Form_BoundField
         if (!$this->form->is_bound) {
             $data = $this->form->initial($this->name);
         } else {
-            $data = $this->field->widget->valueFromFormData($this->html_name, $this->form->data);
+            $data = $this->field->widget->valueToFormData($this->html_name, $this->form->data);
         }
         return $widget->render($this->html_name, $data, $attrs);
     }

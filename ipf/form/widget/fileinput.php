@@ -11,7 +11,7 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
         if (isset($value['data'])){
             $value = $value['data'];
             if (is_string($value) && $value!=''){
-                $sim = 'Currently: <a target="_blank" href="'.IPF::get('upload_url').$value.'">'.$value.'</a> | <input name="'.$name.'_remove" value="1" id="id_'.$name.'_remove" type="checkbox" /> <label for="id_'.$name.'_remove">Remove</label><br />Change:';
+                $sim = '<nobr>Currently: <a target="_blank" href="'.IPF::get('upload_url').$value.'">'.$value.'</a>&nbsp;|&nbsp;<input name="'.$name.'_remove" value="1" id="id_'.$name.'_remove" type="checkbox" />&nbsp;<label for="id_'.$name.'_remove">Remove</label></nobr><br />Change:';
             }
         }
         $value = '';
@@ -30,6 +30,20 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
         }
         return null;
     }
+
+    public function valueToFormData($name, $data)
+    {
+        if (isset($data[$name])) {
+            $remove = false;
+            if (isset($data[$name.'_remove']))
+                if ($data[$name.'_remove']==1)
+                    $remove = true;
+            $res = array('data'=>$data[$name], 'remove'=>$remove);
+            return $res;
+        }
+        return null;
+    }
+
     
 
 }
