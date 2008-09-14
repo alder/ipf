@@ -1,5 +1,6 @@
 <?php
 
+
 abstract class IPF_Admin_ModelInline{
 
     var $model = null;
@@ -93,7 +94,6 @@ abstract class IPF_Admin_ModelInline{
             }
         }
         
-        /*
         for($i=0; $i<$this->getAddNum(); $i++ ){
             $form = IPF_Shortcuts::GetFormForModel($this->model->copy(), null, array('exclude'=>array($this->getFkName(),$this->getFkLocal())));
             $form->fields = array_merge(array(new IPF_Form_Field_Boolean(array('label'=>'Del','name'=>'delete_', 'widget_attrs'=>array('disabled'=>'disabled')))),$form->fields);
@@ -108,7 +108,6 @@ abstract class IPF_Admin_ModelInline{
                 $form->isFirst = false;
             $this->formset[] = $form;
         }
-        */
     }
     
     function save(){
