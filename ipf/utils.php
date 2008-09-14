@@ -171,5 +171,45 @@ class IPF_Utils {
         $dir->close();
         return true;
     }
+    
+    public static function print_r($subject, $ignore = array(), $depth = 5, $refChain = array())
+    {
+        $s = '';
+        if ($depth > 20) return;
+        if (is_object($subject)) {
+            foreach ($refChain as $refVal)
+                if ($refVal === $subject) {
+                    $s .= "*RECURSION*\n";
+                    return;
+                }
+            array_push($refChain, $subject);
+            $s .= get_class($subject) . " Object ( \n";
+            $subject = (array) $subject;
+            foreach ($subject as $key => $val)
+                if (is_array($ignore) && !in_array($key, $ignore, 1)) {
+                    $s .= str_repeat(" ", $depth * 4) . '[';
+                    if ($key{0} == "\0") {
+                        $keyParts = explode("\0", $key);
+                        $s .= $keyParts[2] . (($keyParts[1] == '*')  ? ':protected' : ':private');
+                    } else
+                        $s .= $key;
+                    $s .= '] => ';
+                    IPF_Utils::print_r($val, $ignore, $depth + 1, $refChain);
+                }
+            $s .= str_repeat(" ", ($depth - 1) * 4) . ")\n";
+            array_pop($refChain);
+        } elseif (is_array($subject)) {
+            $s .= "Array ( \n";
+            foreach ($subject as $key => $val)
+                if (is_array($ignore) && !in_array($key, $ignore, 1)) {
+                    $s .= str_repeat(" ", $depth * 4) . '[' . $key . '] => ';
+                    IPF_Utils::print_r($val, $ignore, $depth + 1, $refChain);
+                }
+            $s .= str_repeat(" ", ($depth - 1) * 4) . ")\n";
+        } else
+            $s .= $subject . "\n";
+        return $s;
+    }
+    
 }
 

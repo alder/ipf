@@ -9,6 +9,8 @@ class IPF_HTTP_Response_ServerErrorDebug extends IPF_HTTP_Response
     }
 }
 
+
+
 function IPF_HTTP_Response_ServerErrorDebug_Pretty($e) 
 {
     $o = create_function('$in','return htmlspecialchars($in);');
@@ -196,12 +198,19 @@ function IPF_HTTP_Response_ServerErrorDebug_Pretty($e)
             <tbody>';
             foreach ($frame['args'] as $k => $v) {
                 $name = isset($params[$k]) ? '$'.$params[$k]->name : '?';
+                switch (gettype($v)){
+                    case "object":
+                        $value = 'Instance of '.get_class($v);
+                        break;
+                    default:
+                        $value = (string)$v;
+                }
                 $out .= '
                 <tr>
                   <td>'.$o($k).'</td>
                   <td>'.$o($name).'</td>
                   <td class="code">
-                    <div>'.highlight_string(print_r($v,true), true).'</div>
+                    <div>'.highlight_string($value, true).'</div>
                   </td>
                 </tr>';
             }
