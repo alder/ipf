@@ -21,7 +21,7 @@ class IPF_ORM_Connection_Profiler implements IPF_ORM_Overloadable, IteratorAggre
     public function __call($m, $a)
     {
         if ( ! ($a[0] instanceof IPF_ORM_Event)) {
-            throw new IPF_ORM_Exception_Profiler("Couldn't listen event. Event should be an instance of Doctrine_Event.");
+            throw new IPF_ORM_Exception_Profiler("Couldn't listen event. Event should be an instance of IPF_Event.");
         }
 
 
