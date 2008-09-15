@@ -2,19 +2,19 @@
 
 class IPF_Utils {
 
-	public static function isValidName( $s, $max_length=50 ){
-		if (!is_string($s))
-			return false;
-		if ( (strlen($s)==0) || (strlen($s)>$max_length) )
-			return false;
-		if ( is_numeric($s[0]))
-			return false;
-		if (!preg_match('/^[a-zA-Z0-9_]+$/', $s ))
-			return false;
-		return true;
-	}
-	
-	public static function isEmail($value){
+    public static function isValidName( $s, $max_length=50 ){
+        if (!is_string($s))
+            return false;
+        if ( (strlen($s)==0) || (strlen($s)>$max_length) )
+            return false;
+        if ( is_numeric($s[0]))
+            return false;
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $s ))
+            return false;
+        return true;
+    }
+    
+    public static function isEmail($value){
         $qtext = '[^\\x0d\\x22\\x5c\\x80-\\xff]';
         $dtext = '[^\\x0d\\x5b-\\x5d\\x80-\\xff]';
         $atom = '[^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+';
@@ -28,8 +28,8 @@ class IPF_Utils {
         $localPart = "$word(\\x2e$word)*";
         $addrSpec = "$localPart\\x40$domain";
         return (bool) preg_match("!^$addrSpec$!D", $value);
-	}
-	
+    }
+    
     static function prettySize($size)
     {
         $mb = 1024*1024;
@@ -42,7 +42,7 @@ class IPF_Utils {
         }
         return $mysize;
     }
-	
+    
     static function cleanFileName($name, $path)
     {
         $name = mb_strtolower($name, 'UTF-8');
@@ -52,14 +52,23 @@ class IPF_Utils {
             $pathinfo = pathinfo($name);
             $filename = $pathinfo['filename'];
             $split = split('_', $filename);
+
             $n = count($split);
             if ($n<2){
                 $filename .= '_2';
             }
             else{
-                $x = (int)$split[$n-1];
-                $y = $x+1;
-                $filename = str_replace('_'.$x, '_'.$y, $filename);
+                $x = $split[$n-1];
+                if (is_numeric($x)){
+                    $split[$n-1] = ((int)$x)+1;
+                }
+                else
+                    $split[] = '2';
+                $filename = '';
+                foreach($split as $sp){
+                    if ($filename!='') $filename.='_';
+                    $filename .= $sp;
+                }
             }
             $name = $filename.'.'.$pathinfo['extension'];
         }
