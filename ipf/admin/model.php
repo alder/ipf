@@ -173,6 +173,7 @@ class IPF_Admin_Model{
             $this->setInlines($this->model, &$data);
             if ($form->isValid()) {
                 $item = $form->save();
+                $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::ADDITION);
                 $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
@@ -188,7 +189,9 @@ class IPF_Admin_Model{
             'page_title'=>'Add '.$this->modelName, 
             'classname'=>$this->modelName,
             'form'=>$form,
+            'inlineInstances'=>$this->inlineInstances,
             'lapp'=>$lapp,
+            'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
         );
         return IPF_Shortcuts::RenderToResponse($this->_getAddTemplate(), $context, $request);

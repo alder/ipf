@@ -23,7 +23,6 @@ abstract class IPF_Admin_ModelInline{
     function getLegend(){
         return get_class($this->model);
     }
-    
 
     function isValid(){
         foreach($this->formset as &$form){
@@ -110,7 +109,8 @@ abstract class IPF_Admin_ModelInline{
         }
     }
     
-    function save(){
+    function save($parent_obj){
+        
         $fk_name = $this->getFkName();
  
         if ($this->parentModel->exists()){
@@ -147,10 +147,10 @@ abstract class IPF_Admin_ModelInline{
         }
  
         foreach($this->formset as $form){
-            unset($form->cleaned_data[0]);
             if ($form->isValid()){
                 if ($form->isAdd){
-                    $form->cleaned_data[$fk_name] = $this->parentModel;
+                    unset($form->cleaned_data[0]);
+                    $form->cleaned_data[$fk_name] = $parent_obj;
                     $form->save();
                 }
             } 

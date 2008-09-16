@@ -13,6 +13,28 @@
     {$form.render_table}
     </table>
     </fieldset>
+    {foreach $inlineInstances as $inline}
+    <fieldset class="inlineTabular" style="border:none; width:auto; float:left; padding:0; margin:10px 10px 10px 0;">
+    <legend>{$inline->getLegend()}</legend>
+    <table>
+    {foreach $inline.formset as $formset}
+    {if $formset.isFirst}
+    <tr>
+    {foreach $formset.fields as $fieldname=>$field}
+    <th{if $formset.field($fieldname).label=='Del'} style="width:20px;"{/if}>{$formset.field($fieldname).label}</th>
+    {/foreach}
+    </tr>
+    {/if}
+    <tr>
+    {foreach $formset.fields as $fieldname=>$field}
+    <td>{$formset.field($fieldname).fieldErrors()}{$formset.field($fieldname)|safe}</td>
+    {/foreach}
+    </tr>
+    {/foreach}
+    </table>
+    </fieldset>
+    {/foreach}
+    <div style="clear:both;"></div>
 
     <div class="submit-row">
         <input type="submit" value="Save" class="default" />
