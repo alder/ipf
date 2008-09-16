@@ -20,7 +20,7 @@ class IPF_Session_Middleware
         }
         if (isset($data[$user->session_key])) {
             $found_user = $user->getTable()->find($data[$user->session_key]);
-            if ($found_user->id) {
+            if ($found_user) {
                 $request->user = $found_user;
                 if (43200 < IPF_Utils::dateCompare($request->user->last_login)) {
                     $request->user->last_login = gmdate('Y-m-d H:i:s');
