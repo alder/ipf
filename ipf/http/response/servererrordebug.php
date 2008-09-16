@@ -9,8 +9,6 @@ class IPF_HTTP_Response_ServerErrorDebug extends IPF_HTTP_Response
     }
 }
 
-
-
 function IPF_HTTP_Response_ServerErrorDebug_Pretty($e) 
 {
     $o = create_function('$in','return htmlspecialchars($in);');
