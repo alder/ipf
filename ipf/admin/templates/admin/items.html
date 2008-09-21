@@ -27,6 +27,9 @@
                 {/foreach}
             </tbody>
         </table>
+        <p class="paginator">
+            {$pager->display()|safe} {$pager->getPager()->getNumResults()} {$classname}
+        </p>
     </div>
 </div>
 

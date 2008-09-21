@@ -25,6 +25,7 @@ class IPF_Admin_Model{
     var $modelName = null;
     var $model = null;
     var $inlineInstances = array();
+    var $perPage = 50;
 
     public function __construct($modelName){
         $this->modelName = $modelName;
@@ -82,7 +83,7 @@ class IPF_Admin_Model{
         if (method_exists($this,'list_display'))
             $this->names = $this->list_display();
         else
-            $this->names = $this->qe->getTable()->getColumnNames();
+            $this->names = $this->model->getTable()->getColumnNames();
             
         foreach ($this->names as $name){
             $this->header[$name] = new IPF_Template_ContextVars(array(
@@ -141,7 +142,7 @@ class IPF_Admin_Model{
     }
     
     protected function UrlForResult($o){
-        return  $o->__get($this->qe->getTable()->getIdentifier()).'/';
+        return  $o->__get($this->model->getTable()->getIdentifier()).'/';
     }
 
     protected function _getForm($model_obj, $data, $extra){
@@ -253,13 +254,25 @@ class IPF_Admin_Model{
 
     public function ListItems($request){
         $this->ListItemsQuery();
-        $this->qe = $this->q->execute();
         $this->ListItemsHeader();
+        
+        $currentPage = (int)$request->GET['page'];
+        
+        $pager = new IPF_ORM_Pager_LayoutArrows(
+            new IPF_ORM_Pager($this->q, $currentPage, $this->perPage),
+            new IPF_ORM_Pager_Range_Sliding(array('chunk' => 10)),
+            '?page={%page_number}'
+        );
+        $pager->setTemplate('<a href="{%url}">{%page}</a> ');
+        $pager->setSelectedTemplate('<span class="this-page">{%page}</span> ');
+        $objects = $pager->getPager()->execute();
+        
         $context = array(
             'page_title'=>$this->modelName.' List', 
             'header'=>$this->header,
             'classname'=>$this->modelName,
-            'objects'=>$this->qe,
+            'objects'=>$objects,
+            'pager'=>$pager,
             'classname'=>$this->modelName,
             'perms'=>$this->getPerms($request),
         );
