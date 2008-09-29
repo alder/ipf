@@ -1,4 +1,4 @@
-<?
+<?php
 
 class IPF_Image_Thumbnail {
     
