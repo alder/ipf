@@ -45,44 +45,36 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                 $extra_config = ",\n".implode(",\n", $_st);
             }
         }
-        $final_attrs = $this->buildAttrs(array('name' => $name),
-                                         $extra_attrs);
-        // The special include for tinyMCE
-        
+        $final_attrs = $this->buildAttrs(array('name' => $name), $extra_attrs);
         $out = '';
-        
         if (!IPF_Form_Widget_HTMLInput::$js_include){
             IPF_Form_Widget_HTMLInput::$js_include = true;
-                    $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('admin_media_url').'tiny_mce/tiny_mce.js"></script>'."\n";
+                    $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('tiny_mce_url').'tiny_mce.js"></script>'."\n";
                     $out .='<script language="javascript" type="text/javascript">
             	tinyMCE.init({
+                    theme_advanced_buttons1 : "bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, forecolor, backcolor, sub, sup",
+                    theme_advanced_buttons2 : "code, images, fullscreen, charmap, separator, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, preview", 
+                    theme_advanced_buttons3 : "",
+                    theme_advanced_toolbar_location : "top",
+                    theme_advanced_toolbar_align: "left",
                     mode : "specific_textareas",
                     editor_selector : "htmlEditor",
                  	theme : "advanced",
-             	    theme_advanced_toolbar_location : "top",
-                 	theme_advanced_toolbar_align: "left",
-                    theme_advanced_buttons1 : "bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, separator, selectall, removeformat, separator,sub,sup,separator, forecolor, backcolor",
-                    theme_advanced_buttons2 : "", 
-                    theme_advanced_buttons3 : "",
                  	convert_urls:"false",
-                    plugins : "paste, table",
+                 	plugins : "inlinepopups, images, charmap, paste, table, fullscreen, preview, print",
                     button_tile_map : true,
                     fix_list_elements : true,
                     gecko_spellcheck : true,
                     verify_html : true,
                     dialog_type : "modal",
                     height : "800",
-                    height : "300"
+                    height : "300",
+                    relative_urls : false,
+                    remove_script_host : true,
+                    content_css : "/media/tiny_mce/themes/advanced/skins/default/content.css"
             	});
             </script>';
-
-
         }
-        
-
-// buttons: code, separator pastetext, pasteword, 
-//plugins : "inlinepopups, paste, table, fullscreen, preview, print, charmap, separator, ",
-
         return new IPF_Template_SafeString(
                        $out.sprintf('<textarea%s class="htmlEditor">%s</textarea>',
                                IPF_Form_Widget_Attrs($final_attrs),
