@@ -8,7 +8,24 @@
 <div id="ipfcontent">
     <h1>{$page_title}</h1>
     <ul class="object-tools">{if array_search('add',$perms)!==false}<li><a href="add/" class="addlink">Add {$classname}</a></li>{/if}</ul>
-    <div id="changelist">
+    <div id="changelist" class="module filtered">
+
+        <!--div id="changelist-filter">
+        <h2>Filter</h2>
+        <h3> By Credit Class </h3>
+        <ul>
+            <li class="selected">
+            <a href="?">All</a></li>
+            <li>
+            <a href="?credit_class__exact=1">Class A: Good Credit &amp; Good Income</a></li>
+            <li>
+            <a href="?credit_class__exact=2">Class B: Bad Credit &amp; Good Income</a></li>
+            <li>
+            <a href="?credit_class__exact=3">Class C: Bad Credit &amp; Bad Income</a></li>
+        </ul>
+        </div-->
+
+        <div>
         <table>
             <thead>
                 <tr>
@@ -30,8 +47,21 @@
         <p class="paginator">
             {$pager->display()|safe} {$pager->getPager()->getNumResults()} {$classname}
         </p>
+        </div>
+
     </div>
+
+
+
+
+
+
+
 </div>
+
+
+
+
 
 {/block}
 

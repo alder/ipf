@@ -1,5 +1,4 @@
-#changelist { position:relative; width:100%;}
-#changelist table { width:100%; }
+#changelist { position:relative;}
 .change-list .filtered table { border-right:1px solid #ddd;  }
 .change-list .filtered { min-height:400px; _height:400px; }
 .change-list .filtered { background:white url(../img/changelist-bg.gif) top right repeat-y !important; }

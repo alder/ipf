@@ -256,7 +256,7 @@ class IPF_Admin_Model{
         $this->ListItemsQuery();
         $this->ListItemsHeader();
         
-        $currentPage = (int)$request->GET['page'];
+        $currentPage = (int)@$request->GET['page'];
         
         $pager = new IPF_ORM_Pager_LayoutArrows(
             new IPF_ORM_Pager($this->q, $currentPage, $this->perPage),

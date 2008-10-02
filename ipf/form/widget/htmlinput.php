@@ -5,6 +5,8 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
     public $mode = 'textareas';
     public $theme = 'simple';
     public $include_tinymce = true;
+    
+    static $js_include = False;
 
     public function __construct($attrs=array())
     {
@@ -46,31 +48,37 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
         $final_attrs = $this->buildAttrs(array('name' => $name),
                                          $extra_attrs);
         // The special include for tinyMCE
+        
         $out = '';
-        if ($this->include_tinymce) {
-            $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('admin_media_url').'tiny_mce/tiny_mce.js"></script>'."\n";
+        
+        if (!IPF_Form_Widget_HTMLInput::$js_include){
+            IPF_Form_Widget_HTMLInput::$js_include = true;
+                    $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('admin_media_url').'tiny_mce/tiny_mce.js"></script>'."\n";
+                    $out .='<script language="javascript" type="text/javascript">
+            	tinyMCE.init({
+                    mode : "specific_textareas",
+                    editor_selector : "htmlEditor",
+                 	theme : "advanced",
+             	    theme_advanced_toolbar_location : "top",
+                 	theme_advanced_toolbar_align: "left",
+                    theme_advanced_buttons1 : "bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, separator, selectall, removeformat, separator,sub,sup,separator, forecolor, backcolor",
+                    theme_advanced_buttons2 : "", 
+                    theme_advanced_buttons3 : "",
+                 	convert_urls:"false",
+                    plugins : "paste, table",
+                    button_tile_map : true,
+                    fix_list_elements : true,
+                    gecko_spellcheck : true,
+                    verify_html : true,
+                    dialog_type : "modal",
+                    height : "800",
+                    height : "300"
+            	});
+            </script>';
+
+
         }
-        $out .='<script language="javascript" type="text/javascript">
-	tinyMCE.init({
-        mode : "specific_textareas",
-        editor_selector : "htmlEditor",
-     	theme : "advanced",
- 	    theme_advanced_toolbar_location : "top",
-     	theme_advanced_toolbar_align: "left",
-        theme_advanced_buttons1 : "bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, separator, selectall, removeformat, separator,sub,sup,separator, forecolor, backcolor",
-        theme_advanced_buttons2 : "", 
-        theme_advanced_buttons3 : "",
-     	convert_urls:"false",
-        plugins : "paste, table",
-        button_tile_map : true,
-        fix_list_elements : true,
-        gecko_spellcheck : true,
-        verify_html : true,
-        dialog_type : "modal",
-        height : "800",
-        height : "300"
-	});
-</script>';
+        
 
 // buttons: code, separator pastetext, pasteword, 
 //plugins : "inlinepopups, paste, table, fullscreen, preview, print, charmap, separator, ",
