@@ -156,7 +156,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         if ( ! $this->_errorStack) {
             $this->_errorStack = new IPF_ORM_Validator_ErrorStack(get_class($this));
         }
-        
+
         return $this->_errorStack;
     }
 
@@ -343,7 +343,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         if ($state == null) {
             return $this->_state;
         }
-        
+
         $err = false;
         if (is_integer($state)) {
             if ($state >= 1 && $state <= 6) {
@@ -482,7 +482,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         if (isset($this->_values[$fieldName])) {
             return $this->_values[$fieldName];
         }
-        
+
         try {
             if ( ! isset($this->_references[$fieldName]) && $load) {
                 $rel = $this->_table->getRelation($fieldName);
@@ -520,7 +520,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
             } else {
                 $old = $this->_data[$fieldName];
             }
-            
+
             if ($this->_isValueModified($type, $old, $value)) {
                 if ($value === null) {
                     $value = self::$_null;
@@ -564,11 +564,11 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     public function coreSetRelated($name, $value)
     {
         $rel = $this->_table->getRelation($name);
-        
+
         if ($value === null) {
             $value = self::$_null;
         }
-        
+
         // one-to-many or one-to-one relation
         if ($rel instanceof IPF_ORM_Relation_ForeignKey || $rel instanceof IPF_ORM_Relation_LocalKey) {
             if ( ! $rel->isOneToOne()) {
@@ -779,10 +779,10 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         if ($this->_state == self::STATE_LOCKED) {
             return false;
         }
-        
+
         $stateBeforeLock = $this->_state;
         $this->_state = self::STATE_LOCKED;
-        
+
         $a = array();
 
         foreach ($this as $column => $value) {
@@ -797,7 +797,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
             $i      = $this->_table->getIdentifier();
             $a[$i]  = $this->getIncremented();
         }
-        
+
         if ($deep) {
             foreach ($this->_references as $key => $relation) {
                 if (! $relation instanceof IPF_ORM_Null) {
@@ -814,7 +814,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 $a[$key] = $value;
             }
         }
-        
+
         $this->_state = $stateBeforeLock;
 
         return $a;
@@ -1217,7 +1217,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     {
         $this->getNode()->delete();
     }
-    
+
     public function free($deep = false)
     {
         if ($this->_state != self::STATE_LOCKED) {
@@ -1249,7 +1249,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     {
         return (string) $this->_oid;
     }
-    
+
     public function ModelAdmin(){
         $cn = get_class($this);
         if (isset(IPF_Admin_Model::$models[$cn]))
@@ -1261,7 +1261,11 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     {
         foreach ($cleaned_values as $key=>$val) {
             $validators = $this->getTable()->getFieldValidators($key);
-            if (array_key_exists('image',$validators) || array_key_exists('file',$validators)){
+            if (
+                array_key_exists('image',$validators) ||
+                array_key_exists('file',$validators) ||
+                array_key_exists('email',$validators)
+            ){
                 if (($val!==null) && ($val==''))
                     continue;
             }

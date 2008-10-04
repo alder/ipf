@@ -1,4 +1,4 @@
-body.dashboard { margin:0; padding:0; font-family:"Lucida Grande","Bitstream Vera Sans",Verdana,Arial,sans-serif; color:#333; background:url('../img/topbg.gif') left top repeat-x; }
+body{ margin:0; padding:0; font-family:"Lucida Grande","Bitstream Vera Sans",Verdana,Arial,sans-serif; color:#333; background:url('../img/topbg.gif') left top repeat-x; }
 body.simple { margin:10; padding:10; font-family:"Lucida Grande","Bitstream Vera Sans",Verdana,Arial,sans-serif; color:#333; }
 
 a:link, a:visited { color: #005681; text-decoration:none; }
@@ -32,7 +32,7 @@ hr { clear:both; color:#eee; background-color:#eee; height:1px; border:none; mar
 
 
 /*  PAGE STRUCTURE  */
-#ipfcontainer { position:relative; width:100%; min-width:760px; }
+#ipfcontainer { position:relative; min-width:760px; }
 #ipfcontent { margin:10px 10px; }
 #ipfheader { width:100%;}
 #ipfcontent-main { float:left; width:100%; }
@@ -43,11 +43,11 @@ hr { clear:both; color:#eee; background-color:#eee; height:1px; border:none; mar
 /*  COLUMN TYPES  */
 .colMS { margin-right:245px !important; }
 .colSM { margin-left:245px !important; }
-.colSM #ipfcontent-related { float:left; margin-right:0; margin-left:-230px; } 
+.colSM #ipfcontent-related { float:left; margin-right:0; margin-left:-230px; }
 .colSM #ipfcontent-main { float:right; }
 .popup .colM { width:95%; }
 .subcol { float:left; width:46%; margin-right:15px; }
-.dashboard #content { width:500px; }
+.index {width:500px;}
 
 /*  HEADER  */
 #ipfheader	{ overflow:hidden; height:43px; }
@@ -67,7 +67,9 @@ th { text-align:left; font-size:12px; }
 thead th	{ font-weight:bold; color:#666; padding:2px 5px; font-size:11px; background:url(../img/hbg.gif) top left repeat-x; border-left:1px solid #ABB0BE; border-bottom:1px solid #ABB0BE; }
 thead th:first-child { border-left:none !important; }
 .superwide table th, .superwide table td, .superwide table input, .superwide table select { font-size:10px; }
-.module table { border-collapse: collapse; }
+.module { width:100%;}
+.module table { border-collapse: collapse; width:100%;}
+.module table th{ width:90%;}
 thead th.optional { font-weight:normal !important; }
 #ipfhome-page table.module tr:hover { background:#EDF3FE; }
 fieldset { border:1px solid #eee; }

@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 class IPF_Admin_Model{
     static $models = array();
-    
+
     public static function register($classModel, $classAdmin){
         IPF_Admin_Model::$models[$classModel] = new $classAdmin($classModel);
     }
@@ -21,7 +21,7 @@ class IPF_Admin_Model{
         }
         return null;
     }
-    
+
     var $modelName = null;
     var $model = null;
     var $inlineInstances = array();
@@ -30,7 +30,7 @@ class IPF_Admin_Model{
     public function __construct($modelName){
         $this->modelName = $modelName;
     }
-    
+
     public function setUp(){
         $this->model = new $this->modelName;
     }
@@ -38,7 +38,7 @@ class IPF_Admin_Model{
     public function getPerms($request){
         return array('view', 'add', 'change', 'delete');
     }
-    
+
     protected function setInlines($model, &$data){
         $il = $this->inlines();
         if (is_array($il)){
@@ -47,13 +47,13 @@ class IPF_Admin_Model{
             }
         }
     }
-    
+
     protected function saveInlines($obj){
         foreach($this->inlineInstances as $inlineInstance){
             $inlineInstance->save($obj);
         }
     }
-    
+
     protected function _setupEditForm($form){
         $this->_setupForm($form);
     }
@@ -64,11 +64,11 @@ class IPF_Admin_Model{
 
     protected function _setupForm($form){
     }
-    
+
     public function fields(){return null;}
 
     public function inlines(){return null;}
-    
+
     public function isValidInlines(){
         foreach($this->inlineInstances as &$il){
             if ($il->isValid()===false){
@@ -84,7 +84,7 @@ class IPF_Admin_Model{
             $this->names = $this->list_display();
         else
             $this->names = $this->model->getTable()->getColumnNames();
-            
+
         foreach ($this->names as $name){
             $this->header[$name] = new IPF_Template_ContextVars(array(
                 'title'=>IPF_Utils::humanTitle($name),
@@ -98,10 +98,10 @@ class IPF_Admin_Model{
     public function ListItemsQuery(){
         $this->q = IPF_ORM_Query::create()->from($this->modelName)->orderby('id desc');
     }
-    
+
     public function ListRow($o){
         $row = array();
-        
+
         foreach($this->header as &$h){
             $listMethod = 'column_'.$h['name'];
             if (method_exists($this,$listMethod))
@@ -110,9 +110,9 @@ class IPF_Admin_Model{
                 $t = $o->getTable()->getTypeOf($h['name']);
                 $str = $o->$h['name'];
                 if ($t=='boolean'){
-                    if ($str) 
+                    if ($str)
                         $str = '<img src="'.IPF::get('admin_media_url').'img/icon-yes.gif" alt="True" />';
-                    else 
+                    else
                         $str = '<img src="'.IPF::get('admin_media_url').'img/icon-no.gif" alt="False" />';
                 }
             }
@@ -121,7 +121,7 @@ class IPF_Admin_Model{
         $this->linksRow(&$row, $o);
         return $row;
     }
-    
+
     protected function linksRow($row, $o){
         if (method_exists($this,'list_display_links')){
             $links_display = $this->list_display_links();
@@ -140,7 +140,7 @@ class IPF_Admin_Model{
             }
         }
     }
-    
+
     protected function UrlForResult($o){
         return  $o->__get($this->model->getTable()->getIdentifier()).'/';
     }
@@ -164,7 +164,7 @@ class IPF_Admin_Model{
     protected function _getChangeTemplate(){
         return 'admin/change.html';
     }
-    
+
     // Views Function
     public function AddItem($request, $lapp, $lmodel){
         if ($request->method == 'POST'){
@@ -187,7 +187,7 @@ class IPF_Admin_Model{
             $this->setInlines($this->model, &$data);
         }
         $context = array(
-            'page_title'=>'Add '.$this->modelName, 
+            'page_title'=>'Add '.$this->modelName,
             'classname'=>$this->modelName,
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
@@ -197,14 +197,14 @@ class IPF_Admin_Model{
         );
         return IPF_Shortcuts::RenderToResponse($this->_getAddTemplate(), $context, $request);
     }
-    
+
     public function EditItem($request, $lapp, $lmodel, $o){
         if ($request->method == 'POST'){
             $data = $request->POST+$request->FILES;
             $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
             $this->setInlines($o, &$data);
-            
+
             if ( ($form->isValid()) && ($this->isValidInlines()) ) {
                 //print_r($form->cleaned_data);
                 $item = $form->save();
@@ -220,9 +220,9 @@ class IPF_Admin_Model{
             $this->_setupEditForm($form);
             $this->setInlines($o, &$data);
         }
-        
+
         $context = array(
-            'page_title'=>'Edit '.$this->modelName, 
+            'page_title'=>'Edit '.$this->modelName,
             'classname'=>$this->modelName,
             'object'=>$o,
             'form'=>$form,
@@ -242,7 +242,7 @@ class IPF_Admin_Model{
             return new IPF_HTTP_Response_Redirect($url);
         }
         $context = array(
-            'page_title'=>'Delete '.$this->modelName, 
+            'page_title'=>'Delete '.$this->modelName,
             'classname'=>$this->modelName,
             'object'=>$o,
             'lapp'=>$lapp,
@@ -255,9 +255,9 @@ class IPF_Admin_Model{
     public function ListItems($request){
         $this->ListItemsQuery();
         $this->ListItemsHeader();
-        
+
         $currentPage = (int)@$request->GET['page'];
-        
+
         $pager = new IPF_ORM_Pager_LayoutArrows(
             new IPF_ORM_Pager($this->q, $currentPage, $this->perPage),
             new IPF_ORM_Pager_Range_Sliding(array('chunk' => 10)),
@@ -266,9 +266,9 @@ class IPF_Admin_Model{
         $pager->setTemplate('<a href="{%url}">{%page}</a> ');
         $pager->setSelectedTemplate('<span class="this-page">{%page}</span> ');
         $objects = $pager->getPager()->execute();
-        
+
         $context = array(
-            'page_title'=>$this->modelName.' List', 
+            'page_title'=>$this->modelName.' List',
             'header'=>$this->header,
             'classname'=>$this->modelName,
             'objects'=>$objects,

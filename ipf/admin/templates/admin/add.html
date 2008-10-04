@@ -6,13 +6,14 @@
 
 <div id="ipfcontent">
     <h1>{$page_title}</h1>
-    
+
     <form method="post" {if $form.hasFileField() }enctype="multipart/form-data"{/if}>
     <fieldset>
     <table>
     {$form.render_table}
     </table>
     </fieldset>
+    {if $inlineInstances}
     {foreach $inlineInstances as $inline}
     <fieldset class="inlineTabular" style="border:none; width:auto; float:left; padding:0; margin:10px 10px 10px 0;">
     <legend>{$inline->getLegend()}</legend>
@@ -34,13 +35,14 @@
     </table>
     </fieldset>
     {/foreach}
+    {/if}
     <div style="clear:both;"></div>
 
     <div class="submit-row">
         <input type="submit" value="Save" class="default" />
     </div>
-    </form>    
-    
+    </form>
+
 </div>
 
 {/block}

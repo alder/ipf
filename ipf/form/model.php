@@ -11,21 +11,21 @@ class IPF_Form_Model extends IPF_Form
             $this->model = $extra['model'];
         else
             throw new IPF_Exception_Form(__('Unknown model for form'));
-        
+
         if (isset($extra['user_fields']))
             $this->user_fields = $extra['user_fields'];
-        
+
         $user_fields = $this->fields();
         $db_columns = $this->model->getTable()->getColumns();
         $db_relations = $this->model->getTable()->getRelations();
-        
+
         if ($user_fields===null){
 
-            if (isset($extra['exclude'])) 
+            if (isset($extra['exclude']))
                 $exclude = $extra['exclude'];
             else
                 $exclude = array();
-                
+
             foreach($db_columns as $name=>$col){
                 if (array_search($name,$exclude)!==false)
                     continue;
@@ -51,14 +51,14 @@ class IPF_Form_Model extends IPF_Form
             }
         }
     }
-    
+
     function addDBField($name,$col){
         if ($name==$this->model->getTable()->getIdentifier())
             return;
-            
+
         $defaults = array('blank' => true, 'verbose' => $name, 'help_text' => '', 'editable' => true);
         $type = $col['type'];
-        
+
         if (isset($col['notblank']))
             if ($col['notblank'])
                 $defaults['blank'] = false;
@@ -76,12 +76,12 @@ class IPF_Form_Model extends IPF_Form
             $type = 'image';
 
         $cn = 'IPF_Form_DB_'.$type;
-        
+
         $db_field = new $cn('', $name);
         //echo $name;
         //print_r($defaults);
 
-        
+
         if (null !== ($form_field=$db_field->formField($defaults))) {
             $this->fields[$name] = $form_field;
         }
