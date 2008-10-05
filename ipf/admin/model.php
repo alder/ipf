@@ -216,6 +216,15 @@ class IPF_Admin_Model{
         }
         else{
             $data = $o->getData();
+            foreach($o->getTable()->getRelations() as $rname=>$rel){
+                if (array_search($rname,$this->fields())){
+                    if ($rel->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
+                        $data[$rname] = array();
+                        foreach($rel->fetchRelatedFor($o) as $ri)
+                            $data[$rname][] = $ri->id;
+                    }
+                }
+            }
             $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
             $this->setInlines($o, &$data);

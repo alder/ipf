@@ -94,6 +94,14 @@ class IPF_Form_Model extends IPF_Form
             $defaults = array('blank' => true, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
             $form_field = $db_field->formField($defaults);
             $this->fields[$name] = $form_field;
+            return;
+        }
+        if ($relation->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
+            $db_field = new IPF_Form_DB_ManyToMany('',$name);
+            $defaults = array('blank' => true, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
+            $form_field = $db_field->formField($defaults);
+            $this->fields[$name] = $form_field;
+            return;
         }
     }
 
@@ -105,6 +113,17 @@ class IPF_Form_Model extends IPF_Form
             $this->model->SetFromFormData($this->cleaned_data);
             try{
                 $this->model->save();
+                $rels = $this->model->getTable()->getRelations();
+
+                foreach($rels as $rname=>$rel){
+                    //print "$rname<br>";
+                    if (isset($this->cleaned_data[$rname])){
+                        //print $rel->getAlias();
+                        $this->model->unlink($rel->getAlias());
+                        if (is_array($this->cleaned_data[$rname]))
+                            $this->model->link($rel->getAlias(),$this->cleaned_data[$rname]);
+                    }
+                }
                 return $this->model;
             } catch(IPF_ORM_Exception_Validator $e) {
                 $erecords = $e->getInvalidRecords();

@@ -1259,6 +1259,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
     public function SetFromFormData($cleaned_values)
     {
+        $names = $this->_table->getFieldNames();
         foreach ($cleaned_values as $key=>$val) {
             $validators = $this->getTable()->getFieldValidators($key);
             if (
@@ -1269,7 +1270,8 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 if (($val!==null) && ($val==''))
                     continue;
             }
-            $this->$key = $val;
+            if (array_search($key,$names))
+                $this->$key = $val;
         }
     }
 }

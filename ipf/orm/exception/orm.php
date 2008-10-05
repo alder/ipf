@@ -1,7 +1,6 @@
 <?php
 
 class IPF_ORM_Exception extends IPF_Exception_Base{
-{ 
     protected static $_errorMessages = array(
         IPF_ORM::ERR                    => 'unknown error',
         IPF_ORM::ERR_ALREADY_EXISTS     => 'already exists',
@@ -49,6 +48,6 @@ class IPF_ORM_Exception extends IPF_Exception_Base{
 
 }
 
-    
-    
-    
+
+
+

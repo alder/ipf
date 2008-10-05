@@ -23,7 +23,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
             $record->preSave($event);
             $record->getTable()->getRecordListener()->preSave($event);
             $state = $record->state();
-            
+
             if ( ! $event->skipOperation) {
                 switch ($state) {
                     case IPF_ORM_Record::STATE_TDIRTY:
@@ -59,7 +59,6 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
 
             if ($record->hasReference($alias)) {
                 $obj = $record->$alias;
-
                 // check that the related object is not an instance of IPF_ORM_Null
                 if ( ! ($obj instanceof IPF_ORM_Null)) {
                     $obj->save($conn);
@@ -71,7 +70,6 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
         $this->saveAssociations($record);
 
         $record->state($state);
-
         $conn->commit();
 
         return true;
@@ -294,11 +292,12 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
     {
         foreach ($record->getReferences() as $k => $v) {
             $rel = $record->getTable()->getRelation($k);
-
+            //print get_class($rel);
             if ($rel instanceof IPF_ORM_Relation_Association) {
                 $v->save($this->conn);
 
                 $assocTable = $rel->getAssociationTable();
+
                 foreach ($v->getDeleteDiff() as $r) {
                     $query = 'DELETE FROM ' . $assocTable->getTableName()
                            . ' WHERE ' . $rel->getForeign() . ' = ?'

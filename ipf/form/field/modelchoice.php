@@ -6,7 +6,7 @@ class IPF_Form_Field_ModelChoice extends IPF_Form_Field_Choice{
 
     function __construct($params=array()){
         parent::__construct($params);
-        $this->model = $params['model'];
+        $this->_model = $params['model'];
         if (isset($params['queryset'])){
             $choices = array('--------'=>'');
             foreach ($params['queryset'] as $item) {
@@ -15,7 +15,7 @@ class IPF_Form_Field_ModelChoice extends IPF_Form_Field_Choice{
             $this->setChoices($choices);
         }
     }
-    
+
     public function clean($value){
         parent::clean($value);
         if (in_array($value, $this->empty_values)) {
@@ -24,7 +24,7 @@ class IPF_Form_Field_ModelChoice extends IPF_Form_Field_Choice{
         //print_r($this->model);
         //print $value;
         //$this->model->get($value);
-        $o = $this->model->getTable()->find($value);
+        $o = $this->_model->getTable()->find($value);
         return $o;
     }
 }
