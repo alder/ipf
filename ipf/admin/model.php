@@ -165,9 +165,34 @@ class IPF_Admin_Model{
         return 'admin/change.html';
     }
 
+
+
+    protected function _beforeEdit($o){
+        $this->_beforeChange($o);
+    }
+
+    protected function _beforeAdd($o){
+        $this->_beforeChange($o);
+    }
+
+    protected function _beforeChange($o){
+    }
+    
+    protected function _afterEdit($o){
+        $this->_afterChange($o);
+    }
+
+    protected function _afterAdd($o){
+        $this->_afterChange($o);
+    }
+
+    protected function _afterChange($o){
+    }
+
     // Views Function
     public function AddItem($request, $lapp, $lmodel){
         if ($request->method == 'POST'){
+            $this->_beforeAdd(new $this->model());
             $data = $request->POST+$request->FILES;
             $form = $this->_getAddForm($this->model, &$data, array('user_fields'=>$this->fields()));
             $this->_setupAddForm($form);
@@ -176,6 +201,7 @@ class IPF_Admin_Model{
                 $item = $form->save();
                 $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::ADDITION);
+                $this->_afterAdd($item);
                 $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }
@@ -200,6 +226,7 @@ class IPF_Admin_Model{
 
     public function EditItem($request, $lapp, $lmodel, $o){
         if ($request->method == 'POST'){
+            $this->_beforeEdit($o);
             $data = $request->POST+$request->FILES;
             $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
@@ -210,6 +237,7 @@ class IPF_Admin_Model{
                 $item = $form->save();
                 $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::CHANGE);
+                $this->_afterEdit($item);
                 $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }
