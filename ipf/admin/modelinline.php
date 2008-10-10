@@ -111,8 +111,6 @@ abstract class IPF_Admin_ModelInline{
     
     function save($parent_obj){
         
-        $fk_name = $this->getFkName();
- 
         if ($this->parentModel->exists()){
             $objects = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
@@ -137,6 +135,7 @@ abstract class IPF_Admin_ModelInline{
                                         unset($form->cleaned_data[$fname]);
                                 }
                             }
+
                             $obj->synchronizeWithArray($form->cleaned_data);
                             $obj->save();
                         }
@@ -146,11 +145,12 @@ abstract class IPF_Admin_ModelInline{
             }
         }
  
+        $fk_local = $this->getFkLocal();
         foreach($this->formset as $form){
             if ($form->isValid()){
                 if ($form->isAdd){
                     unset($form->cleaned_data[0]);
-                    $form->cleaned_data[$fk_name] = $parent_obj;
+                    $form->cleaned_data[$fk_local] = $parent_obj->id;
                     $form->save();
                 }
             } 
