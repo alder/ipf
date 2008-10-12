@@ -6,7 +6,7 @@ function checkAdminAuth($request){
         $ok = false;
     elseif ( (!$request->user->is_staff) && (!$request->user->is_superuser) )
         $ok = false;
-    
+
     if ($ok)
         return true;
     else
@@ -16,7 +16,7 @@ function checkAdminAuth($request){
 function IPF_Admin_Views_Index($request, $match){
     $ca = checkAdminAuth($request);
     if ($ca!==true) return $ca;
-        
+
     $apps = array();
     $app_list = new IPF_Template_ContextVars();
     foreach (IPF_Project::getInstance()->appList() as $app){
@@ -24,13 +24,13 @@ function IPF_Admin_Views_Index($request, $match){
             $models = new IPF_Template_ContextVars();
             $models_found = false;
             foreach($app->modelList() as $m){
-                
+
                 $ma = IPF_Admin_Model::getModelAdmin($m);
                 if ($ma!==null){
                     $perms = $ma->getPerms($request);
                     if (array_search('view', $perms)!==false){
                         $models[] = new IPF_Template_ContextVars(array(
-                            'name'=>$m, 
+                            'name'=>$m,
                             'path'=>strtolower($m),
                             'perms'=>$perms,
                         ));
@@ -47,16 +47,16 @@ function IPF_Admin_Views_Index($request, $match){
             }
         }
     }
-    
+
     $admin_log = IPF_ORM_Query::create()
         ->select("*")
         ->from('AdminLog')
         ->orderby('created_at desc')
         ->limit(10)
         ->execute();
-    
+
     $context = array(
-        'page_title' => __('Administration'), 
+        'page_title' => __('Administration'),
         'app_list' => $app_list,
         'admin_log' => $admin_log,
     );
@@ -169,7 +169,7 @@ function IPF_Admin_Views_ChangePassword($request, $match){
                 else
                     $form = new IPF_Auth_Forms_ChangePassword();
                 $context = array(
-                    'page_title'=>'Change Password: '.$user->username, 
+                    'page_title'=>'Change Password: '.$user->username,
                     'classname'=>'User',
                     'object'=>$user,
                     'form'=>$form,
@@ -189,7 +189,7 @@ function IPF_Admin_Views_Login($request, $match){
         $success_url = $request->REQUEST['next'];
     if (trim($success_url)=='')
         $success_url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_Index');
-        
+
     if ($request->method == 'POST') {
         $form = new IPF_Auth_Forms_Login($request->POST);
         if ($form->isValid()){

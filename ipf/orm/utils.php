@@ -56,6 +56,7 @@ class IPF_ORM_Utils {
             'usstate',
             'file',
             'image',
+            'html',
         );
     }
 

@@ -21,9 +21,6 @@ class IPF_Form_Field_ModelChoice extends IPF_Form_Field_Choice{
         if (in_array($value, $this->empty_values)) {
             return null;
         }
-        //print_r($this->model);
-        //print $value;
-        //$this->model->get($value);
         $o = $this->_model->getTable()->find($value);
         return $o;
     }

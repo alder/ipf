@@ -75,12 +75,12 @@ class IPF_Form_Model extends IPF_Form
         if (isset($col['image']))
             $type = 'image';
 
+        if (isset($col['html']))
+            $type = 'html';
+
         $cn = 'IPF_Form_DB_'.$type;
 
         $db_field = new $cn('', $name);
-        //echo $name;
-        //print_r($defaults);
-
 
         if (null !== ($form_field=$db_field->formField($defaults))) {
             $this->fields[$name] = $form_field;
