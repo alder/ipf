@@ -18,6 +18,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     protected $_errorStack;
     protected $_references     = array();
     protected $_pendingDeletes = array();
+    protected $_custom         = array();
     private static $_index = 1;
     private $_oid;
 
@@ -1274,4 +1275,15 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 $this->$key = $val;
         }
     }
+
+    public function SetCustom($name, $val){
+    	$this->_custom[$name] = $val;
+    }
+
+    public function GetCustom($name){
+    	if (isset($this->_custom[$name]))
+    		return $this->_custom[$name];
+    	return null;
+    }
+
 }
