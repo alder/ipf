@@ -2,20 +2,20 @@
 
 // Lazy ClassLoader
 function __autoload( $class_name ){
-    $s = '';                                                                    
+    $s = '';
     $a =  explode( '_', $class_name );
-    foreach( $a as &$folder ){                                                  
-        if ( $s!='' )                                                           
-            $s .= '/';                                                  
-        $s .= strtolower( $folder );                                            
+    foreach( $a as &$folder ){
+        if ( $s!='' )
+            $s .= '/';
+        $s .= strtolower( $folder );
     }
     require_once($s.'.php');
 }
 
 final class IPF{
-    
+
     private static $settings = array();
-    
+
     private static function applySettings($settings){
         foreach($settings as $key=>$val){
             IPF::$settings[strtolower($key)] = $val;
@@ -25,7 +25,7 @@ final class IPF{
     private static function loadSettings(){
         $settings_file = IPF::$settings['project_path'].DIRECTORY_SEPARATOR.'settings.php';
         IPF::$settings['settings_file'] = $settings_file;
-        
+
         if (file_exists($settings_file))
             IPF::applySettings(require $settings_file);
         else
@@ -34,7 +34,7 @@ final class IPF{
         $settings_local_file = IPF::$settings['project_path'].DIRECTORY_SEPARATOR.'settings_local.php';
         if (file_exists($settings_local_file))
             IPF::applySettings(require $settings_local_file);
-        
+
         if (!isset(IPF::$settings['dsn']))
             throw new IPF_Exception_Settings('Please specify DSN in settings file');
         else
@@ -58,7 +58,7 @@ final class IPF{
             if (array_search('IPF_Admin',IPF::$settings['applications']))
                 IPF::$settings['template_dirs'][] = IPF::$settings['ipf_path'].DIRECTORY_SEPARATOR.'ipf'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'templates';
         }
-        
+
         if (!isset(IPF::$settings['debug'])){
             IPF::$settings['debug'] = false;
         }
@@ -113,13 +113,13 @@ final class IPF{
 
 	private function __construct(){}
 	private function __clone(){}
-	
+
 	public static function get($name,$default=null){
 	    if (isset(IPF::$settings[$name]))
 	        return IPF::$settings[$name];
 	    return $default;
 	}
-	
+
     public static function loadFunction($function)
     {
         if (function_exists($function)) {
@@ -154,3 +154,5 @@ function __($str)
     $t = trim($str);
     return $t;
 }
+
+
