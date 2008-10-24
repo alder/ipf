@@ -52,8 +52,8 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('tiny_mce_url').'tiny_mce.js"></script>'."\n";
                     $out .='<script language="javascript" type="text/javascript">
             	tinyMCE.init({
-                    theme_advanced_buttons1 : "bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, forecolor, backcolor, sub, sup",
-                    theme_advanced_buttons2 : "code, images, fullscreen, charmap, separator, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect, preview",
+                    theme_advanced_buttons1 : "code, images, fullscreen, separator, bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, forecolor, backcolor, sub, sup, charmap, separator, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect, preview",
+                    theme_advanced_buttons2 : "",
                     theme_advanced_buttons3 : "",
                     theme_advanced_toolbar_location : "top",
                     theme_advanced_toolbar_align: "left",
@@ -67,8 +67,8 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     gecko_spellcheck : true,
                     verify_html : true,
                     dialog_type : "modal",
-                    height : "800",
-                    height : "300",
+                    width : "100%",
+                    height : "350",
                     relative_urls : false,
                     remove_script_host : true,
                     content_css : "/media/tiny_mce/themes/advanced/skins/default/content.css"
