@@ -5,12 +5,12 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
     public $mode = 'textareas';
     public $theme = 'simple';
     public $include_tinymce = true;
-    
+
     static $js_include = False;
 
     public function __construct($attrs=array())
     {
-        $defaults = array('cols' => '70', 
+        $defaults = array('cols' => '70',
                           'rows' => '20');
         $config = array('tinymce_url', 'mode', 'theme', 'include_tinymce');
         foreach ($config as $cfg) {
@@ -53,7 +53,7 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     $out .='<script language="javascript" type="text/javascript">
             	tinyMCE.init({
                     theme_advanced_buttons1 : "bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, forecolor, backcolor, sub, sup",
-                    theme_advanced_buttons2 : "code, images, fullscreen, charmap, separator, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, preview", 
+                    theme_advanced_buttons2 : "code, images, fullscreen, charmap, separator, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect, preview",
                     theme_advanced_buttons3 : "",
                     theme_advanced_toolbar_location : "top",
                     theme_advanced_toolbar_align: "left",
