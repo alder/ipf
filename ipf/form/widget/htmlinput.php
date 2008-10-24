@@ -52,7 +52,7 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('tiny_mce_url').'tiny_mce.js"></script>'."\n";
                     $out .='<script language="javascript" type="text/javascript">
             	tinyMCE.init({
-                    theme_advanced_buttons1 : "code, images, fullscreen, separator, bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, forecolor, backcolor, sub, sup, charmap, separator, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect, preview",
+                    theme_advanced_buttons1 : "code, images, fullscreen, separator, bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, forecolor, backcolor, sub, sup, charmap, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect, preview",
                     theme_advanced_buttons2 : "",
                     theme_advanced_buttons3 : "",
                     theme_advanced_toolbar_location : "top",
