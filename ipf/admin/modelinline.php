@@ -9,17 +9,17 @@ abstract class IPF_Admin_ModelInline{
 
     function __construct($parentModel,$data){
         $this->parentModel = $parentModel;
-        
+
         $modelName = $this->getModelName();
         $this->model = new $modelName();
-        
+
         $this->createFormSet($data);
     }
 
     abstract function getModelName();
 
     function getAddNum(){ return 4; }
-    
+
     function getLegend(){
         return get_class($this->model);
     }
@@ -34,12 +34,16 @@ abstract class IPF_Admin_ModelInline{
         }
         return true;
     }
-    
+
+    protected function _getForm($model_obj, $data, $extra){
+        return IPF_Shortcuts::GetFormForModel($model_obj,$data,$extra);
+    }
+
     function getFkName(){
         foreach($this->model->getTable()->getRelations() as $rel){
             if ($rel->getClass()==get_class($this->parentModel))
                 return $rel->getAlias();
-        } 
+        }
         throw new IPF_Exception(__('Cannot get fkName for '.$this->getModelName()));
     }
 
@@ -47,24 +51,24 @@ abstract class IPF_Admin_ModelInline{
         foreach($this->model->getTable()->getRelations() as $rel){
             if ($rel->getClass()==get_class($this->parentModel))
                 return $rel->getLocal();
-        } 
+        }
         throw new IPF_Exception(__('Cannot get fkLocal for '.$this->getModelName()));
     }
 
     function createFormSet(&$data){
 
         $this->formset = array();
-        
+
         $first = true;
-        
+
         if ($this->parentModel->exists()){
-            
+
             $objects = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
                 ->orderby('id')
                 ->where($this->getFkLocal().'='.$this->parentModel->id)
                 ->execute();
-                
+
             foreach ($objects as $obj){
                 $prefix = 'edit_'.get_class($this->model).'_'.$obj->id.'_';
                 $d = array();
@@ -74,7 +78,7 @@ abstract class IPF_Admin_ModelInline{
                     if (strpos($k,$prefix)==0)
                         $d[$k] = $v;
                 }
-                $form = IPF_Shortcuts::GetFormForModel($obj, $d, 
+                $form = $this->_getForm($obj, $d,
                     array('exclude'=>array($this->getFkName(),$this->getFkLocal()))
                 );
                 $form->prefix = $prefix;
@@ -92,9 +96,9 @@ abstract class IPF_Admin_ModelInline{
                 $this->formset[] = $form;
             }
         }
-        
+
         for($i=0; $i<$this->getAddNum(); $i++ ){
-            $form = IPF_Shortcuts::GetFormForModel($this->model->copy(), null, array('exclude'=>array($this->getFkName(),$this->getFkLocal())));
+            $form = $this->_getForm($this->model->copy(), null, array('exclude'=>array($this->getFkName(),$this->getFkLocal())));
             $form->fields = array_merge(array(new IPF_Form_Field_Boolean(array('label'=>'Del','name'=>'delete_', 'widget_attrs'=>array('disabled'=>'disabled')))),$form->fields);
             $form->prefix = 'add_'.get_class($this->model).'_'.$i.'_';
             $form->data = $data;
@@ -108,9 +112,9 @@ abstract class IPF_Admin_ModelInline{
             $this->formset[] = $form;
         }
     }
-    
+
     function save($parent_obj){
-        
+
         if ($this->parentModel->exists()){
             $objects = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
@@ -144,7 +148,7 @@ abstract class IPF_Admin_ModelInline{
                 }
             }
         }
- 
+
         $fk_local = $this->getFkLocal();
         foreach($this->formset as $form){
             if ($form->isValid()){
@@ -153,7 +157,7 @@ abstract class IPF_Admin_ModelInline{
                     $form->cleaned_data[$fk_local] = $parent_obj->id;
                     $form->save();
                 }
-            } 
+            }
         }
     }
 }

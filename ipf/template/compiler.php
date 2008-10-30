@@ -3,18 +3,18 @@
 class IPF_Template_Compiler
 {
     protected $_literals;
-    protected $_vartype = array(T_CHARACTER, T_CONSTANT_ENCAPSED_STRING, 
-                                T_DNUMBER, T_ENCAPSED_AND_WHITESPACE, 
-                                T_LNUMBER, T_OBJECT_OPERATOR, T_STRING, 
+    protected $_vartype = array(T_CHARACTER, T_CONSTANT_ENCAPSED_STRING,
+                                T_DNUMBER, T_ENCAPSED_AND_WHITESPACE,
+                                T_LNUMBER, T_OBJECT_OPERATOR, T_STRING,
                                 T_WHITESPACE, T_ARRAY);
 
-    protected $_assignOp = array(T_AND_EQUAL, T_DIV_EQUAL, T_MINUS_EQUAL, 
-                                 T_MOD_EQUAL, T_MUL_EQUAL, T_OR_EQUAL, 
-                                 T_PLUS_EQUAL, T_PLUS_EQUAL, T_SL_EQUAL, 
+    protected $_assignOp = array(T_AND_EQUAL, T_DIV_EQUAL, T_MINUS_EQUAL,
+                                 T_MOD_EQUAL, T_MUL_EQUAL, T_OR_EQUAL,
+                                 T_PLUS_EQUAL, T_PLUS_EQUAL, T_SL_EQUAL,
                                  T_SR_EQUAL, T_XOR_EQUAL);
 
-    protected  $_op = array(T_BOOLEAN_AND, T_BOOLEAN_OR, T_EMPTY, T_INC, 
-                            T_ISSET, T_IS_EQUAL, T_IS_GREATER_OR_EQUAL, 
+    protected  $_op = array(T_BOOLEAN_AND, T_BOOLEAN_OR, T_EMPTY, T_INC,
+                            T_ISSET, T_IS_EQUAL, T_IS_GREATER_OR_EQUAL,
                             T_IS_IDENTICAL, T_IS_NOT_EQUAL, T_IS_NOT_IDENTICAL,
                             T_IS_SMALLER_OR_EQUAL, T_LOGICAL_AND, T_LOGICAL_OR,
                             T_LOGICAL_XOR, T_SR, T_SL, T_DOUBLE_ARROW);
@@ -25,15 +25,15 @@ class IPF_Template_Compiler
 
     protected $_allowedAssign;
 
-    protected $_modifier = array('upper' => 'strtoupper', 
+    protected $_modifier = array('upper' => 'strtoupper',
                                  'lower' => 'strtolower',
-                                 'escxml' => 'htmlspecialchars', 
+                                 'escxml' => 'htmlspecialchars',
                                  'escape' => 'IPF_Template_htmlspecialchars',
-                                 'strip_tags' => 'strip_tags', 
+                                 'strip_tags' => 'strip_tags',
                                  'escurl' => 'rawurlencode',
                                  'capitalize' => 'ucwords',
                                  // Not var_export because of recursive issues.
-                                 'debug' => 'print_r', 
+                                 'debug' => 'print_r',
                                  'fulldebug' => 'var_export',
                                  'count' => 'count',
                                  'nl2br' => 'nl2br',
@@ -81,7 +81,7 @@ class IPF_Template_Compiler
         $this->_sourceFile = $template_file;
         $this->_allowedInVar = array_merge($this->_vartype, $this->_op);
         $this->_allowedInExpr = array_merge($this->_vartype, $this->_op);
-        $this->_allowedAssign = array_merge($this->_vartype, $this->_assignOp, 
+        $this->_allowedAssign = array_merge($this->_vartype, $this->_assignOp,
                                             $this->_op);
         $this->templateFolders = $folders;
         if ($load) {
@@ -89,7 +89,7 @@ class IPF_Template_Compiler
         }
     }
 
-    function compile() 
+    function compile()
     {
         $this->compileBlocks();
         $tplcontent = $this->templateContent;
@@ -99,8 +99,8 @@ class IPF_Template_Compiler
         $this->_literals = $_match[1];
         $tplcontent = preg_replace("!{literal}(.*?){/literal}!s", '{literal}', $tplcontent);
         // Core regex to parse the template
-        $result = preg_replace_callback('/{((.).*?)}/s', 
-                                        array($this, '_callback'), 
+        $result = preg_replace_callback('/{((.).*?)}/s',
+                                        array($this, '_callback'),
                                         $tplcontent);
         if (count($this->_blockStack)) {
             trigger_error(sprintf(__('End tag of a block missing: %s'), end($this->_blockStack)), E_USER_ERROR);
@@ -118,7 +118,7 @@ class IPF_Template_Compiler
             }
             $result = '<?php '.implode("\n", $code).'?>'.$result;
         }
-        $result = str_replace(array('?><?php', '<?php ?>', '<?php  ?>'), '', $result);  
+        $result = str_replace(array('?><?php', '<?php ?>', '<?php  ?>'), '', $result);
         $result = str_replace("?>\n", "?>\n\n", $result);
         return $result;
     }
@@ -135,7 +135,7 @@ class IPF_Template_Compiler
         $cnt = preg_match_all("!{block\s(\S+?)}(.*?){/block}!s", $tplcontent, $_match);
         // Compile the blocks
         for ($i=0; $i<$cnt; $i++) {
-            if (!isset($this->_extendBlocks[$_match[1][$i]]) 
+            if (!isset($this->_extendBlocks[$_match[1][$i]])
                 or false !== strpos($this->_extendBlocks[$_match[1][$i]], '~~{~~superblock~~}~~')) {
                 $compiler = clone($this);
                 $compiler->templateContent = $_match[2][$i];
@@ -157,7 +157,7 @@ class IPF_Template_Compiler
         } else {
             // Replace the current blocks by a place holder
             if ($cnt) {
-                $this->templateContent = preg_replace("!{block\s(\S+?)}(.*?){/block}!s", "{block $1}", $tplcontent, -1); 
+                $this->templateContent = preg_replace("!{block\s(\S+?)}(.*?){/block}!s", "{block $1}", $tplcontent, -1);
             }
         }
     }
@@ -178,7 +178,7 @@ class IPF_Template_Compiler
         throw new IPF_Exception(sprintf(__('Template file not found: %s'), $file));
     }
 
-    function _callback($matches) 
+    function _callback($matches)
     {
         list(,$tag, $firstcar) = $matches;
         if (!preg_match('/^\$|[\'"]|[a-zA-Z\/]$/', $firstcar)) {
@@ -296,7 +296,7 @@ class IPF_Template_Compiler
             $res = '?>~~{~~superblock~~}~~<?php ';
             break;
         case 'trans':
-            $argfct = $this->_parseFinal($args, $this->_allowedAssign); 
+            $argfct = $this->_parseFinal($args, $this->_allowedAssign);
             $res = 'echo(__('.$argfct.'));';
             break;
         case 'blocktrans':
@@ -307,7 +307,7 @@ class IPF_Template_Compiler
                 $this->_transPlural = true;
                 $_args = $this->_parseFinal($args, $this->_allowedAssign,
                                              array(';', '[', ']'), true);
-                $res .= '$_b_t_c='.trim(array_shift($_args)).'; '; 
+                $res .= '$_b_t_c='.trim(array_shift($_args)).'; ';
             }
             $res .= 'ob_start(); ';
             break;
@@ -365,7 +365,7 @@ class IPF_Template_Compiler
                 $name = substr($name, 1);
             }
             // Here we should allow custom blocks.
-            
+
             // Here we start the template tag calls at the template tag
             // {tag ...} is not a block, so it must be a function.
             if (!isset($this->_allowedTags[$name])) {
@@ -399,7 +399,7 @@ class IPF_Template_Compiler
         return $res;
     }
 
-    function _parseFinal($string, $allowed=array(), 
+    function _parseFinal($string, $allowed=array(),
                          $exceptchar=array(';'), $getAsArray=false)
     {
         $tokens = token_get_all('<?php '.$string.'?>');
