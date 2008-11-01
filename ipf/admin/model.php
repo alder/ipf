@@ -382,7 +382,7 @@ class IPF_Admin_Model{
 
         $pager = new IPF_ORM_Pager_LayoutArrows(
             new IPF_ORM_Pager($this->q, $currentPage, $this->perPage),
-            new IPF_ORM_Pager_Range_Sliding(array('chunk' => 15)),
+            new IPF_ORM_Pager_Range_Sliding(array('chunk' => 10)),
             $pager_url
         );
         $pager->setTemplate('<a href="{%url}">{%page}</a> ');

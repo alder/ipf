@@ -8,37 +8,40 @@ class IPF_ORM_Pager_LayoutArrows extends IPF_ORM_Pager_Layout
         $str = '';
 
 		if ($pager->getFirstPage()!=$pager->getLastPage()){
-	        // First page
-	        if ($pager->getFirstPage()!=$pager->getPage()){
-		        $this->addMaskReplacement('page', '&laquo;', true);
-		        $options['page_number'] = $pager->getFirstPage();
-		        $str .= $this->processPage($options);
+
+	        $this->removeMaskReplacement('page');
+
+	        if (($pager->getPage()-2)>$pager->getFirstPage()){
+
+		        if (($pager->getPage()-2)>$pager->getFirstPage()){
+			        $options['page_number'] = $pager->getFirstPage();
+			        $str .= $this->processPage($options);
+		        }
+		        if (($pager->getPage()-3)>$pager->getFirstPage()){
+			        $options['page_number'] = $pager->getFirstPage()+1;
+			        $str .= $this->processPage($options);
+		        }
+		        if (($pager->getPage()-4)>$pager->getFirstPage()){
+			        $str .= ' ... ';
+		        }
 	        }
 
-	        // Previous page
-			/*
-	        $this->addMaskReplacement('page', '&lsaquo;', true);
-	        $options['page_number'] = $pager->getPreviousPage();
-	        $str .= $this->processPage($options);
-	        */
-
 	        // Pages listing
-	        $this->removeMaskReplacement('page');
-	        $str .= parent::display($options, true);
+	        $str .= parent::display(&$options, true);
+	        $last_range = $options['page_number'];
+	        if (($last_range)<$pager->getLastPage()){
 
-
-	        // Next page
-			/*
-	        $this->addMaskReplacement('page', '&rsaquo;', true);
-	        $options['page_number'] = $pager->getNextPage();
-	        $str .= $this->processPage($options);
-	        */
-
-	        // Last page
-	        if ($pager->getLastPage()!=$pager->getPage()){
-		        $this->addMaskReplacement('page', '&raquo;', true);
-		        $options['page_number'] = $pager->getLastPage();
-		        $str .= $this->processPage($options);
+		        if (($last_range+2)<$pager->getLastPage()){
+		        	$str .= ' ... ';
+		        }
+		        if (($last_range+1)<$pager->getLastPage()){
+		        	$options['page_number'] = $pager->getLastPage()-1;
+			        $str .= $this->processPage($options);
+		        }
+		        if (($last_range)<$pager->getLastPage()){
+			        $options['page_number'] = $pager->getLastPage();
+			        $str .= $this->processPage($options);
+		        }
 	        }
 		}
 
