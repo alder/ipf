@@ -14,7 +14,7 @@ class IPF_Form implements Iterator
     public $label_suffix = ':';
 
     protected $is_valid = null;
-    
+
 
     function __construct($data=null, $extra=array(), $label_suffix=null)
     {
@@ -40,7 +40,7 @@ class IPF_Form implements Iterator
         }
         return $field_name;
     }
-    
+
     function hasFileField(){
         foreach($this->fields as $field){
             if (is_a($field,'IPF_Form_Field_File')){
@@ -59,7 +59,7 @@ class IPF_Form implements Iterator
         $form_methods = get_class_methods($this);
         foreach ($this->fields as $name=>$field) {
             $value = $field->widget->valueFromFormData($this->addPrefix($name),
-                                                       $this->data); 
+                                                       $this->data);
             try {
                 $value = $field->clean($value);
                 $this->cleaned_data[$name] = $value;
@@ -67,7 +67,7 @@ class IPF_Form implements Iterator
                     $m = 'clean_'.$name;
                     $value = $this->$m();
                     $this->cleaned_data[$name] = $value;
-                }                        
+                }
             } catch (IPF_Exception_Form $e) {
                 if (!isset($this->errors[$name])) $this->errors[$name] = array();
                 $this->errors[$name][] = $e->getMessage();
@@ -85,7 +85,7 @@ class IPF_Form implements Iterator
         if (empty($this->errors)) {
             $this->is_valid = true;
             return true;
-        } 
+        }
         // as some errors, we do not have cleaned data available.
         $this->cleaned_data = array();
         $this->is_valid = false;
@@ -117,7 +117,7 @@ class IPF_Form implements Iterator
         return (isset($this->errors['__all__'])) ? $this->errors['__all__'] : array();
     }
 
-    protected function htmlOutput($normal_row, $error_row, $row_ender, 
+    protected function htmlOutput($normal_row, $error_row, $row_ender,
                                   $help_text_html, $errors_on_separate_row)
     {
         $top_errors = (isset($this->errors['__all__'])) ? $this->errors['__all__'] : array();
@@ -141,7 +141,7 @@ class IPF_Form implements Iterator
                 if (strlen($bf->label) > 0) {
                     $label = htmlspecialchars($bf->label, ENT_COMPAT, 'UTF-8');
                     if ($this->label_suffix) {
-                        if (!in_array(mb_substr($label, -1, 1), 
+                        if (!in_array(mb_substr($label, -1, 1),
                                       array(':','?','.','!'))) {
                             $label .= $this->label_suffix;
                         }
@@ -165,12 +165,12 @@ class IPF_Form implements Iterator
                 if (!$errors_on_separate_row and count($bf_errors)) {
                     $errors = IPF_Form_renderErrorsAsHTML($bf_errors);
                 }
-                $output[] = sprintf($normal_row, $errors, $label, 
+                $output[] = sprintf($normal_row, $errors, $label,
                                     $bf->render_w(), $help_text);
             }
         }
         if (count($top_errors)) {
-            $errors = sprintf($error_row, 
+            $errors = sprintf($error_row,
                               IPF_Form_renderErrorsAsHTML($top_errors));
             array_unshift($output, $errors);
         }
@@ -204,8 +204,15 @@ class IPF_Form implements Iterator
     public function render_table()
     {
         return $this->htmlOutput('<tr><th>%2$s</th><td>%1$s%3$s%4$s</td></tr>',
-                                 '<tr><td colspan="2">%s</td></tr>', 
+                                 '<tr><td colspan="2">%s</td></tr>',
                                  '</td></tr>', '<br /><span class="helptext">%s</span>', false);
+    }
+
+    public function render_admin()
+    {
+        return $this->htmlOutput('<div class="form-row"><div>%2$s %1$s%3$s%4$s</div></div>',
+                                 '<div>%s</div>',
+                                 '</div>', '<p class="help">%s</p>', true);
     }
 
     function __get($prop)

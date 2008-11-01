@@ -1,56 +1,57 @@
 {extends "admin/base.html"}
 
-{block breadcrumbs} <a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; {$classname}{/block}
+{block css}<link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/changelists.css" />{/block}
+{block bodyclass}change-list{/block}
 
+{block breadcrumbs}<div class="breadcrumbs"><a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; {$classname}</div>{/block}
 
 {block content}
 
-<div id="ipfcontent">
+<div id="content" class="flex">
     <h1>{$page_title}</h1>
-    <ul class="object-tools">{if array_search('add',$perms)!==false}<li><a href="add/" class="addlink">Add {$classname}</a></li>{/if}</ul>
-    <div id="changelist">
+	<div id="content-main">
+        <ul class="object-tools">{if array_search('add',$perms)!==false}<li><a href="add/" class="addlink">Add {$classname}</a></li>{/if}</ul>
+        <div id="changelist" class="module {if $filters} filtered{/if}">
 
-        <!--div id="changelist-filter">
-        <h2>Filter</h2>
-        <h3> By Credit Class </h3>
-        <ul>
-            <li class="selected">
-            <a href="?">All</a></li>
-            <li>
-            <a href="?credit_class__exact=1">Class A: Good Credit &amp; Good Income</a></li>
-            <li>
-            <a href="?credit_class__exact=2">Class B: Bad Credit &amp; Good Income</a></li>
-            <li>
-            <a href="?credit_class__exact=3">Class C: Bad Credit &amp; Bad Income</a></li>
-        </ul>
-        </div-->
+	        {if $filters}
+	        <div id="changelist-filter">
+	        <h2>Filter</h2>
+	        {foreach $filters as $f}
+	        <h3>{$f->title}</h3>
+	        <ul>
+	        {foreach $f->choices as $ch}
+	            <li{if $ch['selected']} class="selected"{/if}><a href="?{$ch['param']}">{$ch['name']}</a></li>
+	        {/foreach}
+	        </ul>
+	        {/foreach}
+	        </div>
+	        {/if}
 
-        <div>
-        <table>
-            <thead>
-                <tr>
-                {foreach $header as $h}
-                    <th>{$h.title}</th>
-                {/foreach}
-                </tr>
-            </thead>
-            <tbody>
-                {foreach $objects as $o}
-                <tr>
-                    {foreach $o.ModelAdmin().ListRow($o) as $v}
-                    <td>{$v|safe}</td>
-                    {/foreach}
-                </tr>
-                {/foreach}
-            </tbody>
-        </table>
-        <p class="paginator">
-            {$pager->display()|safe} {$pager->getPager()->getNumResults()} {$classname}
-        </p>
+
+	        <table>
+	            <thead>
+	                <tr>
+	                {foreach $header as $h}
+	                    <th>{$h.title}</th>
+	                {/foreach}
+	                </tr>
+	            </thead>
+	            <tbody>
+	                {foreach $objects as $o}
+	                <tr>
+	                    {foreach $o.ModelAdmin().ListRow($o) as $v}
+	                    <td>{$v|safe}</td>
+	                    {/foreach}
+	                </tr>
+	                {/foreach}
+	            </tbody>
+	        </table>
+	        <p class="paginator">
+	            {$pager->display()|safe}{$pager->getPager()->getNumResults()} {$classname}
+	        </p>
         </div>
-
-    </div>
-
+	</div>
+	<br class="clear" />
 </div>
 
 

@@ -1,5 +1,24 @@
 <?php
 
+class ListFilter{
+    function __construct($local, $foreign, $choices, $title){
+    	$this->local = $local;
+    	$this->foreign = $foreign;
+    	$this->choices = $choices;
+    	$this->title = $title;
+    }
+
+    function IsChoice($id){
+    	if (!$id)
+    		return $false;
+    	foreach($this->choices as &$ch){
+    	    if ($ch['id']==$id)
+    	    	return true;
+    	}
+    	return false;
+    }
+}
+
 class IPF_Admin_Model{
     static $models = array();
 
@@ -52,6 +71,10 @@ class IPF_Admin_Model{
         foreach($this->inlineInstances as $inlineInstance){
             $inlineInstance->save($obj);
         }
+    }
+
+    protected function _listFilters(){
+    	return array();
     }
 
     protected function _setupEditForm($form){
@@ -158,7 +181,7 @@ class IPF_Admin_Model{
     }
 
     protected function _getAddTemplate(){
-        return 'admin/add.html';
+        return 'admin/change.html';
     }
 
     protected function _getChangeTemplate(){
@@ -177,7 +200,7 @@ class IPF_Admin_Model{
 
     protected function _beforeChange($o){
     }
-    
+
     protected function _afterEdit($o){
         $this->_afterChange($o);
     }
@@ -212,14 +235,16 @@ class IPF_Admin_Model{
             $data = array();
             $this->setInlines($this->model, &$data);
         }
+
         $context = array(
             'page_title'=>'Add '.$this->modelName,
             'classname'=>$this->modelName,
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
             'lapp'=>$lapp,
-            'perms'=>$this->getPerms($request),
+            'perms'=>array(),
             'lmodel'=>$lmodel,
+            'admin_title' => IPF::get('admin_title'),
         );
         return IPF_Shortcuts::RenderToResponse($this->_getAddTemplate(), $context, $request);
     }
@@ -267,6 +292,7 @@ class IPF_Admin_Model{
             'lapp'=>$lapp,
             'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
+	       	'admin_title' => IPF::get('admin_title'),
         );
         return IPF_Shortcuts::RenderToResponse($this->_getChangeTemplate(), $context, $request);
     }
@@ -285,20 +311,79 @@ class IPF_Admin_Model{
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
             'affected'=>array(),
+	       	'admin_title' => IPF::get('admin_title'),
         );
         return IPF_Shortcuts::RenderToResponse('admin/delete.html', $context, $request);
     }
 
+    protected function _ListFilterQuery($request){
+    	foreach($this->filters as $f){
+    		$param_name = 'filter_'.$f->local;
+    		if (isset($request->GET[$param_name])){
+    		    $id = $request->GET[$param_name];
+    		    if ($f->IsChoice($id))
+    				$this->q->where($f->local.'='.$id);
+    		}
+    	}
+    }
+
+    protected function _GetFilters($request){
+    	$this->filters = array();
+    	$rels = $this->model->getTable()->getRelations();
+        foreach($this->_listFilters() as $f){
+        	$local = $rels[$f]['local'];
+        	$foreign = $rels[$f]['foreign'];
+        	$sel_id = @$request->GET['filter_'.$local];
+        	$choices = array();
+    	    $choices[] = array(
+    	    	'id'=>null,
+    	    	'param'=>'',
+    	    	'name'=>'All',
+    	    	'selected'=>($sel_id==''),
+    	    );
+        	foreach (IPF_ORM::getTable($rels[$f]['class'])->findAll() as $val){
+	        	$selected = false;
+      	    	$id = $val[$foreign];
+        		if ($sel_id==$id)
+        			$selected = true;
+        	    $choices[] = array(
+        	    	'id'=>$id,
+        	    	'param'=>'filter_'.$local.'='.$id,
+        	    	'name'=>(string)$val,
+        	    	'selected'=>$selected,
+        	    );
+        	}
+    		$this->filters[$f] = new ListFilter($local, $foreign, $choices, 'By '.IPF_Utils::humanTitle($f));
+        }
+    }
+
     public function ListItems($request){
         $this->ListItemsQuery();
+        $this->_GetFilters($request);
+        $this->_ListFilterQuery($request);
         $this->ListItemsHeader();
 
         $currentPage = (int)@$request->GET['page'];
 
+        $url = '';
+        foreach ($request->GET as $k=>$v){
+        	if ($k=='page')
+        		continue;
+            if ($url=='')
+            	$url = '?';
+            else
+            	$url .= '&';
+            $url .= $k.'='.$v;
+        }
+        if ($url=='')
+        	$pager_url = '?page={%page_number}';
+        else
+        	$pager_url = $url.'&page={%page_number}';
+
         $pager = new IPF_ORM_Pager_LayoutArrows(
             new IPF_ORM_Pager($this->q, $currentPage, $this->perPage),
-            new IPF_ORM_Pager_Range_Sliding(array('chunk' => 10)),
-            '?page={%page_number}'
+            new IPF_ORM_Pager_Range_Sliding(array('chunk' => 15)),
+            $pager_url
         );
         $pager->setTemplate('<a href="{%url}">{%page}</a> ');
         $pager->setSelectedTemplate('<span class="this-page">{%page}</span> ');
@@ -312,6 +397,8 @@ class IPF_Admin_Model{
             'pager'=>$pager,
             'classname'=>$this->modelName,
             'perms'=>$this->getPerms($request),
+            'filters'=>$this->filters,
+	       	'admin_title' => IPF::get('admin_title'),
         );
         return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
     }

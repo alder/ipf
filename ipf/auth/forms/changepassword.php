@@ -1,13 +1,13 @@
-<?php 
+<?php
 
 class IPF_Auth_Forms_ChangePassword extends IPF_Form{
-    
+
     function initFields($extra=array())
     {
         $this->fields['password1'] = new IPF_Form_Field_Varchar(array('required'=>true,'widget'=>'IPF_Form_Widget_PasswordInput'));
         $this->fields['password2'] = new IPF_Form_Field_Varchar(array('required'=>true,'widget'=>'IPF_Form_Widget_PasswordInput','help_text'=>'Enter the same password as above, for verification.'));
     }
-    
+
     function isValid(){
         $ok = parent::isValid();
         if ($ok===true){

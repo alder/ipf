@@ -1,25 +1,22 @@
-{extends 'admin/base-simple.html'}
+{extends 'admin/base.html'}
 
-{block body}
-<div style="text-align:center; margin-top:100px;">
-<div style="margin-left:auto;margin-right:auto; width:300px; text-align:left;">
-    <h1>{$page_title}</h1>
-    
-    <form method="post">
-    <fieldset>
-    {if $form.message}<ul class="errorlist"><li>{$form.message}</li></ul>{/if}
-    <table>
-    {$form.render_table}
-    </table>
-    </fieldset>
+{block css}<link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/login.css" />{/block}
+{block bodyclass}login{/block}
+{block usertools}{/block}
 
-    <div class="submit-row">
-        <input type="submit" value="Sign In" class="default" />
+{block content}
+    <div id="content" class="colM">
+        <div id="content-main">    
+		    <form method="post">
+		    {if $form.message}<ul class="errorlist"><li>{$form.message}</li></ul>{/if}
+		    {$form.render_admin()}
+		    <div class="submit-row">
+		        <input type="submit" value="Sign In" class="default" />
+		    </div>
+		    </form>    
+        </div>
     </div>
-    </form>    
-    
-</div>
-</div>
-
-
+    <script type="text/javascript">
+        document.getElementById('id_username').focus();
+    </script>
 {/block}

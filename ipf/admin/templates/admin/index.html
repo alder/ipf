@@ -1,35 +1,40 @@
 {extends "admin/base.html"}
 
-{block content}
+{block css}<link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/dashboard.css" />{/block}
+{block bodyclass}dashboard{/block}
 
-<div id="ipfcontent" class="index">
+{block content}
+<div id="content" class="colMS">
     <h1>{$page_title}</h1>
-    <div id="ipfcontent-main">
-        <div class="module">
-            {foreach $app_list as $app}
-            <h2>{$app.name|escxml}</h2>
-            <table>
-            {foreach $app.models as $model}
-            <tr>
-                <th><a href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{$model.name}</a></th>
-                <td>{if array_search('add',$model['perms'])!==false}<a class="addlink" href="{url 'IPF_Admin_Views_AddItem', array($app.path, $model.path)}">{trans 'Add'}</a>{/if}</td>
-                <td>{if array_search('change',$model['perms'])!==false}<a class="changelink" href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{trans 'Change'}</a>{/if}</td>
-            </tr>
-            {/foreach}
-            </table>
-            {/foreach}
-        </div>
+    <div id="content-main">
+        {foreach $app_list as $app}
+		<div class="module">
+        <table summary="">
+        <caption>{$app.name|escxml}</caption>
+		<tbody>
+        {foreach $app.models as $model}
+        <tr>
+            <th scope="row"><a href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{$model.name}</a></th>
+            <td>{if array_search('add',$model['perms'])!==false}<a class="addlink" href="{url 'IPF_Admin_Views_AddItem', array($app.path, $model.path)}">{trans 'Add'}</a>{/if}</td>
+            <td>{if array_search('change',$model['perms'])!==false}<a class="changelink" href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{trans 'Change'}</a>{/if}</td>
+        </tr>
+        {/foreach}
+        </tbody>
+        </table>
+		</div>
+        {/foreach}
     </div>
-    <div id="ipfcontent-related">
-        <div class="module" id="ipfrecent-actions-module">
+    <div id="content-related">
+        <div class="module" id="recent-actions-module">
             <h2>Recent Actions</h2>
+            <h3>My Actions</h3>
             <ul class="actionlist">
             {foreach $admin_log as $log}
             <li class="{if $log.is_addition()}addlink{/if}{if $log.is_change()}changelink{/if}{if $log.is_deletion()}deletelink{/if}">{if !$log.is_deletion()}<a href="{$log.getAdminUrl()}">{/if}{$log.object_repr}{if !$log.is_deletion()}</a>{/if}<br /><span class="mini quiet">{$log.object_class} at {$log.created_at|date} by {$log.username}</span></li>
             {/foreach}
             </ul>
         </div>
-    </div>
+    </div-->
     <br class="clear" />
 </div>
 {/block}

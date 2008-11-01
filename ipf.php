@@ -63,6 +63,10 @@ final class IPF{
             IPF::$settings['debug'] = false;
         }
 
+        if (!isset(IPF::$settings['admin_title'])){
+            IPF::$settings['admin_title'] = 'IPF Administration';
+        }
+
         if (!isset(IPF::$settings['app_base'])){
             IPF::$settings['app_base'] = '/index.php';
         }

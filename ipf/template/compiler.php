@@ -290,7 +290,10 @@ class IPF_Template_Compiler
             trigger_error(__('Start tag of a block missing: literal'), E_USER_ERROR);
             break;
         case 'block':
-            $res = '?>'.$this->_extendBlocks[$args].'<?php ';
+        	if (isset($this->_extendBlocks[$args]))
+            	$res = '?>'.$this->_extendBlocks[$args].'<?php ';
+            else
+            	$res = '';
             break;
         case 'superblock':
             $res = '?>~~{~~superblock~~}~~<?php ';

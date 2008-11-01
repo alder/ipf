@@ -1,16 +1,12 @@
-{extends 'admin/base-simple.html'}
+{extends 'admin/base.html'}
 
-{block body}
+{block breadcrumbs}<div class="breadcrumbs"><a href="{url 'IPF_Admin_Views_Index'}">Home</a></div>{/block}
 
-<div style="text-align:center; margin-top:100px;">
-<div style="margin-left:auto;margin-right:auto; width:300px; text-align:left;">
-    <h1>Logged Out</h1>
-    
-    <p>Thanks for spending some quality time with the Web site today.</p>
-    <p><a href="{url 'IPF_Admin_Views_Index'}">Log in</a> again.</p>
-
+{block content}
+<div id="content" class="colM">
+<h1>Logged out</h1>
+<p>Thanks for spending some quality time with the Web site today.</p>
+<p><a href="{url 'IPF_Admin_Views_Index'}">Log in</a> again.</p>
+<br class="clear"/>
 </div>
-</div>
-
-
 {/block}

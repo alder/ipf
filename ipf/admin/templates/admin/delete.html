@@ -1,12 +1,10 @@
 {extends "admin/base.html"}
 
-{block breadcrumbs} <a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; <a href="{url 'IPF_Admin_Views_ListItems', array($lapp, $lmodel)}">{$classname}</a> &raquo; <a href="{url 'IPF_Admin_Views_EditItem', array($lapp, $lmodel, $object.id)}">{$object}</a> &raquo; {$page_title}{/block}
+{block breadcrumbs}<div class="breadcrumbs"><a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; <a href="{url 'IPF_Admin_Views_ListItems', array($lapp, $lmodel)}">{$classname}</a> &raquo; <a href="{url 'IPF_Admin_Views_EditItem', array($lapp, $lmodel, $object.id)}">{$object}</a> &raquo; {$page_title}</div>{/block}
 
 {block content}
-
-<div id="ipfcontent">
+<div id="content" class="colM">
     <h1>{$page_title}</h1>
-    
     <form method="post">
     <p>Are you sure you want to delete <em>{$object}</em>?
     </p>
@@ -17,8 +15,8 @@
     </ul>
     {/if}
     <input type="submit" value="Yes, delete it!" class="default" />
+    <input type="button" value="Cancel" onclick="javascript:history.back();" />
     </form>    
-    
 </div>
 
 {/block}

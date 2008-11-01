@@ -3,7 +3,7 @@
 class AdminUser extends IPF_Admin_Model{
     public function list_display(){return array('username', 'email', 'is_active', 'is_staff', 'is_superuser', 'created_at');}
     public function fields(){return array('username','password','email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser');}
-    
+
     protected function _setupForm($form){
         $form->fields['username']->help_text = 'Required. 32 characters or less. Alphanumeric characters only (letters, digits and underscores).';
         $form->fields['password']->help_text = "Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change password form</a>.";
@@ -31,22 +31,23 @@ class AdminUser extends IPF_Admin_Model{
         else
             $form = new IPF_Auth_Forms_UserCreation();
         $context = array(
-            'page_title'=>'Add '.$this->modelName, 
+            'page_title'=>'Add '.$this->modelName,
             'classname'=>$this->modelName,
             'form'=>$form,
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
+            'perms'=>array(),
         );
-        return IPF_Shortcuts::RenderToResponse('admin/add.html', $context, $request);
+        return IPF_Shortcuts::RenderToResponse('admin/change.html', $context, $request);
     }
 }
- 
+
 
 class User extends BaseUser
 {
     const UNUSABLE_PASSWORD = '!';
     public $session_key = 'IPF_User_auth';
-    
+
     public function __toString() {
         $s = $this->username;
         if ($s===null)
@@ -63,16 +64,16 @@ class User extends BaseUser
             return $username;
         return $name;
     }
-    
+
     static function createUser($username, $password=null, $email=null, $first_name=null, $last_name=null, $is_active=false, $is_staff=false, $is_superuser=false){
         $user = new User();
         $user->username = $username;
-        
+
         if (trim($email)=='')
             $user->email = null;
         else
             $user->email = $email;
-        
+
         $user->first_name = $first_name;
         $user->last_name = $last_name;
         $user->is_active = $is_active;
@@ -92,7 +93,7 @@ class User extends BaseUser
             // used here is just more simple when you know the records you're dealing with.
             $userErrors = $user->getErrorStack();
             //$emailErrors = $user->email->getErrorStack();
-            // Inspect user errors 
+            // Inspect user errors
             foreach($userErrors as $fieldName => $errorCodes) {
                 echo "Error:".$fieldName;
                 //print_r($errorCodes);
@@ -104,7 +105,7 @@ class User extends BaseUser
     function setUnusablePassword(){
         $this->password = UNUSABLE_PASSWORD;
     }
-    
+
     function setPassword($raw_password){
         $salt = IPF_Utils::randomString(5);
         $this->password = 'sha1:'.$salt.':'.sha1($salt.$raw_password);

@@ -1,50 +1,62 @@
 {extends "admin/base.html"}
 
-{block breadcrumbs} <a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; <a href="{url 'IPF_Admin_Views_ListItems', array($lapp, $lmodel)}">{$classname}</a> &raquo; {$page_title}{/block}
-
+{block css}<link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/forms.css" />{/block}
+{block bodyclass}change-form{/block}
+{block breadcrumbs}<div class="breadcrumbs"><a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; <a href="{url 'IPF_Admin_Views_ListItems', array($lapp, $lmodel)}">{$classname}</a> &raquo; {$page_title}</div>{/block}
 
 {block content}
 
-<div id="ipfcontent">
+<div id="content" class="colM">
     <h1>{$page_title}</h1>
-
-    <form method="post" {if $form.hasFileField()}enctype="multipart/form-data"{/if}>
-    <fieldset>
-    <table>
-    {$form.render_table}
-    </table>
-    </fieldset>
-    {if $inlineInstances}
-    {foreach $inlineInstances as $inline}
-    <fieldset class="inlineTabular" style="border:none; width:auto; float:left; padding:0; margin:10px 10px 10px 0;">
-    <legend>{$inline->getLegend()}</legend>
-    <table>
-    {foreach $inline.formset as $formset}
-    {if $formset.isFirst}
-    <tr>
-    {foreach $formset.fields as $fieldname=>$field}
-    <th{if $formset.field($fieldname).label=='Del'} style="width:20px;"{/if}>{$formset.field($fieldname).label}</th>
-    {/foreach}
-    </tr>
-    {/if}
-    <tr>
-    {foreach $formset.fields as $fieldname=>$field}
-    <td>{$formset.field($fieldname).fieldErrors()}{$formset.field($fieldname)|safe}</td>
-    {/foreach}
-    </tr>
-    {/foreach}
-    </table>
-    </fieldset>
-    {/foreach}
-		{/if}
-    <div style="clear:both;"></div>
-
-    <div class="submit-row">
-        {if array_search('delete',$perms)!==false}<p class="float-left"><a href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.id)}" class="deletelink">Delete</a></p>{/if}
-        <input type="submit" value="Save" class="default" />
+    <div id="content-main">
+	    <form method="post" {if $form.hasFileField()}enctype="multipart/form-data"{/if}>
+	    <div>
+            {if $form.errors}
+            <p class="errornote">Please correct the error below.</p>
+            {/if}
+		    <fieldset class="module aligned">
+		    {$form.render_admin()}
+		    </fieldset>
+		    {if $inlineInstances}
+    	    {foreach $inlineInstances as $inline}
+            <div class="inline-group">
+                <div class="tabular inline-related">
+				    <fieldset class="module">
+				    <h2>{$inline->getLegend()}</h2>
+				    <table>
+    				    {foreach $inline.formset as $formset}
+	   			        {if $formset.isFirst}
+                        <thead>
+				        <tr>
+				            {foreach $formset.fields as $fieldname=>$field}
+				            <th{if $formset.field($fieldname).label=='Del'} style="width:20px;"{/if}>{$formset.field($fieldname).label}</th>
+        				    {/foreach}
+		  		        </tr>
+					    </thead>
+						<tbody>
+				        {/if}
+    				    <tr>
+                            {foreach $formset.fields as $fieldname=>$field}
+				            <td>{$formset.field($fieldname).fieldErrors()}{$formset.field($fieldname)|safe}</td>
+				            {/foreach}
+				        </tr>
+				        {/foreach}
+						</tbody>
+				    </table>
+				    </fieldset>
+				</div>
+			</div>
+            {/foreach}
+    		{/if}
+		    <div class="submit-row">
+		        {if array_search('delete',$perms)!==false}<p class="float-left"><a href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.id)}" class="deletelink">Delete</a></p>{/if}
+		        <input type="submit" value="Save" class="default" />
+                <input type="button" value="Cancel" onclick="javascript:history.back();" />
+		    </div>
+		</div>
+	    </form>
     </div>
-    </form>
-
+	<br class="clear" />
 </div>
 
 {/block}

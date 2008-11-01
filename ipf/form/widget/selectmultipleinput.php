@@ -6,8 +6,10 @@ class IPF_Form_Widget_SelectMultipleInput extends IPF_Form_Widget
 
     public function __construct($attrs=array())
     {
-        $this->choices = $attrs['choices'];
-        unset($attrs['choices']);
+    	if (isset($attrs['choices'])){
+        	$this->choices = $attrs['choices'];
+	        unset($attrs['choices']);
+    	}
         parent::__construct($attrs);
     }
 

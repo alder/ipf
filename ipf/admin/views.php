@@ -56,9 +56,10 @@ function IPF_Admin_Views_Index($request, $match){
         ->execute();
 
     $context = array(
-        'page_title' => __('Administration'),
+        'page_title' => __('Site Administration'),
         'app_list' => $app_list,
         'admin_log' => $admin_log,
+        'admin_title' => IPF::get('admin_title'),
     );
     return IPF_Shortcuts::RenderToResponse('admin/index.html', $context, $request);
 }
@@ -175,6 +176,8 @@ function IPF_Admin_Views_ChangePassword($request, $match){
                     'form'=>$form,
                     'lapp'=>$lapp,
                     'lmodel'=>$lmodel,
+                    'admin_title' => IPF::get('admin_title'),
+
                 );
                 return IPF_Shortcuts::RenderToResponse('admin/changepassword.html', $context, $request);
             }
@@ -205,8 +208,9 @@ function IPF_Admin_Views_Login($request, $match){
     else
         $form = new IPF_Auth_Forms_Login(array('next'=>$success_url));
     $context = array(
-       'page_title' => __('IPF Administration'),
+       'page_title' => IPF::get('admin_title'),
        'form' => $form,
+       'admin_title' => IPF::get('admin_title'),
     );
     return IPF_Shortcuts::RenderToResponse('admin/login.html', $context, $request);
 }
@@ -214,7 +218,8 @@ function IPF_Admin_Views_Login($request, $match){
 function IPF_Admin_Views_Logout($request, $match){
     IPF_Auth_App::logout($request);
     $context = array(
-       'page_title' => __('IPF Administration'),
+       'page_title' => IPF::get('admin_title'),
+       'admin_title' => IPF::get('admin_title'),
     );
     return IPF_Shortcuts::RenderToResponse('admin/logout.html', $context, $request);
 }

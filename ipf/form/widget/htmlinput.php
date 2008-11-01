@@ -67,7 +67,7 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     gecko_spellcheck : true,
                     verify_html : true,
                     dialog_type : "modal",
-                    width : "100%",
+                    width : "80%",
                     height : "350",
                     relative_urls : false,
                     remove_script_host : true,
