@@ -10,7 +10,7 @@ class ListFilter{
 
     function IsChoice($id){
     	if (!$id)
-    		return $false;
+    		return false;
     	foreach($this->choices as &$ch){
     	    if ($ch['id']==$id)
     	    	return true;
