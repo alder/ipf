@@ -8,9 +8,10 @@ class IPF_Form_DB_Manytomany extends IPF_Form_DB
     {
         //print_r($def);
         $list_objects = IPF_ORM::getTable($def['model'])->findAll();
+        $pk = IPF_ORM::getTable($def['model'])->getIdentifier();
         $choices = array();
         foreach($list_objects as $o){
-            $choices[$o->__toString()] = $o->id;
+            $choices[$o->__toString()] = $o->$pk;
         }
         $def['choices'] = $choices;
         if (!isset($def['widget'])) {

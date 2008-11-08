@@ -270,11 +270,12 @@ class IPF_Admin_Model{
         else{
             $data = $o->getData();
             foreach($o->getTable()->getRelations() as $rname=>$rel){
+            	$pk = $rel->getTable()->getIdentifier();
                 if (array_search($rname,$this->fields())){
                     if ($rel->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
                         $data[$rname] = array();
                         foreach($rel->fetchRelatedFor($o) as $ri)
-                            $data[$rname][] = $ri->id;
+                            $data[$rname][] = $ri->$pk;
                     }
                 }
             }

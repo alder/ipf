@@ -1157,6 +1157,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                     $ids[$i] = (integer) $ids[$i];
                 }
             }
+
             foreach ($ids as $id) {
                 $record = new $modelClassName;
                 $record[$localFieldName]   = $identifier;

@@ -120,8 +120,9 @@ class IPF_Form_Model extends IPF_Form
                     if (isset($this->cleaned_data[$rname])){
                         //print $rel->getAlias();
                         $this->model->unlink($rel->getAlias());
-                        if (is_array($this->cleaned_data[$rname]))
+                        if (is_array($this->cleaned_data[$rname])){
                             $this->model->link($rel->getAlias(),$this->cleaned_data[$rname]);
+                        }
                     }
                 }
                 return $this->model;

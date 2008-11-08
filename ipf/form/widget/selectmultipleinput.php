@@ -27,7 +27,7 @@ class IPF_Form_Widget_SelectMultipleInput extends IPF_Form_Widget
         $choices = array_merge($this->choices, $choices);
 
         foreach ($choices as $option_label=>$option_value) {
-            $selected = (in_array($option_value, $value)) ? ' selected="selected"':'';
+            $selected = (@in_array($option_value, $value)) ? ' selected="selected"':'';
             $output[] = sprintf('<option value="%s"%s>%s</option>',
                                 htmlspecialchars($option_value, ENT_COMPAT, 'UTF-8'),
                                 $selected,
