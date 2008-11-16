@@ -164,8 +164,10 @@ class IPF_ORM_DataDict_Mysql extends IPF_ORM_DataDict
                 return 'DATE';
             case 'time':
                 return 'TIME';
-            case 'timestamp':
+            case 'datetime':
                 return 'DATETIME';
+            case 'timestamp':
+                return 'TIMESTAMP';
             case 'float':
             case 'double':
                 return 'DOUBLE';
