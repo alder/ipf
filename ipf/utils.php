@@ -13,7 +13,7 @@ class IPF_Utils {
             return false;
         return true;
     }
-    
+
     public static function isEmail($value){
         $qtext = '[^\\x0d\\x22\\x5c\\x80-\\xff]';
         $dtext = '[^\\x0d\\x5b-\\x5d\\x80-\\xff]';
@@ -29,7 +29,7 @@ class IPF_Utils {
         $addrSpec = "$localPart\\x40$domain";
         return (bool) preg_match("!^$addrSpec$!D", $value);
     }
-    
+
     static function prettySize($size)
     {
         $mb = 1024*1024;
@@ -42,7 +42,7 @@ class IPF_Utils {
         }
         return $mysize;
     }
-    
+
     static function cleanFileName($name, $path)
     {
         $name = mb_strtolower($name, 'UTF-8');
@@ -74,7 +74,7 @@ class IPF_Utils {
         }
         return $name;
     }
-    
+
     static function isValidUrl($url)
     {
         $ip = '(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.'
@@ -82,7 +82,7 @@ class IPF_Utils {
         $dom = '([a-z0-9\.\-]+)';
         return (preg_match('!^(http|https|ftp|gopher)\://('.$ip.'|'.$dom.')!i', $url)) ? true : false;
     }
-    
+
     static function humanTitle($s){
         return ucfirst(str_replace('_',' ',str_replace('_id','',$s)));
     }
@@ -91,16 +91,16 @@ class IPF_Utils {
     {
         $string = '';
         $chars = '0123456789abcdefghijklmnopqrstuvwxyz'
-            .'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*()+=-_}{[]><?/'; 
+            .'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*()+=-_}{[]><?/';
         $lchars = strlen($chars);
-        $i = 0; 
-        while ($i<$len) { 
+        $i = 0;
+        while ($i<$len) {
             $string .= substr($chars, mt_rand(0, $lchars-1), 1);
             $i++;
         }
         return $string;
     }
-    
+
     static function dateCompare($date1, $date2=null)
     {
         if (strlen($date1) == 10){
@@ -117,7 +117,7 @@ class IPF_Utils {
         $date1 = strtotime(str_replace('-', '/', $date1));
         return $date2 - $date1;
     }
-    
+
     static function appLabelByModel($model){
         foreach (IPF_Project::getInstance()->appList() as $app){
             foreach($app->modelList() as $m){
@@ -127,7 +127,7 @@ class IPF_Utils {
         }
         return '';
     }
-    
+
     public static function makeDirectories($path, $mode = 0777){
         if ( ! $path) {
             return false;
@@ -137,7 +137,7 @@ class IPF_Utils {
         }
         return mkdir(trim($path), $mode, true);
     }
-    
+
     public static function removeDirectories($folderPath){
         if (is_dir($folderPath)){
             foreach (scandir($folderPath) as $value){
@@ -180,7 +180,7 @@ class IPF_Utils {
         $dir->close();
         return true;
     }
-    
+
     public static function print_r($subject, $ignore = array(), $depth = 5, $refChain = array())
     {
         $s = '';
@@ -219,6 +219,10 @@ class IPF_Utils {
             $s .= $subject . "\n";
         return $s;
     }
-    
+
+    public static function timestamp(){
+		list($f,$i) = split(' ',microtime());
+		return $i.substr((string)$f,2,6);
+    }
 }
 
