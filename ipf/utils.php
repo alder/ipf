@@ -90,8 +90,7 @@ class IPF_Utils {
     static function randomString($len=35)
     {
         $string = '';
-        $chars = '0123456789abcdefghijklmnopqrstuvwxyz'
-            .'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*()+=-_}{[]><?/';
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $lchars = strlen($chars);
         $i = 0;
         while ($i<$len) {
