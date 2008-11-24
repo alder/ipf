@@ -23,7 +23,7 @@ class IPF_ORM_Validator_Timestamp
 
         if ( ! $timeValidator->validate($time)) {
             return false;
-        } 
+        }
 
         return true;
     }

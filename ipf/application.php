@@ -1,10 +1,10 @@
 <?php
 
 abstract class IPF_Application{
-    
+
     protected $models = array();
     protected $name = null;
-    
+
     public function __construct($data){
         $this->setName();
         if (array_key_exists('models',$data)){
@@ -15,22 +15,22 @@ abstract class IPF_Application{
             }
         }
     }
-    
+
     protected function setName(){
-        $this->name = str_replace('_App', '', get_class($this)); 
+        $this->name = str_replace('_App', '', get_class($this));
         if (strpos($this->name,'IPF_')===0)
             $this->path = IPF::get('ipf_path').DIRECTORY_SEPARATOR.'ipf'.DIRECTORY_SEPARATOR.strtolower(str_replace('_',DIRECTORY_SEPARATOR,str_replace('IPF_','',$this->name)));
         else
             $this->path = IPF::get('project_path').DIRECTORY_SEPARATOR.strtolower(str_replace('_',DIRECTORY_SEPARATOR,$this->name));
         $this->path .= DIRECTORY_SEPARATOR;
-    } 
+    }
 
     public function generateSql(){
         if (count($this->models)==0)
             return;
         return IPF_ORM::generateSqlFromModels($this->path.'models');
     }
-    
+
     public function modelList(){
         return $this->models;
     }
@@ -43,7 +43,6 @@ abstract class IPF_Application{
         return str_replace('ipf_','',strtolower($this->name));
     }
 
-    
     public function getTitle(){
         return $this->name;
     }
@@ -58,7 +57,7 @@ abstract class IPF_Application{
             return;
         return IPF_ORM::createTablesFromModels($this->path.'models');
     }
-    
+
     public function generateModels(){
         IPF_ORM::generateModelsFromYaml($this->path.'models.yml', $this->path.'models');
     }
