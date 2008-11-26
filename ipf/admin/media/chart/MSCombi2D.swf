@@ -1,0 +1,1083 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+ 
+ <title>fusioncharts - Google Code</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ 
+ <link type="text/css" rel="stylesheet" href="http://www.gstatic.com/codesite/ph/5287988003842238763/css/d_20081117.css" />
+ 
+ <link type="text/css" rel="stylesheet" href="http://www.gstatic.com/codesite/ph/5287988003842238763/css/d_sb_20080522.css" />
+ 
+ 
+ 
+<!--[if IE]>
+ <link type="text/css" rel="stylesheet" href="http://www.gstatic.com/codesite/ph/5287988003842238763/css/d_ie.css" />
+<![endif]-->
+</head>
+<body class="t4">
+ <div id=gaia>
+  <font size="-1">
+ 
+ <b>alex.litovchenko@gmail.com</b>
+ 
+ | <a href="/p/support/wiki/WhatsNew" style="color:#a03">What's new?</a>
+ | <a href="/u/alex.litovchenko/">Profile</a>
+ | <a href="/hosting/settings">Settings</a>
+ | <a href="/p/support/">Help</a>
+ | <a href="http://www.google.com/accounts/Logout?continue=http%3A%2F%2Fcode.google.com%2Fp%2Ffusioncharts%2Fsource%2Fbrowse%2Ftrunk%2FgViz%2Fcharts%2FMSCombi2D.swf">Sign out</a>
+ 
+ </font> 
+
+ </div>
+ <table style="padding:0px; margin: 0px 0px -6px 0; width:100%" cellpadding=0 cellspacing=0>
+ <tr>
+ <td style="width:153px"><a href="/"><img src="http://www.gstatic.com/codesite/ph/images/code_sm.png" width=153 height=55 alt="Google"/></a></td>
+ <td style="padding-left: 1.5em">
+ 
+ <div id="pname">
+ <a href="/p/fusioncharts/" style="text-decoration:none; color:#000">fusioncharts</a>
+ </div>
+ <div id="psum">
+ <i><a href="/p/fusioncharts/" style="text-decoration:none; color:#000">Animated Flash Charts and Graphs</a></i>
+ </div>
+ 
+ </td>
+ <td style="white-space:nowrap; text-align:right">
+ 
+ <form action="/hosting/search">
+ <input size=30 name=q value=""/>
+ <input type=submit name=projectsearch value="Search Projects" />
+ <input type=submit name=websearch value="Search the Web" />
+ </form>
+ 
+ </tr>
+ </table>
+
+
+<table id="mt" cellspacing="0" cellpadding="0" width="100%" border="0">
+ <tr>
+ <th onclick="if (!cancelBubble) _go('/p/fusioncharts/');">
+ <div class="tab inactive">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <a onclick="cancelBubble=true;" href="/p/fusioncharts/">Project&nbsp;Home</a>
+ </div>
+ </div>
+ </th><td>&nbsp;&nbsp;</td>
+ 
+ 
+ 
+ 
+ <th onclick="if (!cancelBubble) _go('/p/fusioncharts/downloads/list');">
+ <div class="tab inactive">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <a onclick="cancelBubble=true;" href="/p/fusioncharts/downloads/list">Downloads</a>
+ </div>
+ </div>
+ </th><td>&nbsp;&nbsp;</td>
+ 
+ 
+ 
+ 
+ 
+ <th onclick="if (!cancelBubble) _go('/p/fusioncharts/w/list');">
+ <div class="tab inactive">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <a onclick="cancelBubble=true;" href="/p/fusioncharts/w/list">Wiki</a>
+ </div>
+ </div>
+ </th><td>&nbsp;&nbsp;</td>
+ 
+ 
+ 
+ 
+ 
+ <th onclick="if (!cancelBubble) _go('/p/fusioncharts/issues/list');">
+ <div class="tab inactive">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <a onclick="cancelBubble=true;" href="/p/fusioncharts/issues/list">Issues</a>
+ </div>
+ </div>
+ </th><td>&nbsp;&nbsp;</td>
+ 
+ 
+ 
+ 
+ 
+ <th onclick="if (!cancelBubble) _go('/p/fusioncharts/source/checkout');">
+ <div class="tab active">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <a onclick="cancelBubble=true;" href="/p/fusioncharts/source/checkout">Source</a>
+ </div>
+ </div>
+ </th><td>&nbsp;&nbsp;</td>
+ 
+ 
+ <td width="100%">&nbsp;</td>
+ </tr>
+</table>
+<table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" class="st">
+ <tr>
+ 
+ 
+ 
+ 
+ 
+ 
+ <td>
+ 
+<div class="st2">
+ <div class="isf">
+ <span class="inst1"><a href="/p/fusioncharts/source/checkout">Checkout</a></span> |
+ <span class="inst2"><a href="/p/fusioncharts/source/browse/">Browse</a></span> |
+ <span class="inst3"><a href="/p/fusioncharts/source/list">Changes</a></span> |
+ <form action="http://www.google.com/codesearch" method="get" style="display:inline"
+ onsubmit="document.getElementById('codesearchq').value = document.getElementById('origq').value + ' package:http://fusioncharts\\.googlecode\\.com'">
+ <input type="hidden" name="q" id="codesearchq" value="">
+ <input maxlength="2048" size="35" id="origq" name="origq" value="" title="Google Code Search" style="font-size:92%">&nbsp;<input type="submit" value="Search Trunk" name="btnG" style="font-size:92%">
+  |
+ <a href="/p/fusioncharts/issues/entry?show=review&former=sourcelist">Request Code Review</a>
+ 
+ </form>
+ </div>
+</div>
+
+
+ </td>
+ 
+ 
+ 
+ 
+ 
+ <td height=4 align=right valign=top class="bevel-right">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ </td>
+ </tr>
+</table>
+<script>
+ var cancelBubble = false;
+ function _go(url) { document.location = url; }
+</script>
+
+<div id="maincol">
+<!-- IE -->
+
+
+
+<div class=expand>
+
+
+<style>
+ #file_flipper { display: inline; float: right; white-space: nowrap; }
+ #file_flipper.hidden { display: none; }
+ #file_flipper .pagelink { color: #0000CC; text-decoration: underline; }
+ #file_flipper #visiblefiles { padding-left: 0.5em; padding-right: 0.5em; }
+</style>
+<div id="nav_and_rev" class="heading">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <div class="">
+ <div class="src_crumbs src_nav">
+ <strong class="src_nav">Source Path:&nbsp;</strong>
+ <span id="crumb_root">
+ 
+ <a href="/p/fusioncharts/source/browse/?r=265">svn</a>/&nbsp;</span>
+ <span id="crumb_links" class="ifClosed"><a href="/p/fusioncharts/source/browse/trunk/?r=265">trunk</a><span class="sp">/&nbsp;</span><a href="/p/fusioncharts/source/browse/trunk/gViz/?r=265">gViz</a><span class="sp">/&nbsp;</span><a href="/p/fusioncharts/source/browse/trunk/gViz/charts/?r=265">charts</a><span class="sp">/&nbsp;</span>MSCombi2D.swf</span>
+ 
+ </div>
+ 
+ </div>
+ 
+ <div class="pagination" style="margin-left: 2em">
+ <a href="/p/fusioncharts/source/browse/trunk/gViz/charts/MSCombi2D.swf?r=245" title=Prev>&lsaquo; r245</a>
+ <b>r413</b>
+ 
+ </div>
+ 
+ 
+ <div style="clear:both"></div>
+ </div>
+</div>
+
+<style type="text/css">
+ 
+ #nums td:target a {color:black; font-weight:bold}
+ 
+  tr.inline_comment {
+ background: #fff;
+ vertical-align: top;
+ }
+ div.draft, div.published {
+ padding: .3em;
+ border: 1px solid #999; 
+ margin-bottom: .1em;
+ font-family: arial, sans-serif;
+ max-width: 60em;
+ }
+ div.draft {
+ background: #ffa;
+ } 
+ div.published {
+ background: #e5ecf9;
+ }
+ div.published .body, div.draft .body {
+ padding: .5em .1em .1em .1em;
+ max-width: 60em;
+ white-space: pre-wrap;
+ white-space: -moz-pre-wrap;
+ white-space: -pre-wrap;
+ white-space: -o-pre-wrap;
+ word-wrap: break-word;
+ }
+ div.draft .actions {
+ margin-left: 1em;
+ font-size: 90%;
+ }
+ div.draft form {
+ padding: .5em .5em .5em 0;
+ }
+ div.draft textarea, div.published textarea {
+ width: 95%;
+ height: 10em;
+ font-family: arial, sans-serif;
+ margin-bottom: .5em;
+ }
+
+</style>
+<div class="fc">
+ 
+
+
+<p><em>This file is not plain text.</em></p>
+
+
+
+ <div id=log>
+ <div style="text-align:right">
+ <a class=ifCollapse href="#" onclick="_toggleMeta('fusioncharts', this)">Show details</a>
+ <a class=ifExpand href="#" onclick="_toggleMeta('fusioncharts', this)">Hide details</a>
+ </div>
+ <div class="ifExpand">
+ 
+ <div class="pmeta_bubble_bg" style="border:1px solid white">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <div id=changelog>
+ <p>Change log</p>
+ <div>
+ <a href="/p/fusioncharts/source/detail?spec=svn413&r=265">r265</a>
+ by FusionCharts
+ on Feb 10, 2008
+ &nbsp; <a href="/p/fusioncharts/source/diff?spec=svn413&r=265&amp;format=side&amp;path=/trunk/gViz/charts/MSCombi2D.swf&amp;old_path=/trunk/gViz/charts/MSCombi2D.swf&amp;old=245">Diff</a>
+ </div>
+ <pre>Added v3.0.6 charts</pre>
+ </div>
+ 
+ 
+ 
+ 
+ 
+ 
+ <script type='text/javascript'>
+ var detail_url = '/p/fusioncharts/source/detail?r=265&spec=svn413';
+ var publish_url = '/p/fusioncharts/source/detail?r=265&spec=svn413#publish';
+ // describe the paths of this revision in javascript.
+ var changed_paths = [];
+ var changed_urls = [];
+ 
+ changed_paths.push('/trunk/gViz/charts/Area2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Area2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Bar2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Bar2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Bubble.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Bubble.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/CandleStick.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/CandleStick.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Circumplex.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Circumplex.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Column2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Column2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Column3D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Column3D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/DateTimeTest.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/DateTimeTest.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/DirectLoadTest.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/DirectLoadTest.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Doughnut2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Doughnut2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Doughnut3D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Doughnut3D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/DragArea.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/DragArea.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/DragColumn2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/DragColumn2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/DragLine.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/DragLine.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/DragNode.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/DragNode.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/ErrorBar2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/ErrorBar2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/GridColumn3D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/GridColumn3D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/InverseMSArea.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/InverseMSArea.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/InverseMSColumn2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/InverseMSColumn2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/InverseMSLine.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/InverseMSLine.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Kagi.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Kagi.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Line.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Line.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/LogMSColumn2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/LogMSColumn2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/LogMSLine.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/LogMSLine.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSArea.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSArea.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSBar2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSBar2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSBar3D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSBar3D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSColumn2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSColumn2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSColumn3D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSColumn3D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSColumn3DLineDY.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSColumn3DLineDY.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSColumnLine3D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSColumnLine3D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSCombi2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSCombi2D.swf?r=265&spec=svn413');
+ 
+ var selected_path = '/trunk/gViz/charts/MSCombi2D.swf';
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSCombiDY2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSCombiDY2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSLine.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSLine.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSSpline.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSSpline.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSSplineArea.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSSplineArea.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSStackedColumn2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSStackedColumn2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MSStackedColumn2DLineDY.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MSStackedColumn2DLineDY.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MultiAxisLine.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MultiAxisLine.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/MultiLevelPie.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/MultiLevelPie.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Pie2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Pie2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Pie3D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Pie3D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Radar.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Radar.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/SSGrid.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/SSGrid.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/Scatter.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/Scatter.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/ScrollArea2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollArea2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/ScrollColumn2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollColumn2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/ScrollCombi2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollCombi2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/ScrollCombiDY2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollCombiDY2D.swf?r=265&spec=svn413');
+ 
+ 
+ changed_paths.push('/trunk/gViz/charts/ScrollLine2D.swf');
+ changed_urls.push('/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollLine2D.swf?r=265&spec=svn413');
+ 
+ 
+ function getCurrentPageIndex() {
+ for (var i = 0; i < changed_paths.length; i++) {
+ if (selected_path == changed_paths[i]) {
+ return i;
+ }
+ }
+ }
+ function getNextPage() {
+ var i = getCurrentPageIndex();
+ if (i < changed_paths.length - 1) {
+ return changed_urls[i + 1];
+ }
+ return null;
+ }
+ function getPreviousPage() {
+ var i = getCurrentPageIndex();
+ if (i > 0) {
+ return changed_urls[i - 1];
+ }
+ return null;
+ }
+ function gotoNextPage() {
+ var page = getNextPage();
+ if (!page) {
+ page = detail_url;
+ }
+ window.location = page;
+ }
+ function gotoPreviousPage() {
+ var page = getPreviousPage();
+ if (!page) {
+ page = detail_url;
+ }
+ window.location = page;
+ }
+ function gotoDetailPage() {
+ window.location = detail_url;
+ }
+ function gotoPublishPage() {
+ window.location = publish_url;
+ }
+</script>
+ 
+ <style type=text/css>
+ #review_nav {
+ border-top: 3px solid white;
+ padding-top: 6px;
+ margin-top: 1em;
+ }
+ #review_nav td {
+ vertical-align: middle;
+ }
+ #review_nav select {
+ margin: .5em 0;
+ }
+ </style>
+ <div id="review_nav">
+ <table><tr><td>Go to:&nbsp;</td><td>
+ <select name="files_in_rev" onchange="window.location=this.value">
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Area2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Area2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Bar2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Bar2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Bubble.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Bubble.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/CandleStick.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/CandleStick.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Circumplex.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Circumplex.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Column2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Column2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Column3D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Column3D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/DateTimeTest.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/DateTimeTest.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/DirectLoadTest.swf?r=265&amp;spec=svn413"
+ 
+ >...k/gViz/charts/DirectLoadTest.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Doughnut2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Doughnut2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Doughnut3D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Doughnut3D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/DragArea.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/DragArea.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/DragColumn2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/DragColumn2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/DragLine.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/DragLine.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/DragNode.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/DragNode.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/ErrorBar2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/ErrorBar2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/GridColumn3D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/GridColumn3D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/InverseMSArea.swf?r=265&amp;spec=svn413"
+ 
+ >...nk/gViz/charts/InverseMSArea.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/InverseMSColumn2D.swf?r=265&amp;spec=svn413"
+ 
+ >...Viz/charts/InverseMSColumn2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/InverseMSLine.swf?r=265&amp;spec=svn413"
+ 
+ >...nk/gViz/charts/InverseMSLine.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Kagi.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Kagi.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Line.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Line.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/LogMSColumn2D.swf?r=265&amp;spec=svn413"
+ 
+ >...nk/gViz/charts/LogMSColumn2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/LogMSLine.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/LogMSLine.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSArea.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSArea.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSBar2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSBar2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSBar3D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSBar3D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSColumn2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSColumn2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSColumn3D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSColumn3D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSColumn3DLineDY.swf?r=265&amp;spec=svn413"
+ 
+ >...gViz/charts/MSColumn3DLineDY.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSColumnLine3D.swf?r=265&amp;spec=svn413"
+ 
+ >...k/gViz/charts/MSColumnLine3D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSCombi2D.swf?r=265&amp;spec=svn413"
+ selected="selected"
+ >/trunk/gViz/charts/MSCombi2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSCombiDY2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSCombiDY2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSLine.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSLine.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSSpline.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSSpline.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSSplineArea.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/MSSplineArea.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSStackedColumn2D.swf?r=265&amp;spec=svn413"
+ 
+ >...Viz/charts/MSStackedColumn2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MSStackedColumn2DLineDY.swf?r=265&amp;spec=svn413"
+ 
+ >...arts/MSStackedColumn2DLineDY.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MultiAxisLine.swf?r=265&amp;spec=svn413"
+ 
+ >...nk/gViz/charts/MultiAxisLine.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/MultiLevelPie.swf?r=265&amp;spec=svn413"
+ 
+ >...nk/gViz/charts/MultiLevelPie.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Pie2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Pie2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Pie3D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Pie3D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Radar.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Radar.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/SSGrid.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/SSGrid.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/Scatter.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/Scatter.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollArea2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/ScrollArea2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollColumn2D.swf?r=265&amp;spec=svn413"
+ 
+ >...k/gViz/charts/ScrollColumn2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollCombi2D.swf?r=265&amp;spec=svn413"
+ 
+ >...nk/gViz/charts/ScrollCombi2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollCombiDY2D.swf?r=265&amp;spec=svn413"
+ 
+ >.../gViz/charts/ScrollCombiDY2D.swf</option>
+ 
+ <option value="/p/fusioncharts/source/browse/trunk/gViz/charts/ScrollLine2D.swf?r=265&amp;spec=svn413"
+ 
+ >/trunk/gViz/charts/ScrollLine2D.swf</option>
+ 
+ </select>
+ </td></tr></table>
+ 
+ 
+ 
+
+
+
+
+ 
+ </div>
+ 
+ 
+ </div>
+ <div class="round1"></div>
+ <div class="round2"></div>
+ <div class="round4"></div>
+ </div>
+ <div class="pmeta_bubble_bg" style="border:1px solid white">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <div id=older_bubble>
+ <p>Older revisions</p>
+ 
+ 
+ <div class=closed style="margin-bottom:3px;" >
+ <img class=ifClosed onclick="_toggleHidden(this)" src="http://www.gstatic.com/codesite/ph/images/plus.gif" />
+ <img class=ifOpened onclick="_toggleHidden(this)" src="http://www.gstatic.com/codesite/ph/images/minus.gif" />
+ <a href="/p/fusioncharts/source/detail?spec=svn413&r=245">r245</a>
+ by fusioncharts
+ on Feb 08, 2008
+ &nbsp; <a href="/p/fusioncharts/source/diff?spec=svn413&r=245&amp;format=side&amp;path=/trunk/gViz/charts/MSCombi2D.swf&amp;old_path=/trunk/gViz/charts/MSCombi2D.swf&amp;old=0">Diff</a>
+ <br/>
+ <pre class=ifOpened>Upload existing GG files. Not yet
+modified to support Gviz</pre>
+ </div>
+ 
+ 
+ <a href="/p/fusioncharts/source/list?path=/trunk/gViz/charts/MSCombi2D.swf&start=265">All revisions of this file</a>
+ </div>
+ </div>
+ <div class="round1"></div>
+ <div class="round2"></div>
+ <div class="round4"></div>
+ </div>
+ <div class="pmeta_bubble_bg" style="border:1px solid white">
+ <div class="round4"></div>
+ <div class="round2"></div>
+ <div class="round1"></div>
+ <div class="box-inner">
+ <div id=fileinfo_bubble>
+ <p>File info</p>
+ 
+ <div>Size: 69013 bytes</div>
+ 
+ <div><a href="http://fusioncharts.googlecode.com/svn/trunk/gViz/charts/MSCombi2D.swf">View raw file</a></div>
+ </div>
+ 
+ <div id=props>
+ <p>File properties</p>
+ <dl>
+ 
+ <dt>svn:mime-type</dt>
+ <dd>application/octet-stream</dd>
+ 
+ </dl>
+ </div>
+ 
+ </div>
+ <div class="round1"></div>
+ <div class="round2"></div>
+ <div class="round4"></div>
+ </div>
+ </div>
+ </div>
+
+
+</div>
+</div>
+
+<script src="http://www.gstatic.com/codesite/ph/5287988003842238763/js/source_file_scripts_20080115.js"></script>
+
+ <style type="text/css">
+ 
+ .nocursor, .nocursor td, .cursor_hidden, .cursor_hidden td {
+ background-color: white;
+ height: 2px;
+ }
+ .cursor, .cursor td {
+ background-color: darkblue;
+ height: 2px;
+ display: '';
+ }
+ </style>
+ <script type='text/javascript' src='http://kibbles.googlecode.com/files/kibbles-1.3.0.comp.js'></script>
+ <script type='text/javascript'>
+ var lastStop = null;
+ var initilized = false;
+ 
+ function updateCursor(next, prev) {
+ if (prev && prev.element) {
+ prev.element.className = 'cursor_hidden';
+ }
+ if (next && next.element) {
+ next.element.className = 'cursor';
+ lastStop = next.index;
+ }
+ }
+ 
+ function pubRevealed(data) {
+ updateCursorForCell(data.cellId, 'cursor_hidden');
+ if (initilized) {
+ reloadCursors();
+ }
+ }
+ 
+ function draftRevealed(data) {
+ updateCursorForCell(data.cellId, 'cursor_hidden');
+ if (initilized) {
+ reloadCursors();
+ }
+ }
+ 
+ function draftDestroyed(data) {
+ updateCursorForCell(data.cellId, 'nocursor');
+ if (initilized) {
+ reloadCursors();
+ }
+ }
+ function reloadCursors() {
+ kibbles.skipper.reset();
+ loadCursors();
+ if (lastStop != null) {
+ kibbles.skipper.setCurrentStop(lastStop);
+ }
+ }
+ // possibly the simplest way to insert any newly added comments
+ // is to update the class of the corresponding cursor row,
+ // then refresh the entire list of rows.
+ function updateCursorForCell(cellId, className) {
+ var cell = document.getElementById(cellId);
+ // we have to go two rows back to find the cursor location
+ var row = getPreviousElement(cell.parentNode);
+ row.className = className;
+ }
+ // returns the previous element, ignores text nodes.
+ function getPreviousElement(e) {
+ var element = e.previousSibling;
+ if (element.nodeType == 3) {
+ element = element.previousSibling;
+ }
+ if (element && element.tagName) {
+ return element;
+ }
+ }
+ function findCursorRows() {
+ var rows = [];
+ var td = document.getElementById('lines'); 
+ for (var i = 0; i < td.childNodes.length; i++) {
+ var pre = td.childNodes[i]; 
+ if (pre.tagName && pre.tagName == 'PRE') {
+ var table = pre.childNodes[0];
+ var ts = table.childNodes[0]; 
+ for (var j = 0; j < ts.childNodes.length; j++) {
+ var tr = ts.childNodes[j];
+ if (tr.className.indexOf("cursor") == 0) {
+ rows.push(tr);
+ }
+ }
+ }
+ }
+ return rows;
+ }
+ function loadCursors() {
+ // register our elements with skipper
+ var elements = findCursorRows();
+ for (var i = 0; i < elements.length; i++) {
+ var element = elements[i]; 
+ element.className = 'cursor_hidden';
+ kibbles.skipper.append(element);
+ }
+ }
+ function toggleComments() {
+ CR_toggleCommentDisplay();
+ reloadCursors();
+ }
+ function keysOnLoadHandler() {
+ // setup skipper
+ kibbles.skipper.addStopListener(
+ kibbles.skipper.LISTENER_TYPE.PRE, updateCursor);
+ // Set the 'offset' option to return the middle of the client area
+ // an option can be a static value, or a callback
+ kibbles.skipper.setOption('padding_top', 50);
+ // Set the 'offset' option to return the middle of the client area
+ // an option can be a static value, or a callback
+ kibbles.skipper.setOption('padding_bottom', 100);
+ // Register our keys
+ kibbles.skipper.addFwdKey("n");
+ kibbles.skipper.addRevKey("p");
+ kibbles.keys.addKeyPressListener(
+ 'u', function() { window.location = detail_url; });
+ kibbles.keys.addKeyPressListener(
+ 'r', function() { window.location = detail_url + '#publish'; });
+ 
+ kibbles.keys.addKeyPressListener('j', gotoNextPage);
+ kibbles.keys.addKeyPressListener('k', gotoPreviousPage);
+ 
+ 
+ }
+ window.onload = function() {keysOnLoadHandler();};
+ </script>
+
+
+<!-- code review support -->
+<script src="http://www.gstatic.com/codesite/ph/5287988003842238763/js/code_review_scripts_20081023.js"></script>
+<script type="text/javascript">
+ 
+ // the comment form template
+ var form = "<div class=draft><div class=header><span class=title>Draft comment:</span></div>" +
+ "<div class='body'><form onsubmit='return false;'><textarea id=$ID>$BODY</textarea><br/>$ACTIONS</form></div>" +
+ "</div>";
+ // the comment "plate" template used for both draft and published comment "plates".
+ var draft_comment = "<div class=draft ondblclick='$ONDBLCLICK'>" +
+ "<div class=header><span class=title>Draft comment:</span><span class=actions>$ACTIONS</span></div>" +
+ "<pre id=$ID class=body>$BODY</pre>" +
+ "</div>";
+ var published_comment = "<div class=published>" +
+ "<div class=header><span class=title><a href='$PROFILE_URL'>$AUTHOR:</a></span><div>" +
+ "<pre id=$ID class=body>$BODY</pre>" +
+ "</div>";
+
+ function showPublishInstructions() {
+ var element = document.getElementById('review_instr');
+ if (element) {
+ element.className = 'opened';
+ }
+ }
+ function revsOnLoadHandler() {
+ // register our source container with the commenting code
+ _setup('fusioncharts', 'svn413', '/trunk/gViz/charts/MSCombi2D.swf', '0011bff7ea184934559c6f8e5cb96c8e',
+ CR_BrowseIntegrationFactory);
+ // register our hidden ui elements with the code commenting code ui builder.
+ CR_registerLayoutElement('form', form);
+ CR_registerLayoutElement('draft_comment', draft_comment);
+ CR_registerLayoutElement('published_comment', published_comment);
+ 
+ CR_registerActivityListener(CR_ACTIVITY_TYPE.REVEAL_DRAFT_PLATE, showPublishInstructions);
+ 
+ CR_registerActivityListener(CR_ACTIVITY_TYPE.REVEAL_PUB_PLATE, pubRevealed);
+ CR_registerActivityListener(CR_ACTIVITY_TYPE.REVEAL_DRAFT_PLATE, draftRevealed);
+ CR_registerActivityListener(CR_ACTIVITY_TYPE.DISCARD_DRAFT_COMMENT, draftDestroyed);
+ 
+ 
+ 
+ 
+ var initilized = true;
+ reloadCursors();
+ }
+ window.onload = function() {keysOnLoadHandler(); revsOnLoadHandler();};
+</script>
+
+<script type="text/javascript" src="http://www.gstatic.com/codesite/ph/5287988003842238763/js/dit_scripts_20081013.js"></script>
+
+ 
+ <script type="text/javascript" src="http://www.gstatic.com/codesite/ph/5287988003842238763/js/core_scripts_20081103.js"></script>
+ 
+ 
+ 
+ </div>
+<div id="footer" dir="ltr">
+ 
+ <div class="text">
+ 
+ &copy;2008 Google -
+ <a href="/">Code Home</a> -
+ <a href="/tos.html">Terms of Service</a> -
+ <a href="http://www.google.com/privacy.html">Privacy Policy</a> -
+ <a href="/more/">Site Directory</a>
+ 
+ </div>
+</div>
+<script type="text/javascript">
+/**
+ * Reports analytics.
+ * It checks for the analytics functionality (window._gat) every 100ms
+ * until the analytics script is fully loaded in order to invoke siteTracker.
+ */
+function _CS_reportAnalytics() {
+ window.setTimeout(function() {
+ if (window._gat) {
+ var siteTracker = _gat._getTracker("UA-18071-1");
+ siteTracker._initData();
+ siteTracker._trackPageview();
+ 
+ } else {
+ _CS_reportAnalytics();
+ }
+ }, 100);
+}
+</script>
+
+ 
+ 
+
+
+ 
+ </body>
+</html>
+
