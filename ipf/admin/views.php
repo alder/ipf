@@ -42,6 +42,7 @@ function IPF_Admin_Views_Index($request, $match){
                 $app_list[$app->getName()] = new IPF_Template_ContextVars(array(
                     'name' => $app->getTitle(),
                     'path' => $app->getSlug(),
+                    'additions' => $app->getAdditions(),
                     'models' => $models,
                 ));
             }

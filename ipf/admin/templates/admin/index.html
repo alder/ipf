@@ -19,6 +19,11 @@
             <td>{if array_search('change',$model['perms'])!==false}<a class="changelink" href="{url 'IPF_Admin_Views_ListItems', array($app.path, $model.path)}">{trans 'Change'}</a>{/if}</td>
         </tr>
         {/foreach}
+        {foreach $app.additions as $item}
+        <tr>
+            <th colspan="3" scope="row"><a href="{$item['url']}">{$item['title']}</a></th>
+        </tr>
+        {/foreach}
         </tbody>
         </table>
 		</div>

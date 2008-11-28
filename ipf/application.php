@@ -43,6 +43,10 @@ abstract class IPF_Application{
         return str_replace('ipf_','',strtolower($this->name));
     }
 
+    public function getAdditions(){
+        return array();
+    }
+
     public function getTitle(){
         return $this->name;
     }
