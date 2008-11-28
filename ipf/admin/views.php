@@ -1,20 +1,7 @@
 <?php
 
-function checkAdminAuth($request){
-    $ok = true;
-    if ($request->user->isAnonymous())
-        $ok = false;
-    elseif ( (!$request->user->is_staff) && (!$request->user->is_superuser) )
-        $ok = false;
-
-    if ($ok)
-        return true;
-    else
-        return new IPF_HTTP_Response_Redirect(IPF_HTTP_URL_urlForView('IPF_Admin_Views_Login'));
-}
-
 function IPF_Admin_Views_Index($request, $match){
-    $ca = checkAdminAuth($request);
+    $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
     $apps = array();
@@ -66,7 +53,7 @@ function IPF_Admin_Views_Index($request, $match){
 }
 
 function IPF_Admin_Views_ListItems($request, $match){
-    $ca = checkAdminAuth($request);
+    $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
     $lmodel = $match[2];
@@ -83,7 +70,7 @@ function IPF_Admin_Views_ListItems($request, $match){
 }
 
 function IPF_Admin_Views_EditItem($request, $match){
-    $ca = checkAdminAuth($request);
+    $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
     $lapp = $match[1];
@@ -104,7 +91,7 @@ function IPF_Admin_Views_EditItem($request, $match){
 }
 
 function IPF_Admin_Views_DeleteItem($request, $match){
-    $ca = checkAdminAuth($request);
+    $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
     $lapp = $match[1];
@@ -126,7 +113,7 @@ function IPF_Admin_Views_DeleteItem($request, $match){
 
 
 function IPF_Admin_Views_AddItem($request, $match){
-    $ca = checkAdminAuth($request);
+    $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
     $lapp = $match[1];
@@ -144,7 +131,7 @@ function IPF_Admin_Views_AddItem($request, $match){
 }
 
 function IPF_Admin_Views_ChangePassword($request, $match){
-    $ca = checkAdminAuth($request);
+    $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
     $lapp = 'auth';

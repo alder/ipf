@@ -18,4 +18,18 @@ class IPF_Admin_App extends IPF_Application{
             array('regex'=>'logout/$#i', 'func'=>'IPF_Admin_Views_Logout'),
         );
     }
+
+	static function checkAdminAuth($request){
+	    $ok = true;
+	    if ($request->user->isAnonymous())
+	        $ok = false;
+	    elseif ( (!$request->user->is_staff) && (!$request->user->is_superuser) )
+	        $ok = false;
+
+	    if ($ok)
+	        return true;
+	    else
+	        return new IPF_HTTP_Response_Redirect(IPF_HTTP_URL_urlForView('IPF_Admin_Views_Login'));
+	}
+
 }
