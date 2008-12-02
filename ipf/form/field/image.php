@@ -13,7 +13,6 @@ function IPF_Form_Field_moveImageToUploadFolder($value, $params=array())
 
     if(!getimagesize($image))
         throw new IPF_Exception_Form(__('An error occured when upload the image.'));
-
     return $name;
 }
 

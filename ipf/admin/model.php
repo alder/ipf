@@ -258,7 +258,6 @@ class IPF_Admin_Model{
             $this->setInlines($o, &$data);
 
             if ( ($form->isValid()) && ($this->isValidInlines()) ) {
-                #print_r($form->cleaned_data);
                 $item = $form->save();
                 $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::CHANGE);

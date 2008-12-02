@@ -1272,8 +1272,9 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 if (($val!==null) && ($val==''))
                     continue;
             }
-            if (array_search($key,$names))
+            if (array_search($key,$names)){
                 $this->$key = $val;
+            }
         }
     }
 

@@ -131,6 +131,7 @@ class IPF_Form_Model extends IPF_Form
                 $errors = $erecords[0]->getErrorStack();
                 foreach($errors as $k=>$v){
                     print($k);
+                    print_r($v);
                 }
             }
         }
