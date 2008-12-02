@@ -119,7 +119,7 @@ class IPF_Admin_Model{
     }
 
     public function ListItemsQuery(){
-        $this->q = IPF_ORM_Query::create()->from($this->modelName)->orderby('id desc');
+        $this->q = IPF_ORM_Query::create()->from($this->modelName)->orderby('1 desc');
     }
 
     public function ListRow($o){
