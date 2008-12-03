@@ -11,6 +11,8 @@ class IPF_Form implements Iterator
     public $errors = array();
     public $is_bound = false;
     public $f = null;
+    public $before_render = '';
+    public $after_render = '';
     public $label_suffix = ':';
 
     protected $is_valid = null;
@@ -188,7 +190,7 @@ class IPF_Form implements Iterator
                 $output[] = $_tmp;
             }
         }
-        return new IPF_Template_SafeString(implode("\n", $output), true);
+        return new IPF_Template_SafeString($this->before_render.implode("\n", $output).$this->after_render, true);
     }
 
     public function render_p()
@@ -210,9 +212,11 @@ class IPF_Form implements Iterator
 
     public function render_admin()
     {
-        return $this->htmlOutput('<div class="form-row"><div>%2$s %1$s%3$s%4$s</div></div>',
-                                 '<div>%s</div>',
-                                 '</div>', '<p class="help">%s</p>', true);
+        return $this->htmlOutput(
+			'<div class="form-row"><div>%2$s %1$s%3$s%4$s</div></div>',
+            '<div>%s</div>',
+            '</div>', '<p class="help">%s</p>', true
+        );
     }
 
     function __get($prop)
