@@ -16,8 +16,12 @@ function IPF_Admin_Views_Index($request, $match){
                 if ($ma!==null){
                     $perms = $ma->getPerms($request);
                     if (array_search('view', $perms)!==false){
+                    	if (method_exists($ma, 'verbose_name'))
+                    		$mname = $ma->verbose_name();
+                    	else
+                    		$mname = $m;
                         $models[] = new IPF_Template_ContextVars(array(
-                            'name'=>$m,
+                            'name'=>$mname,
                             'path'=>strtolower($m),
                             'perms'=>$perms,
                         ));

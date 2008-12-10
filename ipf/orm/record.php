@@ -1287,5 +1287,4 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     		return $this->_custom[$name];
     	return null;
     }
-
 }
