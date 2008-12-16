@@ -56,6 +56,8 @@ function IPF_Admin_Views_Index($request, $match){
     return IPF_Shortcuts::RenderToResponse('admin/index.html', $context, $request);
 }
 
+
+
 function IPF_Admin_Views_ListItems($request, $match){
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
@@ -71,6 +73,47 @@ function IPF_Admin_Views_ListItems($request, $match){
             }
         }
     }
+}
+
+function IPF_Admin_Views_Reorder($request, $match){
+    $ca = IPF_Admin_App::checkAdminAuth($request);
+    if ($ca!==true) return $ca;
+
+    if ($request->method != 'POST')
+    	return new IPF_HTTP_Response_NotFound();
+
+    if (!isset($request->POST['ids']))
+    	return new IPF_HTTP_Response_NotFound();
+
+    $lapp = $match[1];
+    $lmodel = $match[2];
+
+    foreach (IPF_Project::getInstance()->appList() as $app){
+        foreach($app->modelList() as $m){
+            if (strtolower($m)==$lmodel){
+                $ma = IPF_Admin_Model::getModelAdmin($m);
+                if ($ma===null)
+                    return new IPF_HTTP_Response_NotFound();
+
+                if (method_exists($ma, 'list_order'))
+                	$ord_field = $ma->list_order();
+                else
+			    	return new IPF_HTTP_Response_NotFound();
+
+                $o = new $m();
+                $ids = split(',',(string)$request->POST['ids']);
+                $ord = 1;
+                foreach($ids as $id){
+	                $item = $o->getTable()->find($id);
+	                $item[$ord_field] = $ord;
+	                $item->save();
+	                $ord++;
+                }
+			    return new IPF_HTTP_Response_Json("Ok");
+            }
+        }
+    }
+    return new IPF_HTTP_Response_Json("Cannot find model");
 }
 
 function IPF_Admin_Views_EditItem($request, $match){

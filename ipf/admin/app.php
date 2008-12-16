@@ -10,6 +10,7 @@ class IPF_Admin_App extends IPF_Application{
         return array(
             array('regex'=>'$#', 'func'=>'IPF_Admin_Views_Index'),
             array('regex'=>'([\w\_\-]+)/([\w\_\-]+)/$#i', 'func'=>'IPF_Admin_Views_ListItems'),
+            array('regex'=>'([\w\_\-]+)/([\w\_\-]+)/reorder/$#i', 'func'=>'IPF_Admin_Views_Reorder'),
             array('regex'=>'([\w\_\-]+)/([\w\_\-]+)/add/$#i', 'func'=>'IPF_Admin_Views_AddItem'),
             array('regex'=>'([\w\_\-]+)/([\w\_\-]+)/([\w\_\-]+)/$#i', 'func'=>'IPF_Admin_Views_EditItem'),
             array('regex'=>'([\w\_\-]+)/([\w\_\-]+)/([\w\_\-]+)/delete/$#i', 'func'=>'IPF_Admin_Views_DeleteItem'),

@@ -48,3 +48,5 @@
 .paginator .end { border-width:2px !important; margin-right:6px; }
 .paginator .this-page { border:solid 1px #ccc; padding:2px 6px; font-weight:bold; vertical-align:top; }
 .paginator a:hover { color:white; background:#5b80b2; border-color:#036; }
+
+.ItemsDragClass{background-color:#E3F3FE;}

@@ -102,6 +102,9 @@ class IPF_Admin_Model{
     }
 
     public function ListItemsHeader(){
+
+
+
         $this->header = array();
         if (method_exists($this,'list_display'))
             $this->names = $this->list_display();
@@ -191,8 +194,6 @@ class IPF_Admin_Model{
     protected function _getChangeTemplate(){
         return 'admin/change.html';
     }
-
-
 
     protected function _beforeEdit($o){
         $this->_beforeChange($o);
@@ -394,9 +395,9 @@ class IPF_Admin_Model{
         $objects = $pager->getPager()->execute();
 
         $context = array(
+        	'orderable'=>method_exists($this, 'list_order'),
             'page_title'=>$this->modelName.' List',
             'header'=>$this->header,
-            'classname'=>$this->modelName,
             'objects'=>$objects,
             'pager'=>$pager,
             'classname'=>$this->modelName,

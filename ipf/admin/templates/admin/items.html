@@ -7,6 +7,24 @@
 
 {block content}
 
+{if $orderable}
+<script language="javascript" type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.tablednd.js"></script>
+<script type="text/javascript">
+var reorder_url = "reorder/";
+{literal}
+$(document).ready(function()
+{
+	$('#items-grid').tableDnD({
+        onDragClass: "ItemsDragClass",
+		onDrop: function(table, row) {
+            $.post(reorder_url, {'ids': $.tableDnD.serialize()}, function(data){});
+        }
+	});
+});
+{/literal}
+</script>
+{/if}
+
 <div id="content" class="flex">
     <h1>{$page_title}</h1>
 	<div id="content-main">
@@ -26,9 +44,7 @@
 	        {/foreach}
 	        </div>
 	        {/if}
-
-
-	        <table>
+	        <table id="items-grid">
 	            <thead>
 	                <tr>
 	                {foreach $header as $h}
@@ -38,7 +54,7 @@
 	            </thead>
 	            <tbody>
 	                {foreach $objects as $o}
-	                <tr>
+	                <tr class="trsort" id="{$o.id}">
 	                    {foreach $o.ModelAdmin().ListRow($o) as $v}
 	                    <td>{$v|safe}</td>
 	                    {/foreach}
