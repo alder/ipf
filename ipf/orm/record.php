@@ -1010,6 +1010,17 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         return $id;
     }
 
+    public function pk($sep='_')
+    {
+    	$pk = '';
+    	while (list($key, $val) = each($this->_id)) {
+    		if ($pk!='')
+    			$pk .= $sep;
+    		$pk .= $val;
+		}
+        return $pk;
+    }
+
     public function getLast()
     {
         return $this;

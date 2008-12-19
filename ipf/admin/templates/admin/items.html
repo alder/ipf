@@ -54,7 +54,7 @@ $(document).ready(function()
 	            </thead>
 	            <tbody>
 	                {foreach $objects as $o}
-	                <tr class="trsort" id="{$o.id}">
+	                <tr class="trsort" id="{$o.pk()}">
 	                    {foreach $o.ModelAdmin().ListRow($o) as $v}
 	                    <td>{$v|safe}</td>
 	                    {/foreach}
