@@ -9,7 +9,7 @@ abstract class IPF_ORM_Relation implements ArrayAccess
 
     const ONE   = 0;
     const MANY  = 2;
-    
+
     protected $definition = array('alias'       => true,
                                   'foreign'     => true,
                                   'local'       => true,
@@ -39,7 +39,7 @@ abstract class IPF_ORM_Relation implements ArrayAccess
             if (isset($definition[$key])) {
                 $def[$key] = $definition[$key];
             } else {
-                $def[$key] = $this->definition[$key];          
+                $def[$key] = $this->definition[$key];
             }
         }
         $this->definition = $def;
@@ -75,7 +75,7 @@ abstract class IPF_ORM_Relation implements ArrayAccess
         if (isset($this->definition[$offset])) {
             return $this->definition[$offset];
         }
-        
+
         return null;
     }
 
@@ -91,7 +91,7 @@ abstract class IPF_ORM_Relation implements ArrayAccess
         $this->definition[$offset] = false;
     }
 
-    public function toArray() 
+    public function toArray()
     {
         return $this->definition;
     }
@@ -105,7 +105,7 @@ abstract class IPF_ORM_Relation implements ArrayAccess
     {
         return $this->definition['type'];
     }
-    
+
     public function isCascadeDelete()
     {
         return in_array('delete', $this->definition['cascade']);
@@ -127,7 +127,7 @@ abstract class IPF_ORM_Relation implements ArrayAccess
     {
         return $this->definition['local'];
     }
-    
+
     final public function getLocalFieldName()
     {
         return $this->definition['localTable']->getFieldName($this->definition['local']);
@@ -137,7 +137,7 @@ abstract class IPF_ORM_Relation implements ArrayAccess
     {
         return $this->definition['foreign'];
     }
-    
+
     final public function getForeignFieldName()
     {
         return $this->definition['table']->getFieldName($this->definition['foreign']);

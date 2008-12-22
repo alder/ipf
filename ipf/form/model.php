@@ -34,7 +34,7 @@ class IPF_Form_Model extends IPF_Form
             foreach($db_relations as $name => $relation){
                 if (array_search($name,$exclude)!==false)
                     continue;
-                $this->addDBRelation($name,$relation);
+                $this->addDBRelation($name,$relation,$col);
 		    }
         }
         else{
@@ -47,7 +47,7 @@ class IPF_Form_Model extends IPF_Form
                 if (array_key_exists($uname,$db_columns))
                     $this->addDBField($uname,$db_columns[$uname]);
                 elseif (array_key_exists($uname,$db_relations))
-                    $this->addDBRelation($uname,$db_relations[$uname]);
+                    $this->addDBRelation($uname,$db_relations[$uname],$db_columns[$db_relations[$uname]->getLocalFieldName()]);
             }
         }
     }
@@ -87,18 +87,24 @@ class IPF_Form_Model extends IPF_Form
         }
     }
 
-    function addDBRelation($name,$relation){
+    function addDBRelation($name,$relation,$col){
+
+    	if (isset($col['notblank']))
+    		$blank = false;
+    	else
+    		$blank = true;
+
         if ($relation->getType()==IPF_ORM_Relation::ONE_AGGREGATE){
             $name .= "_id";
             $db_field = new IPF_Form_DB_Foreignkey('',$name);
-            $defaults = array('blank' => true, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
+            $defaults = array('blank' => $blank, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
             $form_field = $db_field->formField($defaults);
             $this->fields[$name] = $form_field;
             return;
         }
         if ($relation->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
             $db_field = new IPF_Form_DB_ManyToMany('',$name);
-            $defaults = array('blank' => true, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
+            $defaults = array('blank' => $blank, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
             $form_field = $db_field->formField($defaults);
             $this->fields[$name] = $form_field;
             return;
