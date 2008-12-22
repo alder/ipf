@@ -1,12 +1,12 @@
 <?php
 
-class IPF_ORM_Relation_Parser 
+class IPF_ORM_Relation_Parser
 {
     protected $_table;
     protected $_relations = array();
     protected $_pending   = array();
 
-    public function __construct(IPF_ORM_Table $table) 
+    public function __construct(IPF_ORM_Table $table)
     {
         $this->_table = $table;
     }
@@ -16,21 +16,21 @@ class IPF_ORM_Relation_Parser
         return $this->_table;
     }
 
-    public function getPendingRelation($name) 
+    public function getPendingRelation($name)
     {
         if ( ! isset($this->_pending[$name])) {
             throw new IPF_ORM_Exception('Unknown pending relation ' . $name);
         }
-        
+
         return $this->_pending[$name];
     }
 
-    public function getPendingRelations() 
+    public function getPendingRelations()
     {
         return $this->_pending;
     }
 
-    public function unsetPendingRelations($name) 
+    public function unsetPendingRelations($name)
     {
        unset($this->_pending[$name]);
     }
@@ -40,7 +40,7 @@ class IPF_ORM_Relation_Parser
         if ( ! isset($this->_pending[$name]) && ! isset($this->_relations[$name])) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -60,7 +60,7 @@ class IPF_ORM_Relation_Parser
         }
 
         $this->_pending[$alias] = array_merge($options, array('class' => $name, 'alias' => $alias));
-        
+
         return $this->_pending[$alias];
     }
 
@@ -74,14 +74,14 @@ class IPF_ORM_Relation_Parser
             $def = $this->_pending[$alias];
             $identifierColumnNames = $this->_table->getIdentifierColumnNames();
             $idColumnName = array_pop($identifierColumnNames);
-        
+
             // check if reference class name exists
             // if it does we are dealing with association relation
             if (isset($def['refClass'])) {
                 $def = $this->completeAssocDefinition($def);
                 $localClasses = array_merge($this->_table->getOption('parents'), array($this->_table->getComponentName()));
 
-                if ( ! isset($this->_pending[$def['refClass']]) && 
+                if ( ! isset($this->_pending[$def['refClass']]) &&
                      ! isset($this->_relations[$def['refClass']])) {
 
                     $parser = $def['refTable']->getRelationParser();
@@ -133,7 +133,6 @@ class IPF_ORM_Relation_Parser
         }
         if ($recursive) {
             $this->getRelations();
-
             return $this->getRelation($alias, false);
         } else {
             throw new IPF_ORM_Exception('Unknown relation alias ' . $alias);
@@ -155,7 +154,7 @@ class IPF_ORM_Relation_Parser
 
         if (in_array('IPF_ORM_Template', class_parents($template))) {
             $impl = $this->_table->getImpl($template);
-            
+
             if ($impl === null) {
                 throw new IPF_ORM_Exception("Couldn't find concrete implementation for template " . $template);
             }
@@ -166,7 +165,7 @@ class IPF_ORM_Relation_Parser
         return $conn->getTable($impl);
     }
 
-    public function completeAssocDefinition($def) 
+    public function completeAssocDefinition($def)
     {
         $conn = $this->_table->getConnection();
         $def['table'] = $this->getImpl($def['class']);
@@ -180,7 +179,7 @@ class IPF_ORM_Relation_Parser
             if ( ! isset($def['foreign'])) {
                 // foreign key not set
                 // try to guess the foreign key
-    
+
                 $def['foreign'] = ($def['local'] === $id[0]) ? $id[1] : $id[0];
             }
             if ( ! isset($def['local'])) {
@@ -194,16 +193,16 @@ class IPF_ORM_Relation_Parser
             if ( ! isset($def['foreign'])) {
                 // foreign key not set
                 // try to guess the foreign key
-    
+
                 $columns = $this->getIdentifiers($def['table']);
-    
+
                 $def['foreign'] = $columns;
             }
             if ( ! isset($def['local'])) {
                 // local key not set
                 // try to guess the local key
                 $columns = $this->getIdentifiers($this->_table);
-    
+
                 $def['local'] = $columns;
             }
         }
@@ -214,7 +213,7 @@ class IPF_ORM_Relation_Parser
     {
         $componentNameToLower = strtolower($table->getComponentName());
         if (is_array($table->getIdentifier())) {
-            $columns = array();      
+            $columns = array();
             foreach ((array) $table->getIdentifierColumnNames() as $identColName) {
                 $columns[] = $componentNameToLower . '_' . $identColName;
             }
@@ -249,7 +248,7 @@ class IPF_ORM_Relation_Parser
                 break;
             }
         }
-        
+
         if ( ! $found) {
             throw new IPF_ORM_Exception("Couldn't find columns.");
         }
@@ -344,7 +343,7 @@ class IPF_ORM_Relation_Parser
                     $idColumnName = array_pop($identifierColumnNames);
                     $column = strtolower($table->getComponentName())
                             . '_' . $idColumnName;
-                
+
                     foreach ($localClasses as $class2) {
                         $table2 = $conn->getTable($class2);
                         if ($table2->hasColumn($column)) {
@@ -374,7 +373,7 @@ class IPF_ORM_Relation_Parser
                     unset($col['primary']);
 
                     $def['table']->setColumn($column, $type, $length, $col);
-                    
+
                     $columns[] = $column;
                 }
                 if (count($columns) > 1) {

@@ -242,12 +242,13 @@ class IPF_Admin_Model{
         }
 
         $context = array(
+        	'mode'=>'add',
             'page_title'=>'Add '.$this->modelName,
             'classname'=>$this->modelName,
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
             'lapp'=>$lapp,
-            'perms'=>array(),
+            'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
             'admin_title' => IPF::get('admin_title'),
         );
@@ -275,6 +276,7 @@ class IPF_Admin_Model{
             $data = $o->getData();
             foreach($o->getTable()->getRelations() as $rname=>$rel){
             	$pk = $rel->getTable()->getIdentifier();
+            	//print $pk;
                 if (array_search($rname,$this->fields())){
                     if ($rel->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
                         $data[$rname] = array();
@@ -289,6 +291,7 @@ class IPF_Admin_Model{
         }
 
         $context = array(
+        	'mode'=>'change',
             'page_title'=>'Edit '.$this->modelName,
             'classname'=>$this->modelName,
             'object'=>$o,

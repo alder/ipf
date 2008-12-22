@@ -15,7 +15,7 @@ class IPF_ORM_Relation_Association extends IPF_ORM_Relation
     {
         $table = $this->definition['refTable'];
         $component = $this->definition['refTable']->getComponentName();
-        
+
         switch ($context) {
             case "record":
                 $sub  = substr(str_repeat("?, ", $count),0,-2);
@@ -30,13 +30,12 @@ class IPF_ORM_Relation_Association extends IPF_ORM_Relation
                 $dql .= ' WHERE ' . $component . '.' . $this->definition['local'] . ' IN (' . $sub . ')';
                 break;
         }
-
         return $dql;
     }
 
     public function fetchRelatedFor(IPF_ORM_Record $record)
     {
-        $id = $record->getIncremented();
+        $id = $record->pk();
         if (empty($id) || ! $this->definition['table']->getAttribute(IPF_ORM::ATTR_LOAD_REFERENCES)) {
             $coll = new IPF_ORM_Collection($this->getTable());
         } else {

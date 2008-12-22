@@ -1013,7 +1013,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     public function pk($sep='_')
     {
     	$pk = '';
-    	while (list($key, $val) = each($this->_id)) {
+    	foreach($this->_id as $val) {
     		if ($pk!='')
     			$pk .= $sep;
     		$pk .= $val;
