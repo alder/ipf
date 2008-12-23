@@ -46,8 +46,14 @@ class IPF_Form_Model extends IPF_Form
                 }
                 if (array_key_exists($uname,$db_columns))
                     $this->addDBField($uname,$db_columns[$uname]);
-                elseif (array_key_exists($uname,$db_relations))
-                    $this->addDBRelation($uname,$db_relations[$uname],$db_columns[$db_relations[$uname]->getLocalFieldName()]);
+                elseif (array_key_exists($uname,$db_relations)){
+                	$lfn = $db_relations[$uname]->getLocalFieldName();
+                	if (isset($db_columns[$lfn]))
+                		$col = $db_columns[$lfn];
+                	else
+                		$col = array();
+                    $this->addDBRelation($uname,$db_relations[$uname],$col);
+                }
             }
         }
     }
@@ -122,9 +128,7 @@ class IPF_Form_Model extends IPF_Form
                 $rels = $this->model->getTable()->getRelations();
 
                 foreach($rels as $rname=>$rel){
-                    //print "$rname<br>";
                     if (isset($this->cleaned_data[$rname])){
-                        //print $rel->getAlias();
                         $this->model->unlink($rel->getAlias());
                         if (is_array($this->cleaned_data[$rname])){
                             $this->model->link($rel->getAlias(),$this->cleaned_data[$rname]);
