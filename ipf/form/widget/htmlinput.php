@@ -51,9 +51,19 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
             IPF_Form_Widget_HTMLInput::$js_include = true;
                     $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('tiny_mce_url').'tiny_mce.js"></script>'."\n";
                     $out .='<script language="javascript" type="text/javascript">
+					function kfm_for_tiny_mce(field_name, url, type, win){
+					  window.SetUrl=function(url,width,height,caption){
+					   win.document.forms[0].elements[field_name].value = url;
+					   if(caption){
+					    win.document.forms[0].elements["alt"].value=caption;
+					    win.document.forms[0].elements["title"].value=caption;
+					   }
+					  }
+					  window.open("/media/tiny_mce/plugins/kfm/index.php?mode=selector&lang=en&type="+type,"kfm","modal,width=800,height=600");
+					}
             	tinyMCE.init({
                     theme_advanced_buttons1 : "bold, italic, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, forecolor, backcolor, sub, sup, separator, preview",
-                    theme_advanced_buttons2 : "code, fullscreen, images, charmap, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect",
+                    theme_advanced_buttons2 : "code, fullscreen, image, link, charmap, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect",
                     theme_advanced_buttons3 : "",
                     theme_advanced_toolbar_location : "top",
                     theme_advanced_toolbar_align: "left",
@@ -61,7 +71,7 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     editor_selector : "htmlEditor",
                  	theme : "advanced",
                  	convert_urls:"false",
-                 	plugins : "inlinepopups, images, charmap, paste, table, fullscreen, preview, print",
+                 	plugins : "inlinepopups, charmap, paste, table, fullscreen, preview, print, advlink, advimage",
                     button_tile_map : true,
                     fix_list_elements : true,
                     gecko_spellcheck : true,
@@ -71,7 +81,8 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     height : "350",
                     relative_urls : false,
                     remove_script_host : true,
-                    content_css : "/media/tiny_mce/themes/advanced/skins/default/content.css"
+                    content_css : "/media/tiny_mce/themes/advanced/skins/default/content.css",
+                    file_browser_callback : "kfm_for_tiny_mce"
             	});
             </script>';
         }
