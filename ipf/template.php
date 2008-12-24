@@ -22,7 +22,7 @@ class IPF_Template
         } else {
             $this->cache = $cache;
         }
-        
+
     }
 
     function render($c=null)
@@ -56,15 +56,15 @@ class IPF_Template
         return $this->cache.'/IPF_Template-'.md5($_tmp.$this->tpl).'.phps';
     }
 
-    function write() 
+    function write()
     {
-        $fp = @fopen($this->compiled_template, 'a'); 
+        $fp = @fopen($this->compiled_template, 'a');
         if ($fp !== false) {
-            flock($fp, LOCK_EX); 
-            ftruncate($fp, 0); 
-            rewind($fp); 
+            flock($fp, LOCK_EX);
+            ftruncate($fp, 0);
+            rewind($fp);
             fwrite($fp, $this->template_content, strlen($this->template_content));
-            flock($fp, LOCK_UN);  
+            flock($fp, LOCK_UN);
             fclose($fp);
             @chmod($this->compiled_template, 0777);
             return true;
@@ -86,7 +86,7 @@ function IPF_Template_htmlspecialchars($string)
     return htmlspecialchars((string)$string, ENT_COMPAT, 'UTF-8');
 }
 
-function IPF_Template_dateFormat($date, $format='%b %e, %Y') 
+function IPF_Template_dateFormat($date, $format='%b %e, %Y')
 {
     if (substr(PHP_OS,0,3) == 'WIN') {
         $_win_from = array ('%e',  '%T',	   '%D');
@@ -97,9 +97,12 @@ function IPF_Template_dateFormat($date, $format='%b %e, %Y')
     return strftime($format, strtotime($date));
 }
 
-function IPF_Template_timeFormat($time, $format='Y-m-d H:i:s') 
-{
+function IPF_Template_timeFormat($time, $format='Y-m-d H:i:s'){
     return date($format, $time);
+}
+
+function IPF_Template_floatFormat($number, $decimals=2, $dec_point='.', $thousands_sep=' '){
+    return number_format($number, $decimals, $dec_point, $thousands_sep);
 }
 
 function IPF_Template_safeEcho($mixed, $echo=true)

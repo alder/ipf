@@ -42,6 +42,7 @@ class IPF_Template_Compiler
                                  'safe' => 'IPF_Template_unsafe',
                                  'date' => 'IPF_Template_dateFormat',
                                  'time' => 'IPF_Template_timeFormat',
+                                 'floatformat' => 'IPF_Template_floatFormat',
                                  );
 
     public $_usedModifiers = array();
