@@ -6,7 +6,6 @@ class IPF_Form_DB_Manytomany extends IPF_Form_DB
 
     function formField($def, $form_field='IPF_Form_Field_ModelMultipleChoice')
     {
-        //print_r($def);
         $list_objects = IPF_ORM::getTable($def['model'])->findAll();
         $pk = IPF_ORM::getTable($def['model'])->getIdentifier();
         $choices = array();

@@ -352,6 +352,7 @@ function kfm_refreshFiles(res){
 	document.title='File Manager: '+res.reqdir;
 	kfm_lastClicked=null;
 	kfm_log(kfm.lang.FilesRefreshed);
+	kfm_addPanel('kfm_left_column','kfm_file_upload_panel');
 	if(res.uploads_allowed)kfm_addPanel('kfm_left_column','kfm_file_upload_panel');
 	else kfm_removePanel('kfm_left_column','kfm_file_upload_panel');
 	kfm_refreshPanels('kfm_left_column');

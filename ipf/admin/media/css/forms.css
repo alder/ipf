@@ -21,6 +21,7 @@ form ul.inline li { float:left; padding-right:7px; }
 /* ALIGNED FIELDSETS */
 .aligned label { display:block; padding:0 1em 3px 0; float:left; width:8em; }
 .aligned label.inline { display:inline; float:none; }
+label.file_remove{display:inline; float:none; padding:0; margin:0 20px 0 0; }
 .colMS .aligned .vLargeTextField, .colMS .aligned .vXMLLargeTextField { width:350px; }
 form .aligned p, form .aligned ul { margin-left:7em; padding-left:30px; }
 form .aligned table p { margin-left:0; padding-left:0; }

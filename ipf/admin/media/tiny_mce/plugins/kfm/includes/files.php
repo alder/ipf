@@ -129,7 +129,7 @@ function _loadFiles($rootid=1,$setParent=false){
 	foreach($oFiles as $file)$files[]=_getFileDetails($file);
 	$root='/'.str_replace($GLOBALS['rootdir'],'',$dir->path);
 	$kfm_session->set('cwd_id',$rootid);
-	$ret=array('reqdir'=>$root,'files'=>$files,'uploads_allowed'=>$GLOBALS['kfm_allow_file_upload']); 
+	$ret=array('reqdir'=>$root,'files'=>$files,'uploads_allowed'=>$GLOBALS['kfm_allow_file_upload']);
 	if($setParent)$ret['parent']=$rootid;
 	return $ret;
 }
