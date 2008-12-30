@@ -268,6 +268,8 @@ function IPF_Form_htmlspecialcharsArray(&$item, $key)
 
 function IPF_Form_renderErrorsAsHTML($errors)
 {
+	if (count($errors)==0)
+		return '';
     $tmp = array();
     foreach ($errors as $err) {
         $tmp[] = '<li>'.$err.'</li>';
