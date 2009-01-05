@@ -56,7 +56,6 @@ class IPF_ORM_Pager_Range_Sliding extends IPF_ORM_Pager_Range
                 $chunkStart = $chunkStart - $adjust;
                 $chunkEnd = $pages;
             }
-
             return range($chunkStart, $chunkEnd);
         }
 

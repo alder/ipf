@@ -33,7 +33,7 @@ class IPF_Form_BoundField
             $widget = $this->field->widget;
         }
         $id = $this->autoId();
-        if ($id and !array_key_exists('id', $attrs) 
+        if ($id and !array_key_exists('id', $attrs)
             and !array_key_exists('id', $widget->attrs)) {
             $attrs['id'] = $id;
         }
@@ -51,14 +51,19 @@ class IPF_Form_BoundField
         $widget = $this->field->widget;
         $id = (isset($widget->attrs['id'])) ? $widget->attrs['id'] : $this->autoId();
         $_tmp = array();
+        $class_found = false;
         foreach ($attrs as $attr=>$val) {
             $_tmp[] = $attr.'="'.$val.'"';
+            if ($attr=='class')
+            	$class_found = true;
         }
+        if ( (!$class_found) && ($this->field->required==1))
+        	$_tmp[] = 'class="req"';
         if (count($_tmp)) {
             $attrs = ' '.implode(' ', $_tmp);
         } else {
             $attrs = '';
-        } 
+        }
         return new IPF_Template_SafeString(sprintf('<label for="%s"%s>%s</label>',
                                                     $widget->idForLabel($id), $attrs, $contents), true);
     }

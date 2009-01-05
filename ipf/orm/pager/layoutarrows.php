@@ -11,17 +11,17 @@ class IPF_ORM_Pager_LayoutArrows extends IPF_ORM_Pager_Layout
 
 	        $this->removeMaskReplacement('page');
 
-	        if (($pager->getPage()-2)>$pager->getFirstPage()){
+	        if (($pager->getPage()-5)>$pager->getFirstPage()){
 
-		        if (($pager->getPage()-2)>$pager->getFirstPage()){
+		        if (($pager->getPage()-5)>$pager->getFirstPage()){
 			        $options['page_number'] = $pager->getFirstPage();
 			        $str .= $this->processPage($options);
 		        }
-		        if (($pager->getPage()-3)>$pager->getFirstPage()){
+		        if (($pager->getPage()-6)>$pager->getFirstPage()){
 			        $options['page_number'] = $pager->getFirstPage()+1;
 			        $str .= $this->processPage($options);
 		        }
-		        if (($pager->getPage()-4)>$pager->getFirstPage()){
+		        if (($pager->getPage()-7)>$pager->getFirstPage()){
 			        $str .= ' ... ';
 		        }
 	        }
