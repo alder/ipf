@@ -7,23 +7,23 @@ class IPF_ORM_Pager_LayoutArrows extends IPF_ORM_Pager_Layout
         $pager = $this->getPager();
         $str = '';
 
+        $range = $this->getPagerRange()->rangeAroundPage();
+
 		if ($pager->getFirstPage()!=$pager->getLastPage()){
 
 	        $this->removeMaskReplacement('page');
 
-	        if (($pager->getPage()-5)>$pager->getFirstPage()){
+	        if ($range[0]>1){
 
-		        if (($pager->getPage()-5)>$pager->getFirstPage()){
-			        $options['page_number'] = $pager->getFirstPage();
+		        $options['page_number'] = 1;
+		        $str .= $this->processPage($options);
+
+				if ($range[0]>2){
+			        $options['page_number'] = 2;
 			        $str .= $this->processPage($options);
-		        }
-		        if (($pager->getPage()-6)>$pager->getFirstPage()){
-			        $options['page_number'] = $pager->getFirstPage()+1;
-			        $str .= $this->processPage($options);
-		        }
-		        if (($pager->getPage()-7)>$pager->getFirstPage()){
-			        $str .= ' ... ';
-		        }
+				}
+				if ($range[0]>3)
+		        	$str .= ' ... ';
 	        }
 
 	        // Pages listing
