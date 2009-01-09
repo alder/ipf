@@ -28,7 +28,7 @@ class IPF_Session_Middleware
                 }
             } else
                 $request->user = $user;
-        } else 
+        } else
             $request->user = $user;
 
         if (isset($data['IPF_SESSION_KEY'])) {
@@ -56,7 +56,7 @@ class IPF_Session_Middleware
         }
         return $response;
     }
-    
+
     protected function _encodeData($data)
     {
         if ('' == ($key = IPF::get('secret_key'))) {
@@ -93,4 +93,4 @@ function IPF_Session_Middleware_ContextPreProcessor($request)
 
 Pluf_Signal::connect('Pluf_Template_Context_Request::construct',
                      array('Pluf_Middleware_Session', 'processContext'));
-*/                     
+*/

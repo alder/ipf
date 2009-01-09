@@ -9,8 +9,6 @@ class ListFilter{
     }
 
     function IsChoice($id){
-    	if (!$id)
-    		return false;
     	foreach($this->choices as &$ch){
     	    if ($ch['id']==$id)
     	    	return true;
@@ -276,7 +274,6 @@ class IPF_Admin_Model{
             $data = $o->getData();
             foreach($o->getTable()->getRelations() as $rname=>$rel){
             	$pk = $rel->getTable()->getIdentifier();
-            	//print $pk;
                 if (array_search($rname,$this->fields())){
                     if ($rel->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
                         $data[$rname] = array();
@@ -329,8 +326,9 @@ class IPF_Admin_Model{
     		$param_name = 'filter_'.$f->local;
     		if (isset($request->GET[$param_name])){
     		    $id = $request->GET[$param_name];
-    		    if ($f->IsChoice($id))
+    		    if ($f->IsChoice($id)){
     				$this->q->where($f->local.'='.$id);
+    		    }
     		}
     	}
     }

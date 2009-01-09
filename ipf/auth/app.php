@@ -12,7 +12,6 @@ class IPF_Auth_App extends IPF_Application{
         $request->user = $user;
         $request->session->clear();
         $request->session->setData('login_time', gmdate('Y-m-d H:i:s'));
-        $user->last_login = gmdate('Y-m-d H:i:s');
         $user->save();
     }
 

@@ -126,7 +126,6 @@
 			$(jC).hide();
 			iniVal = textBox.value;
 		});
-
 	};
 	
 	$.fn.jSuggest.defaults = {
