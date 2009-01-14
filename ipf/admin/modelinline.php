@@ -62,7 +62,6 @@ abstract class IPF_Admin_ModelInline{
         $first = true;
 
         if ($this->parentModel->exists()){
-
             $objects = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
                 ->orderby('id')

@@ -36,7 +36,9 @@ class AdminUser extends IPF_Admin_Model{
             'form'=>$form,
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
-            'perms'=>array(),
+            'perms'=>array('add'),
+            'mode'=>'add',
+            'admin_title' => IPF::get('admin_title'),
         );
         return IPF_Shortcuts::RenderToResponse('admin/change.html', $context, $request);
     }
