@@ -15,6 +15,14 @@ class ListFilter{
     	}
     	return false;
     }
+
+    function selected(){
+    	foreach($this->choices as &$ch){
+    	    if ( ($ch['id']!='') && ($ch['selected']===true) )
+    	    	return true;
+    	}
+    	return false;
+    }
 }
 
 class IPF_Admin_Model{
@@ -363,6 +371,10 @@ class IPF_Admin_Model{
         }
     }
 
+    protected function _orderable(){
+        return method_exists($this, 'list_order');
+    }
+
     public function ListItems($request){
         $this->ListItemsQuery();
         $this->_GetFilters($request);
@@ -396,7 +408,7 @@ class IPF_Admin_Model{
         $objects = $pager->getPager()->execute();
 
         $context = array(
-        	'orderable'=>method_exists($this, 'list_order'),
+        	'orderable'=>$this->_orderable(),
             'page_title'=>$this->modelName.' List',
             'header'=>$this->header,
             'objects'=>$objects,
