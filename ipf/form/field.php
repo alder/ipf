@@ -6,7 +6,7 @@ class IPF_Form_Field
 
     public $widget = 'IPF_Form_Widget_TextInput';
     public $label = '';
-    public $required = false; 
+    public $required = false;
     public $help_text = '';
     public $initial = '';
     public $choices = null;
@@ -21,7 +21,7 @@ class IPF_Form_Field
         foreach ($params as $key=>$in) {
             if ($key !== 'widget_attrs')
                 if (isset($this->$key))
-                    $default[$key] = $this->$key; 
+                    $default[$key] = $this->$key;
         }
         $m = array_merge($default, $params);
         foreach ($params as $key=>$in) {
@@ -49,7 +49,10 @@ class IPF_Form_Field
         }
         return $value;
     }
-    
+
+    function LateClean($data, $cleaned_data){
+    }
+
     protected function getWidget(){
         return $this->widget;
     }

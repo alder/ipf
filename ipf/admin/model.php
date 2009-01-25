@@ -108,9 +108,6 @@ class IPF_Admin_Model{
     }
 
     public function ListItemsHeader(){
-
-
-
         $this->header = array();
         if (method_exists($this,'list_display'))
             $this->names = $this->list_display();

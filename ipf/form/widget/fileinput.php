@@ -4,6 +4,7 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
 {
     public $input_type = 'file';
     public $needs_multipart_form = true;
+    public $allow_extended = true;
 
     public function render($name, $value, $extra_attrs=array())
     {
@@ -11,7 +12,10 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
         if (isset($value['data'])){
             $value = $value['data'];
             if (is_string($value) && $value!=''){
-                $sim = '<nobr>Currently: <a target="_blank" href="'.IPF::get('upload_url').$value.'">'.$value.'</a>&nbsp;|&nbsp;<input name="'.$name.'_remove" value="1" id="id_'.$name.'_remove" type="checkbox" />&nbsp;<label class="file_remove" for="id_'.$name.'_remove">Remove</label></nobr>Change:';
+				if ($this->allow_extended)
+	                $sim = '<nobr>Currently: <a target="_blank" href="'.IPF::get('upload_url').$value.'">'.$value.'</a>&nbsp;|&nbsp;<input name="'.$name.'_remove" value="1" id="id_'.$name.'_remove" type="checkbox" />&nbsp;<label class="file_remove" for="id_'.$name.'_remove">Remove</label></nobr>Change:';
+				else
+	                $sim = '<nobr>Currently: <b>'.$value.'</b><br> Change: ';
             }
         }
         $value = '';

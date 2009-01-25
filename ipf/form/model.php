@@ -145,6 +145,6 @@ class IPF_Form_Model extends IPF_Form
                 }
             }
         }
-        throw new IPF_Exception_Form(__('Cannot save the model from an invalid form.'));
+        //throw new IPF_Exception_Form(__('Cannot save the model from an invalid form.'));
     }
 }
