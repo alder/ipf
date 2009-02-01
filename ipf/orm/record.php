@@ -863,21 +863,18 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 $this->assignIdentifier((array) $value);
                 continue;
             }
-
             if ($deep && $this->getTable()->hasRelation($key)) {
                 $this->get($key)->synchronizeWithArray($value);
             } else if ($this->getTable()->hasField($key)) {
                 $this->set($key, $value);
             }
         }
-
         // eliminate relationships missing in the $array
         foreach ($this->_references as $name => $obj) {
             if ( ! isset($array[$name])) {
                 unset($this->$name);
             }
         }
-
         if ($refresh) {
             $this->refresh();
         }

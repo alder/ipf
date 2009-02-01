@@ -59,6 +59,7 @@ class IPF_Form implements Iterator
         $this->cleaned_data = array();
         $this->errors = array();
         $form_methods = get_class_methods($this);
+
         foreach ($this->fields as $name=>$field) {
             $value = $field->widget->valueFromFormData($this->addPrefix($name), &$this->data);
             try {

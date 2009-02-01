@@ -7,12 +7,11 @@ abstract class IPF_Admin_ModelInline{
     var $parentModel = null;
     var $formset = null;
 
-    function __construct($parentModel,$data){
+    function __construct($parentModel,$data=null){
         $this->parentModel = $parentModel;
 
         $modelName = $this->getModelName();
         $this->model = new $modelName();
-
         $this->createFormSet($data);
     }
 
@@ -55,7 +54,7 @@ abstract class IPF_Admin_ModelInline{
         throw new IPF_Exception(__('Cannot get fkLocal for '.$this->getModelName()));
     }
 
-    function createFormSet(&$data){
+    function createFormSet($data){
 
         $this->formset = array();
 
@@ -71,15 +70,24 @@ abstract class IPF_Admin_ModelInline{
             foreach ($objects as $obj){
                 $prefix = 'edit_'.get_class($this->model).'_'.$obj->id.'_';
                 $d = array();
-                foreach ($obj->getData() as $k=>$v)
-                    $d[$prefix.$k] = $v;
-                foreach ($data as $k=>$v){
-                    if (strpos($k,$prefix)==0)
-                        $d[$k] = $v;
-                }
+
+				if ($data===null){
+	                foreach ($obj->getData() as $k=>$v){
+	                    $d[$prefix.$k] = $v;
+	                }
+				}
+				else{
+	                foreach ($data as $k=>$v){
+	                    if (strpos($k,$prefix)==0)
+	                        $d[$k] = $v;
+	                }
+            	}
+
                 $form = $this->_getForm($obj, $d,
                     array('exclude'=>array($this->getFkName(),$this->getFkLocal()))
                 );
+
+
                 $form->prefix = $prefix;
                 $form->fields = array_merge(array(
                     new IPF_Form_Field_Boolean(array('label'=>'Del','name'=>'is_remove')),
@@ -113,7 +121,6 @@ abstract class IPF_Admin_ModelInline{
     }
 
     function save($parent_obj){
-
         if ($this->parentModel->exists()){
             $objects = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
@@ -124,6 +131,7 @@ abstract class IPF_Admin_ModelInline{
                 foreach($this->formset as $form){
                     if ($form->isAdd)
                         continue;
+
                     @list($x1,$x2,$id,$x3) = @split('_',$form->prefix);
                     if ($id==$obj->id){
                         if ($form->cleaned_data[0]==true)
@@ -137,8 +145,8 @@ abstract class IPF_Admin_ModelInline{
                                     if($form->cleaned_data[$fname]=='')
                                         unset($form->cleaned_data[$fname]);
                                 }
-                            }
 
+                            }
                             $obj->synchronizeWithArray($form->cleaned_data);
                             $obj->save();
                         }

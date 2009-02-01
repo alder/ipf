@@ -64,7 +64,7 @@ class IPF_Admin_Model{
         return array('view', 'add', 'change', 'delete');
     }
 
-    protected function setInlines($model, &$data){
+    protected function setInlines($model, $data){
         $il = $this->inlines();
         if (is_array($il)){
             foreach($il as $inlineName=>$inlineClassName){
@@ -241,7 +241,7 @@ class IPF_Admin_Model{
             $form = $this->_getAddForm($this->model,null,array('user_fields'=>$this->fields()));
             $this->_setupAddForm($form);
             $data = array();
-            $this->setInlines($this->model, &$data);
+            $this->setInlines($this->model);
         }
 
         $context = array(
@@ -265,7 +265,6 @@ class IPF_Admin_Model{
             $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
             $this->setInlines($o, &$data);
-
             if ( ($form->isValid()) && ($this->isValidInlines()) ) {
                 $item = $form->save();
                 $this->saveInlines($item);
@@ -289,7 +288,7 @@ class IPF_Admin_Model{
             }
             $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
-            $this->setInlines($o, &$data);
+            $this->setInlines($o);
         }
 
         $context = array(
