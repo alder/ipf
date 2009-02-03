@@ -64,7 +64,7 @@ class IPF_Admin_Model{
         return array('view', 'add', 'change', 'delete');
     }
 
-    protected function setInlines($model, $data){
+    protected function setInlines($model, $data=null){
         $il = $this->inlines();
         if (is_array($il)){
             foreach($il as $inlineName=>$inlineClassName){
