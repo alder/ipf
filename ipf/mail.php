@@ -21,7 +21,7 @@ class IPF_Mail extends IPF_Mime_Message
         self::$_defaultTransport = $transport;
     }
 
-    public function __construct($charset='iso-8859-1')
+    public function __construct($charset='utf-8')
     {
         $this->_charset = $charset;
     }
@@ -272,7 +272,7 @@ class IPF_Mail extends IPF_Mime_Message
     {
         return $this->_subject;
     }
-    
+
     public function setDate($date = null)
     {
         if ($this->_date === null) {
