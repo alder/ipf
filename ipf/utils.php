@@ -223,5 +223,17 @@ class IPF_Utils {
 		list($f,$i) = split(' ',microtime());
 		return $i.substr((string)$f,2,6);
     }
+
+    static function TrimP($html)
+    {
+        $strL = "<p>";  $lenL = 3;
+        $strR = "</p>"; $lenR = 4;
+        if (0 == strcasecmp(substr($html, 0, $lenL), $strL)
+        &&  0 == strcasecmp(substr($html, -$lenR), $strR)){
+            return substr($html, $lenL, strlen($html) - ($lenL + $lenR));
+        }
+        return $html;
+    }
+
 }
 
