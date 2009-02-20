@@ -151,6 +151,14 @@ final class IPF{
         }
         return $upload_path;
     }
+
+    public static function getUploadUrl($params=array()){
+        $upload_url = IPF::get('upload_url', '/media/upload');
+        if (isset($params['upload_url'])) {
+            $upload_url = $params['upload_url'];
+        }
+        return $upload_url;
+    }
 }
 
 function __($str)

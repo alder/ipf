@@ -18,9 +18,8 @@ class IPF_Form_Field_File extends IPF_Form_Field
 
         if ($value['name']=='')
             return '';
-
         parent::clean($value);
-        
+
         $errors = array();
         $no_files = false;
         switch ($value['error']) {
@@ -47,7 +46,7 @@ class IPF_Form_Field_File extends IPF_Form_Field
             throw new IPF_Exception_Form(__('An error occured when upload the file. Please try to send the file again.'));
         }
         if ($value['size'] > $this->max_size) {
-            throw new IPF_Exception_Form(sprintf(__('The uploaded file is to big (%1$s). Reduce the size to less than %2$s and try again.'), 
+            throw new IPF_Exception_Form(sprintf(__('The uploaded file is to big (%1$s). Reduce the size to less than %2$s and try again.'),
                                         IPF_Utils::prettySize($value['size']),
                                         IPF_Utils::prettySize($this->max_size)));
         }
@@ -64,7 +63,7 @@ function IPF_Form_Field_moveToUploadFolder($value, $params=array())
     $dest = $upload_path.DIRECTORY_SEPARATOR.$name;
     if (!move_uploaded_file($value['tmp_name'], $dest)) {
         throw new IPF_Exception_Form(__('An error occured when upload the file. Please try to send the file again.'));
-    } 
+    }
     @chmod($dest, IPF::get('file_permission'));
     return $name;
 }
