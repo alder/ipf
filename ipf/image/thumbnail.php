@@ -1,13 +1,13 @@
 <?php
 
 class IPF_Image_Thumbnail {
-    
+
     protected $Source, $Thumbnail;
     protected $ThumbnailWidth, $ThumbnailHeight;
     protected $SourceWidth, $SourceHeight, $SourceType;
     protected $file_permission, $dir_permission;
     protected $sourceRemove;
-        
+
     public function __construct($source, $width=null, $height=null, $thumbnail=null, $sourceRemove=false, $dir_permission=null, $file_permission=null){
         $this->Source = $source;
         if ($thumbnail)
@@ -20,7 +20,7 @@ class IPF_Image_Thumbnail {
 
         $this->ThumbnailWidth = $width;
         $this->ThumbnailHeight = $height;
-        
+
         if ($dir_permission)
             $this->dir_permission = $dir_permission;
         else
@@ -30,19 +30,19 @@ class IPF_Image_Thumbnail {
             $this->file_permission = $file_permission;
         else
             $this->file_permission = IPF::get('file_permission');
-            
+
         $this->sourceRemove = $sourceRemove;
     }
-        
+
     public function execute(){
         $ImageInfo = getimagesize($this->Source);
         if(!$ImageInfo)
             throw new IPF_Exception_Image(sprintf(__('Cannot open %s image file'), $this->Source));
-            
+
         $this->SourceWidth = $ImageInfo[0];
         $this->SourceHeight = $ImageInfo[1];
         $this->SourceType = $ImageInfo[2];
-    
+
         if($this->SourceType==IMAGETYPE_JPEG)
             $im = ImageCreateFromJPEG($this->Source);
         else if($this->SourceType==IMAGETYPE_GIF)
@@ -56,14 +56,14 @@ class IPF_Image_Thumbnail {
             $c1 = $this->SourceWidth/abs($this->ThumbnailWidth);
         else
             $c1 = 0;
-      
+
         if($this->ThumbnailHeight)
             $c2 = $this->SourceHeight/abs($this->ThumbnailHeight);
         else
             $c2 = 0;
-      
+
         $c = $c1>$c2 ? $c1 : $c2;
-      
+
         if($c<=1){
             $this->ThumbnailWidth = $this->SourceWidth;
             $this->ThumbnailHeight = $this->SourceHeight;
@@ -76,14 +76,15 @@ class IPF_Image_Thumbnail {
               $c = $this->SourceWidth/(-$this->ThumbnailWidth);
             if($this->ThumbnailHeight<0 and $this->SourceHeight/$c<(-$this->ThumbnailHeight))
               $c = $this->SourceHeight/(-$this->ThumbnailHeight);
-            
+
             $this->ThumbnailWidth = $this->SourceWidth/$c;
             $this->ThumbnailHeight = $this->SourceHeight/$c;
-        
+
             $tn = imagecreatetruecolor($this->ThumbnailWidth, $this->ThumbnailHeight);
+
             imagecopyresampled(
-                $tn, $im, 0, 0, 0, 0, 
-                $this->ThumbnailWidth, $this->ThumbnailHeight, 
+                $tn, $im, 0, 0, 0, 0,
+                $this->ThumbnailWidth, $this->ThumbnailHeight,
                 $this->SourceWidth, $this->SourceHeight
             );
             if ($this->sourceRemove){
@@ -93,7 +94,7 @@ class IPF_Image_Thumbnail {
             $dir_thumbnail = dirName($this->Thumbnail);
             if (!IPF_Utils::makeDirectories(dirName($this->Thumbnail), $this->dir_permission))
                 throw new IPF_Exception_Image(sprintf(__('Cannot create path %s'), $dir_thumbnail));
-            
+
             if($this->SourceType==IMAGETYPE_JPEG){
                 if (!ImageJPEG($tn, $this->Thumbnail))
                     throw new IPF_Exception_Image(sprintf(__('Cannot create JPEG %s'), $this->Thumbnail));
@@ -112,6 +113,56 @@ class IPF_Image_Thumbnail {
             if (!@chmod($this->Thumbnail, $this->file_permission))
                 throw new IPF_Exception_Image(sprintf(__('Cannot change permission %s'), $this->Thumbnail));
         }
+    }
+
+    public function execDumb(){
+        $ImageInfo = getimagesize($this->Source);
+        if(!$ImageInfo)
+            throw new IPF_Exception_Image(sprintf(__('Cannot open %s image file'), $this->Source));
+
+        $this->SourceType = $ImageInfo[2];
+
+        if($this->SourceType==IMAGETYPE_JPEG)
+            $im = ImageCreateFromJPEG($this->Source);
+        else if($this->SourceType==IMAGETYPE_GIF)
+            $im = ImageCreateFromGIF($this->Source);
+        else if($this->SourceType==IMAGETYPE_PNG)
+            $im = ImageCreateFromPNG($this->Source);
+        else
+            throw new IPF_Exception_Image(sprintf(__('Unknown image format %s'), $this->Source));
+
+        $tn = imagecreatetruecolor($this->ThumbnailWidth, $this->ThumbnailHeight);
+
+        imagecopyresampled(
+            $tn, $im, 0, 0, 0, 0,
+            $this->ThumbnailWidth, $this->ThumbnailHeight,
+            $this->SourceWidth, $this->SourceHeight
+        );
+        if ($this->sourceRemove){
+            if (!@unlink($this->Thumbnail))
+                throw new IPF_Exception_Image(sprintf(__('Cannot delete %s'), $this->Thumbnail));
+        }
+        $dir_thumbnail = dirName($this->Thumbnail);
+        if (!IPF_Utils::makeDirectories(dirName($this->Thumbnail), $this->dir_permission))
+            throw new IPF_Exception_Image(sprintf(__('Cannot create path %s'), $dir_thumbnail));
+
+        if($this->SourceType==IMAGETYPE_JPEG){
+            if (!ImageJPEG($tn, $this->Thumbnail))
+                throw new IPF_Exception_Image(sprintf(__('Cannot create JPEG %s'), $this->Thumbnail));
+        }
+        else if($this->SourceType==IMAGETYPE_GIF){
+            if (!ImageGIF($tn, $this->Thumbnail))
+                throw new IPF_Exception_Image(sprintf(__('Cannot create GIF %s'), $this->Thumbnail));
+        }
+        else if($this->SourceType==IMAGETYPE_PNG){
+            if (!ImagePNG($tn, $this->Thumbnail))
+                throw new IPF_Exception_Image(sprintf(__('Cannot create PNG %s'), $this->Thumbnail));
+        }
+        else
+            throw new IPF_Exception_Image(sprintf(__('Unknown image format %s'), $this->Source));
+
+        if (!@chmod($this->Thumbnail, $this->file_permission))
+            throw new IPF_Exception_Image(sprintf(__('Cannot change permission %s'), $this->Thumbnail));
     }
 }
 ?>

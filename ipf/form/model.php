@@ -126,7 +126,6 @@ class IPF_Form_Model extends IPF_Form
             try{
                 $this->model->save();
                 $rels = $this->model->getTable()->getRelations();
-
                 foreach($rels as $rname=>$rel){
                     if (isset($this->cleaned_data[$rname])){
                         $this->model->unlink($rel->getAlias());
