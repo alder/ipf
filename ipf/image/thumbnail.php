@@ -120,6 +120,8 @@ class IPF_Image_Thumbnail {
         if(!$ImageInfo)
             throw new IPF_Exception_Image(sprintf(__('Cannot open %s image file'), $this->Source));
 
+        $this->SourceWidth = $ImageInfo[0];
+        $this->SourceHeight = $ImageInfo[1];
         $this->SourceType = $ImageInfo[2];
 
         if($this->SourceType==IMAGETYPE_JPEG)
@@ -138,6 +140,7 @@ class IPF_Image_Thumbnail {
             $this->ThumbnailWidth, $this->ThumbnailHeight,
             $this->SourceWidth, $this->SourceHeight
         );
+
         if ($this->sourceRemove){
             if (!@unlink($this->Thumbnail))
                 throw new IPF_Exception_Image(sprintf(__('Cannot delete %s'), $this->Thumbnail));
