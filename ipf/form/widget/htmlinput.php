@@ -62,8 +62,8 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
 					  window.open("/media/tiny_mce/plugins/kfm/index.php?mode=selector&lang=en&type="+type,"kfm","modal,width=800,height=600");
 					}
             	tinyMCE.init({
-                    theme_advanced_buttons1 : "bold, italic, underline, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, separator, link, unlink, forecolor, backcolor, sub, sup, separator, preview",
-                    theme_advanced_buttons2 : "code, fullscreen, image, charmap, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect, separator",
+                    theme_advanced_buttons1 : "bold, italic, underline, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, justifyfull, separator, link, unlink, forecolor, backcolor, sub, sup, separator, preview",
+                    theme_advanced_buttons2 : "code, fullscreen, image, charmap, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect",
                     theme_advanced_buttons3 : "tablecontrols",
                     theme_advanced_toolbar_location : "top",
                     theme_advanced_toolbar_align: "left",
