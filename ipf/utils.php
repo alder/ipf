@@ -224,8 +224,7 @@ class IPF_Utils {
 		return $i.substr((string)$f,2,6);
     }
 
-    static function TrimP($html)
-    {
+    static function TrimP($html){
         $strL = "<p>";  $lenL = 3;
         $strR = "</p>"; $lenR = 4;
         if (0 == strcasecmp(substr($html, 0, $lenL), $strL)
@@ -233,6 +232,10 @@ class IPF_Utils {
             return substr($html, $lenL, strlen($html) - ($lenL + $lenR));
         }
         return $html;
+    }
+
+    static function moneyFormat($val){
+        return number_format((float)$val,2);
     }
 
 }
