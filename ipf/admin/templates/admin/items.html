@@ -11,15 +11,19 @@
 <script language="javascript" type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.tablednd.js"></script>
 <script type="text/javascript">
 var reorder_url = "reorder/";
+var prev_ids;
 {literal}
 $(document).ready(function()
 {
-	$('#items-grid').tableDnD({
+    $('#items-grid').tableDnD({
         onDragClass: "ItemsDragClass",
-		onDrop: function(table, row) {
-            $.post(reorder_url, {'ids': $.tableDnD.serialize(), 'drop_id':row.id}, function(data){});
+        onDragStart: function(table, row) {
+            prev_ids = $.tableDnD.serialize();
+        },
+        onDrop: function(table, row) {
+            $.post(reorder_url, {'ids': $.tableDnD.serialize(), 'prev_ids': prev_ids, 'drop_id':row.id}, function(data){});
         }
-	});
+    });
 });
 {/literal}
 </script>

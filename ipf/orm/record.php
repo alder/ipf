@@ -1296,7 +1296,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     	return null;
     }
 
-    public function _reorder($ids, $ord_field, $drop_id){
+	public function _reorder($ids, $ord_field, $drop_id, $prev_ids){
         $ord = 1;
         foreach($ids as $id){
             $item = $this->getTable()->find($id);
@@ -1305,5 +1305,4 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
             $ord++;
         }
     }
-
 }

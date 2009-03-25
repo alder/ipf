@@ -80,18 +80,19 @@ function IPF_Admin_Views_Reorder($request, $match){
     if ($ca!==true) return $ca;
 
     if ($request->method != 'POST')
-    	return new IPF_HTTP_Response_NotFound();
+        return new IPF_HTTP_Response_NotFound();
 
     if (!isset($request->POST['ids']))
-    	return new IPF_HTTP_Response_NotFound();
+        return new IPF_HTTP_Response_NotFound();
+
+        if (!isset($request->POST['prev_ids']))
+        return new IPF_HTTP_Response_NotFound();
 
     if (!isset($request->POST['drop_id']))
-    	return new IPF_HTTP_Response_NotFound();
-    $drop_id = $request->POST['drop_id'];
+        return new IPF_HTTP_Response_NotFound();
 
     $lapp = $match[1];
     $lmodel = $match[2];
-
 
     foreach (IPF_Project::getInstance()->appList() as $app){
         foreach($app->modelList() as $m){
@@ -101,14 +102,17 @@ function IPF_Admin_Views_Reorder($request, $match){
                     return new IPF_HTTP_Response_NotFound();
 
                 if (method_exists($ma, 'list_order'))
-                	$ord_field = $ma->list_order();
+                    $ord_field = $ma->list_order();
                 else
-			    	return new IPF_HTTP_Response_NotFound();
+                    return new IPF_HTTP_Response_NotFound();
+
+                $ids      = split(',',(string)$request->POST['ids']);
+                $prev_ids = split(',',(string)$request->POST['prev_ids']);
+                $drop_id  = $request->POST['drop_id'];
 
                 $o = new $m();
-                $ids = split(',',(string)$request->POST['ids']);
-                $o->_reorder($ids, $ord_field, $drop_id);
-			    return new IPF_HTTP_Response_Json("Ok");
+                $o->_reorder($ids, $ord_field, $drop_id, $prev_ids);
+                return new IPF_HTTP_Response_Json("Ok");
             }
         }
     }
