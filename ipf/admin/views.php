@@ -102,13 +102,7 @@ function IPF_Admin_Views_Reorder($request, $match){
 
                 $o = new $m();
                 $ids = split(',',(string)$request->POST['ids']);
-                $ord = 1;
-                foreach($ids as $id){
-	                $item = $o->getTable()->find($id);
-	                $item[$ord_field] = $ord;
-	                $item->save();
-	                $ord++;
-                }
+                $o->_reorder($ids, $ord_field);
 			    return new IPF_HTTP_Response_Json("Ok");
             }
         }

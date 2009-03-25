@@ -1295,4 +1295,15 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     		return $this->_custom[$name];
     	return null;
     }
+
+    public function _reorder($ids, $ord_field){
+        $ord = 1;
+        foreach($ids as $id){
+            $item = $this->getTable()->find($id);
+            $item[$ord_field] = $ord;
+            $item->save();
+            $ord++;
+        }
+    }
+
 }
