@@ -17,7 +17,7 @@ $(document).ready(function()
 	$('#items-grid').tableDnD({
         onDragClass: "ItemsDragClass",
 		onDrop: function(table, row) {
-            $.post(reorder_url, {'ids': $.tableDnD.serialize()}, function(data){});
+            $.post(reorder_url, {'ids': $.tableDnD.serialize(), 'drop_id':row.id}, function(data){});
         }
 	});
 });

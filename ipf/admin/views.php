@@ -85,8 +85,13 @@ function IPF_Admin_Views_Reorder($request, $match){
     if (!isset($request->POST['ids']))
     	return new IPF_HTTP_Response_NotFound();
 
+    if (!isset($request->POST['drop_id']))
+    	return new IPF_HTTP_Response_NotFound();
+    $drop_id = $request->POST['drop_id'];
+
     $lapp = $match[1];
     $lmodel = $match[2];
+
 
     foreach (IPF_Project::getInstance()->appList() as $app){
         foreach($app->modelList() as $m){
@@ -102,7 +107,7 @@ function IPF_Admin_Views_Reorder($request, $match){
 
                 $o = new $m();
                 $ids = split(',',(string)$request->POST['ids']);
-                $o->_reorder($ids, $ord_field);
+                $o->_reorder($ids, $ord_field, $drop_id);
 			    return new IPF_HTTP_Response_Json("Ok");
             }
         }
