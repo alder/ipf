@@ -1,9 +1,7 @@
 <?php
 
-class ListFilter{
-    function __construct($local, $foreign, $choices, $title){
-    	$this->local = $local;
-    	$this->foreign = $foreign;
+abstract class BaseListFilter{
+    function __construct($title, $choices){
     	$this->choices = $choices;
     	$this->title = $title;
     }
@@ -23,6 +21,113 @@ class ListFilter{
     	}
     	return false;
     }
+
+	abstract function FilterQuery($request,$q);
+}
+
+class ListFilter extends BaseListFilter{
+    function __construct($local, $foreign, $choices, $title){
+        parent::__construct($title, $choices);
+    	$this->local = $local;
+    	$this->foreign = $foreign;
+    }
+
+	function FilterQuery($request,$q){
+		$param_name = 'filter_'.$this->local;
+		if (isset($request->GET[$param_name])){
+		    $id = $request->GET[$param_name];
+		    if ($this->IsChoice($id)){
+				$q->where($this->local.'='.$id);
+		    }
+		}
+	}
+}
+
+class ListTreeFilter extends BaseListFilter{
+   function __construct($name, $title, $model, $fields){
+   		$this->name = $name;
+        $choices = array();
+    	$choices[] = array(
+	    	'id'=>null,
+	    	'param'=>'',
+	    	'name'=>'All',
+	    	'selected'=>false,
+	    );
+        $levels = array();
+
+		$mrels = $model->getTable()->getRelations();
+        $this->fields = array();
+       	foreach($fields as $fname){
+       		if (array_key_exists($fname, $mrels)){
+       			$n = count($this->fields);
+       			if ($n==0)
+       				$parent_key = null;
+       			else
+       				$parent_key = $this->fields[$n-1]['local'];
+        		$this->fields[] = array(
+        			'name'=>$fname,
+        			'local'=>$mrels[$fname]->getLocal(),
+        			'parent_key'=>$parent_key,
+        			'class'=>$mrels[$fname]->getClass(),
+        			'objects'=>IPF_ORM_Query::create()->from($mrels[$fname]->getClass())->orderby('ord')->execute(),
+        		);
+       		}
+        }
+        $this->_collectTreeRecursive(&$choices);
+        parent::__construct($title, $choices);
+    }
+
+    protected function _collectTreeRecursive(&$choices,$level=0,$parent_id=null,$valname=''){
+        foreach($this->fields[$level]['objects'] as $o){
+        	if ($level>0){
+        		$foreign = $this->fields[$level]['parent_key'];
+        	    if ($parent_id!=$o->$foreign)
+        	    	continue;
+        	}
+        	$name = str_repeat("-", $level).$o->name;
+        	$id = $valname.$o->id;
+    	    $choices[] = array(
+    	    	'id'=>$id,
+    	    	'param'=>'filter_'.$this->name.'='.$id,
+    	    	'name'=>$name,
+    	    	'selected'=>false,
+    	    );
+        	if ($level<(count($this->fields)-1)){
+        	    $this->_collectTreeRecursive(&$choices,$level+1,$o->id,$valname.$o->id.'.');
+        	}
+        }
+    }
+
+    function SetSelect($request){
+    	$sel_id = @$request->GET['filter_'.$this->name];
+    	foreach($this->choices as &$ch){
+    	    $ch['selected']= ($sel_id==$ch['id']);
+    	}
+    }
+
+	function FilterQuery($request,$q){
+		$param_name = 'filter_'.$this->name;
+		if (isset($request->GET[$param_name])){
+		    $id = $request->GET[$param_name];
+		    if ($this->IsChoice($id)){
+		    	$l = split("\.",$id);
+		    	$wh = array();
+		    	for($i=0; $i<count($this->fields); $i++){
+		    		if ($i>=(count($l)))
+		    			$wh[] = $this->fields[$i]['local'].' IS NULL';
+		    		else
+		    			$wh[] = $this->fields[$i]['local'].'='.$l[$i];
+		    	}
+		    	$dql = '';
+		    	foreach($wh as $w){
+		    		if ($dql!='')
+		    			$dql .= ' AND ';
+	    			$dql .= $w;
+		    	}
+				$q->where($dql);
+		    }
+		}
+	}
 }
 
 class IPF_Admin_Model{
@@ -233,7 +338,9 @@ class IPF_Admin_Model{
                 $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::ADDITION);
                 $this->_afterAdd($item);
-                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+                $url = @$request->POST['ipf_referrer'];
+                if ($url=='')
+	                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }
         }
@@ -270,7 +377,9 @@ class IPF_Admin_Model{
                 $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::CHANGE);
                 $this->_afterEdit($item);
-                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+                $url = @$request->POST['ipf_referrer'];
+                if ($url=='')
+	                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }
         }
@@ -327,13 +436,7 @@ class IPF_Admin_Model{
 
     protected function _ListFilterQuery($request){
     	foreach($this->filters as $f){
-    		$param_name = 'filter_'.$f->local;
-    		if (isset($request->GET[$param_name])){
-    		    $id = $request->GET[$param_name];
-    		    if ($f->IsChoice($id)){
-    				$this->q->where($f->local.'='.$id);
-    		    }
-    		}
+    		$f->FilterQuery($request,$this->q);
     	}
     }
 
@@ -341,29 +444,36 @@ class IPF_Admin_Model{
     	$this->filters = array();
     	$rels = $this->model->getTable()->getRelations();
         foreach($this->_listFilters() as $f){
-        	$local = $rels[$f]['local'];
-        	$foreign = $rels[$f]['foreign'];
-        	$sel_id = @$request->GET['filter_'.$local];
-        	$choices = array();
-    	    $choices[] = array(
-    	    	'id'=>null,
-    	    	'param'=>'',
-    	    	'name'=>'All',
-    	    	'selected'=>($sel_id==''),
-    	    );
-        	foreach (IPF_ORM::getTable($rels[$f]['class'])->findAll() as $val){
-	        	$selected = false;
-      	    	$id = $val[$foreign];
-        		if ($sel_id==$id)
-        			$selected = true;
-        	    $choices[] = array(
-        	    	'id'=>$id,
-        	    	'param'=>'filter_'.$local.'='.$id,
-        	    	'name'=>(string)$val,
-        	    	'selected'=>$selected,
-        	    );
+        	if (is_string($f)){
+	        	$local = $rels[$f]['local'];
+	        	$foreign = $rels[$f]['foreign'];
+	        	$sel_id = @$request->GET['filter_'.$local];
+	        	$choices = array();
+	    	    $choices[] = array(
+	    	    	'id'=>null,
+	    	    	'param'=>'',
+	    	    	'name'=>'All',
+	    	    	'selected'=>($sel_id==''),
+	    	    );
+	        	foreach (IPF_ORM::getTable($rels[$f]['class'])->findAll() as $val){
+		        	$selected = false;
+	      	    	$id = $val[$foreign];
+	        		if ($sel_id==$id)
+	        			$selected = true;
+	        	    $choices[] = array(
+	        	    	'id'=>$id,
+	        	    	'param'=>'filter_'.$local.'='.$id,
+	        	    	'name'=>(string)$val,
+	        	    	'selected'=>$selected,
+	        	    );
+	        	}
+	    		$this->filters[$f] = new ListFilter($local, $foreign, $choices, 'By '.IPF_Utils::humanTitle($f));
+        	} else {
+        		if (get_class($f)=='ListTreeFilter'){
+        			$f->SetSelect($request);
+	    			$this->filters[$f->name] = $f;
+        		}
         	}
-    		$this->filters[$f] = new ListFilter($local, $foreign, $choices, 'By '.IPF_Utils::humanTitle($f));
         }
     }
 
