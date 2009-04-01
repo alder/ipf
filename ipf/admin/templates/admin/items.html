@@ -35,6 +35,23 @@ $(document).ready(function()
         <ul class="object-tools">{if array_search('add',$perms)!==false}<li><a href="add/" class="addlink">Add {$classname}</a></li>{/if}</ul>
         <div id="changelist" class="module {if $filters} filtered{/if}">
 
+            {if $is_search}
+            <div id="toolbar">
+				<form id="changelist-search" method="get" action="">
+				<div>
+				<label for="searchbar">
+				<img alt="Search" src="{$ADMIN_MEDIA_URL}img/icon_searchbox.png" />
+				</label>
+				<input id="searchbar" type="text" value="{$search_value}" name="q" size="40"/>
+				<input type="submit" value="Go"/>
+				{if $search_value}
+				    <span class="small quiet">{$pager->getPager()->getNumResults()} results (<a href="{url 'IPF_Admin_Views_ListItems', array($lapp, $lmodel)}">reset</a>)</span>
+				{/if}
+				</div>
+				</form>
+            </div>
+			{/if}
+
 	        {if $filters}
 	        <div id="changelist-filter">
 	        <h2>Filter</h2>

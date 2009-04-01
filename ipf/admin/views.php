@@ -62,6 +62,7 @@ function IPF_Admin_Views_ListItems($request, $match){
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
+    $lapp = $match[1];
     $lmodel = $match[2];
     foreach (IPF_Project::getInstance()->appList() as $app){
         foreach($app->modelList() as $m){
@@ -69,7 +70,7 @@ function IPF_Admin_Views_ListItems($request, $match){
                 $ma = IPF_Admin_Model::getModelAdmin($m);
                 if ($ma===null)
                     return new IPF_HTTP_Response_NotFound();
-                return $ma->ListItems($request);
+                return $ma->ListItems($request, $lapp, $lmodel);
             }
         }
     }

@@ -440,6 +440,25 @@ class IPF_Admin_Model{
     	}
     }
 
+    protected function _isSearch(){
+    	if (method_exists($this,'_searchFields'))
+    		return true;
+    	return false;
+    }
+
+    protected function _ListSearchQuery($request){
+    	if (!$this->_isSearch())
+    		return;
+    	$fields = $this->_searchFields();
+      	$this->search_value = @$request->GET['q'];
+      	if ($this->search_value!=''){
+	    	foreach ($fields as $f){
+	    	    $this->q->where($f.' like ?',array('%'.$this->search_value.'%'));
+	    	}
+      	}
+    }
+
+
     protected function _GetFilters($request){
     	$this->filters = array();
     	$rels = $this->model->getTable()->getRelations();
@@ -481,9 +500,10 @@ class IPF_Admin_Model{
         return method_exists($this, 'list_order');
     }
 
-    public function ListItems($request){
+    public function ListItems($request, $lapp, $lmodel){
         $this->ListItemsQuery();
         $this->_GetFilters($request);
+        $this->_ListSearchQuery($request);
         $this->_ListFilterQuery($request);
         $this->ListItemsHeader();
 
@@ -523,6 +543,10 @@ class IPF_Admin_Model{
             'perms'=>$this->getPerms($request),
             'filters'=>$this->filters,
 	       	'admin_title' => IPF::get('admin_title'),
+	       	'is_search' => $this->_isSearch(),
+	       	'search_value' => $this->search_value,
+	       	'lapp'=>$lapp,
+	       	'lmodel'=>$lmodel,
         );
         return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
     }
