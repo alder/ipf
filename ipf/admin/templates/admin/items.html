@@ -32,7 +32,7 @@ $(document).ready(function()
 <div id="content" class="flex">
     <h1>{$page_title}</h1>
 	<div id="content-main">
-        <ul class="object-tools">{if array_search('add',$perms)!==false}<li><a href="add/" class="addlink">Add {$classname}</a></li>{/if}</ul>
+        <ul class="object-tools">{if array_search('add',$perms)!==false}<li><a href="add/" class="addlink">Add {$classname}</a></li>{/if}<li><a href="javascript:print();">Print</a></li></ul>
         <div id="changelist" class="module {if $filters} filtered{/if}">
 
             {if $is_search}
