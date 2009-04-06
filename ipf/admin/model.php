@@ -447,6 +447,7 @@ class IPF_Admin_Model{
     }
 
     protected function _ListSearchQuery($request){
+      	$this->search_value = null;
     	if (!$this->_isSearch())
     		return;
     	$fields = $this->_searchFields();
