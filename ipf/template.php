@@ -101,7 +101,7 @@ function IPF_Template_timeFormat($time, $format='Y-m-d H:i:s'){
     return date($format, $time);
 }
 
-function IPF_Template_floatFormat($number, $decimals=2, $dec_point='.', $thousands_sep=' '){
+function IPF_Template_floatFormat($number, $decimals=2, $dec_point='.', $thousands_sep=','){
     return number_format($number, $decimals, $dec_point, $thousands_sep);
 }
 
