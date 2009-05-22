@@ -161,6 +161,10 @@ class IPF_Admin_Model{
         $this->modelName = $modelName;
     }
 
+    public function verbose_name(){
+    	return IPF_Utils::humanTitle($this->modelName);
+    }
+
     public function setUp(){
         $this->model = new $this->modelName;
     }
@@ -354,7 +358,7 @@ class IPF_Admin_Model{
         $context = array(
         	'mode'=>'add',
             'page_title'=>'Add '.$this->modelName,
-            'classname'=>$this->modelName,
+            'classname'=>$this->verbose_name(),
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
             'lapp'=>$lapp,
@@ -403,7 +407,7 @@ class IPF_Admin_Model{
         $context = array(
         	'mode'=>'change',
             'page_title'=>'Edit '.$this->modelName,
-            'classname'=>$this->modelName,
+            'classname'=>$this->verbose_name(),
             'object'=>$o,
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
@@ -424,7 +428,7 @@ class IPF_Admin_Model{
         }
         $context = array(
             'page_title'=>'Delete '.$this->modelName,
-            'classname'=>$this->modelName,
+            'classname'=>$this->verbose_name(),
             'object'=>$o,
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
@@ -540,7 +544,7 @@ class IPF_Admin_Model{
             'header'=>$this->header,
             'objects'=>$objects,
             'pager'=>$pager,
-            'classname'=>$this->modelName,
+            'classname'=>$this->verbose_name(),
             'perms'=>$this->getPerms($request),
             'filters'=>$this->filters,
 	       	'admin_title' => IPF::get('admin_title'),

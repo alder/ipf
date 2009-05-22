@@ -84,7 +84,17 @@ class IPF_Utils {
     }
 
     static function humanTitle($s){
-        return ucfirst(str_replace('_',' ',str_replace('_id','',$s)));
+        $s = ucfirst(str_replace('_',' ',str_replace('_id','',$s)));
+    	$ns = '';
+    	for ($i=0; $i<strlen($s); $i++){
+    		if ( ($i>0) && (ucfirst($s[$i-1])!=$s[$i-1]) && (ucfirst($s[$i])==$s[$i]) )
+    			$ns .= ' ';
+    		if ($s[$i]=='_')
+    			$ns .= ' ';
+    		else
+    			$ns .= $s[$i];
+    	}
+    	return $ns;
     }
 
     static function randomString($len=35)
