@@ -357,7 +357,7 @@ class IPF_Admin_Model{
 
         $context = array(
         	'mode'=>'add',
-            'page_title'=>'Add '.$this->modelName,
+            'page_title'=>'Add '.$this->verbose_name(),
             'classname'=>$this->verbose_name(),
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
@@ -406,7 +406,7 @@ class IPF_Admin_Model{
 
         $context = array(
         	'mode'=>'change',
-            'page_title'=>'Edit '.$this->modelName,
+            'page_title'=>'Edit '.$this->verbose_name(),
             'classname'=>$this->verbose_name(),
             'object'=>$o,
             'form'=>$form,
@@ -540,7 +540,7 @@ class IPF_Admin_Model{
 
         $context = array(
         	'orderable'=>$this->_orderable(),
-            'page_title'=>$this->modelName.' List',
+            'page_title'=>$this->verbose_name().' List',
             'header'=>$this->header,
             'objects'=>$objects,
             'pager'=>$pager,
