@@ -71,17 +71,17 @@ abstract class IPF_Admin_ModelInline{
                 $prefix = 'edit_'.get_class($this->model).'_'.$obj->id.'_';
                 $d = array();
 
-				if ($data===null){
-	                foreach ($obj->getData() as $k=>$v){
-	                    $d[$prefix.$k] = $v;
-	                }
-				}
-				else{
-	                foreach ($data as $k=>$v){
-	                    if (strpos($k,$prefix)==0)
-	                        $d[$k] = $v;
-	                }
-            	}
+                if ($data===null){
+                    foreach ($obj->getData() as $k=>$v){
+                        $d[$prefix.$k] = $v;
+                    }
+                }
+                else{
+                    foreach ($data as $k=>$v){
+                        if (strpos($k,$prefix)==0)
+                            $d[$k] = $v;
+                    }
+                }
 
                 $form = $this->_getForm($obj, $d,
                     array('exclude'=>array($this->getFkName(),$this->getFkLocal()))
