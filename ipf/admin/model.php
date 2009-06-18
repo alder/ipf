@@ -493,7 +493,7 @@ class IPF_Admin_Model{
 	        	}
 	    		$this->filters[$f] = new ListFilter($local, $foreign, $choices, 'By '.IPF_Utils::humanTitle($f));
         	} else {
-        		if (get_class($f)=='ListTreeFilter'){
+        		if ( (get_class($f)=='ListTreeFilter') || is_subclass_of($f, 'ListTreeFilter')){
         			$f->SetSelect($request);
 	    			$this->filters[$f->name] = $f;
         		}
