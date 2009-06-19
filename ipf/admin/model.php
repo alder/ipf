@@ -450,19 +450,25 @@ class IPF_Admin_Model{
     	return false;
     }
 
-    protected function _ListSearchQuery($request){
-      	$this->search_value = null;
-    	if (!$this->_isSearch())
-    		return;
-    	$fields = $this->_searchFields();
-      	$this->search_value = @$request->GET['q'];
-      	if ($this->search_value!=''){
-	    	foreach ($fields as $f){
-	    	    $this->q->where($f.' like ?',array('%'.$this->search_value.'%'));
-	    	}
-      	}
-    }
-
+	protected function _ListSearchQuery($request){
+	    $this->search_value = null;
+	    if (!$this->_isSearch())
+	        return;
+	    $fields = $this->_searchFields();
+	    $this->search_value = @$request->GET['q'];
+	    if ($this->search_value!=''){
+	        $wh = '';
+	        $whv = array();
+	        foreach ($fields as $f){
+	            if ($wh!='') $wh.=' or ';
+	            $wh.= $f.' like ?';
+	            $whv[] = '%'.$this->search_value.'%';
+	        }
+	        $this->q->where($wh,$whv);
+	        return true;
+	    }
+	    return false;
+	}
 
     protected function _GetFilters($request){
     	$this->filters = array();
@@ -508,8 +514,8 @@ class IPF_Admin_Model{
     public function ListItems($request, $lapp, $lmodel){
         $this->ListItemsQuery();
         $this->_GetFilters($request);
-        $this->_ListSearchQuery($request);
-        $this->_ListFilterQuery($request);
+        if (!$this->_ListSearchQuery($request))
+            $this->_ListFilterQuery($request);
         $this->ListItemsHeader();
 
         $currentPage = (int)@$request->GET['page'];
