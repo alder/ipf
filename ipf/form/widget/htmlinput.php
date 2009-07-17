@@ -56,8 +56,8 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
 					    tinyMCE.activeEditor.windowManager.open({
 					        file : cmsURL,
 					        title : "IPF File Browser",
-					        width : 640,
-					        height : 480,
+					        width : 800,
+					        height : 600,
 					        resizable : "yes",
 					        inline : "yes",
 					        close_previous : "no"
