@@ -258,3 +258,84 @@ function IPF_Admin_Views_Logout($request, $match){
     );
     return IPF_Shortcuts::RenderToResponse('admin/logout.html', $context, $request);
 }
+
+function IPF_Admin_Views_FileBrowser($request, $match){
+    $ca = IPF_Admin_App::checkAdminAuth($request);
+    if ($ca!==true) return $ca;
+    
+    $curr_dir = urldecode(substr($match[1],1));
+    $dir = IPF::get('upload_path').$curr_dir;
+
+    if ($request->method=="GET"){
+    	if (@$request->GET['delete']){
+    		$del = $dir.$request->GET['delete'];
+    		@IPF_Utils::removeDirectories($del);
+    	}
+    }
+    
+    
+    if ($request->method=="POST"){
+    	if (@$request->POST['new_folder']!='')
+    		@mkdir($dir.$request->POST['new_folder']);
+
+    	if (@$_FILES['file']){
+			$uploadfile = $dir . basename($_FILES['file']['name']);
+			@move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile); 
+    	}
+    }
+    
+    $dirs = array();
+    $files = array();
+    if ($dh = @opendir($dir)) {
+        while (($file = readdir($dh)) !== false) {
+        	if ($file=='.')
+        		continue;
+        	if (($curr_dir=='') && ($file=='..'))
+        		continue;
+        	if (filetype($dir . $file)=='dir')
+        		$dirs[] = array('name'=>$file);
+        	else{
+        		
+        		$sx = getimagesize($dir.$file);
+        		if ($sx){
+        			$image = '1';
+        			$type = str_replace('image/','',$sx['mime']).' '.$sx[0].'x'.$sx[1];
+        			if ($sx[0]<=200){
+	        			$zw = $sx[0];
+	        			$zh = $sx[1];
+        			}
+        			else {
+	        			$zw = 200;
+	        			$prop = (float)$sx[1] / (float)$sx[0];
+	        			$zh = (int)(200.0 * $prop);
+        			}
+        		}
+        		else {
+        			$image = '0';
+        			$type = 'binary';
+        			$zw = 200;
+        			$zw = 150;
+        		}
+        		$files[] = array('name'=>$file, 'image'=>$image, 'type'=>$type, 'zw'=>$zw, 'zh'=>$zh, 'size'=>filesize($dir . $file));
+        	}
+        }
+        closedir($dh);
+    }
+    
+    $pth = split(DIRECTORY_SEPARATOR,$curr_dir);
+    $path = array();
+    $cd = '/admin/filebrowser/';
+    foreach($pth as $p){
+    	$cd.=$p.DIRECTORY_SEPARATOR;
+    	$path[] = array('cd'=>$cd, 'name'=>$p);
+    }
+        
+    $context = array(
+        'page_title' => __('File Browser'),
+        'dirs' => $dirs,
+        'files' => $files,
+    	'path' => $path,
+    	'curr_dir' => $curr_dir,
+    );
+    return IPF_Shortcuts::RenderToResponse('admin/filebrowser.html', $context, $request);
+}

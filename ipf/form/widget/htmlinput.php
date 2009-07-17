@@ -51,16 +51,22 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
             IPF_Form_Widget_HTMLInput::$js_include = true;
                     $out .= '<script language="javascript" type="text/javascript" src="'.IPF::get('tiny_mce_url').'tiny_mce.js"></script>'."\n";
                     $out .='<script language="javascript" type="text/javascript">
-					function kfm_for_tiny_mce(field_name, url, type, win){
-					  window.SetUrl=function(url,width,height,caption){
-					   win.document.forms[0].elements[field_name].value = url;
-					   if(caption){
-					    win.document.forms[0].elements["alt"].value=caption;
-					    win.document.forms[0].elements["title"].value=caption;
-					   }
-					  }
-					  window.open("/media/tiny_mce/plugins/kfm/index.php?mode=selector&lang=en&type="+type,"kfm","modal,width=800,height=600");
-					}
+  					function ipf_filebrowser(field_name, url, type, win) {
+  			    		var cmsURL = "/admin/filebrowser/";
+					    tinyMCE.activeEditor.windowManager.open({
+					        file : cmsURL,
+					        title : "IPF File Browser",
+					        width : 640,
+					        height : 480,
+					        resizable : "yes",
+					        inline : "yes",
+					        close_previous : "no"
+					    }, {
+					        window : win,
+					        input : field_name
+					    });
+					    return false;
+				  }
             	tinyMCE.init({
                     theme_advanced_buttons1 : "bold, italic, underline, separator, undo, redo, separator, bullist, numlist, outdent, indent, separator, justifyleft, justifycenter, justifyright, justifyfull, separator, link, unlink, forecolor, backcolor, sub, sup, separator, preview",
                     theme_advanced_buttons2 : "code, fullscreen, image, charmap, separator, pastetext, pasteword, selectall, removeformat, separator, formatselect, fontselect, fontsizeselect",
@@ -82,7 +88,7 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     relative_urls : false,
                     remove_script_host : true,
                     content_css : "/media/tiny_mce/themes/advanced/skins/default/content.css",
-                    file_browser_callback : "kfm_for_tiny_mce"
+                    file_browser_callback : "ipf_filebrowser"
             	});
             </script>';
         }

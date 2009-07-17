@@ -161,7 +161,7 @@ class IPF_Utils {
             }
             return rmdir($folderPath);
         } else {
-            return false;
+            unlink($folderPath);
         }
     }
 

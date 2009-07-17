@@ -1,0 +1,126 @@
+{extends "admin/base_filebrowser.html"}
+
+{block breadcrumb}
+<div class="breadcrumbs"><a href="/admin/filebrowser/">Home</a>
+{foreach $path as $p}
+ / <a href="{$p['cd']}">{$p['name']}</a>
+{/foreach}
+</div>
+
+<style>
+{literal}
+a{color:#2B6FB6}
+{/literal}
+</style>
+
+<script type="text/javascript" src="{$ADMIN_MEDIA_URL}tiny_mce/tiny_mce_popup.js"></script>
+
+<script type="text/javascript">
+var curr_dir = '{$curr_dir}';
+var upload_url = '{$UPLOAD_URL}';
+var admin_media_url = '{$ADMIN_MEDIA_URL}';
+{literal}
+function click_file(filename, image, w, h){
+	var fname = upload_url+curr_dir+filename;
+	$('#picname').text(filename);
+	if (image=='1')
+		$('#pic').attr('src',fname);
+	else
+		$('#pic').attr('src',admin_media_url+'img/zero.gif');
+	$('#pic').attr('width',w);
+	$('#pic').attr('height',h);
+	return false;
+}
+
+
+var FileBrowserDialogue = {
+    init : function () {
+        // Here goes your code for setting your custom things onLoad.
+    },
+    mySubmit : function () {
+		var URL = upload_url + curr_dir + $('#picname').text(); 
+        var win = tinyMCEPopup.getWindowArg("window");
+        // insert information now
+        win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = URL;
+        // are we an image browser
+        if (typeof(win.ImageDialog) != "undefined")
+        {
+            // we are, so update image dimensions and preview if necessary
+            if (win.ImageDialog.getImageData) win.ImageDialog.getImageData();
+            if (win.ImageDialog.showPreviewImage) win.ImageDialog.showPreviewImage(URL);
+        }
+        // close popup window
+        tinyMCEPopup.close();
+    }
+}
+tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
+
+
+
+{/literal}
+</script>
+
+{/block}
+
+{block sidebar}
+<form method="post">
+<h3>Add Folder</h3>
+<input name="new_folder" />
+<div class="submit-row">
+<input class="default" type="submit" value="Create"/>
+</div>
+</form>
+
+<form method="post" enctype="multipart/form-data">
+<h3 style="border-top:1px dashed #a0a0a0; padding-top:5px;">Upload File</h3>
+<input type="file" name="file" />
+<div class="submit-row">
+<input class="default" type="submit" value="Upload"/>
+</div>
+</form>
+
+<h3 style="border-top:1px dashed #a0a0a0; padding-top:5px;">View File</h3>
+
+<div id="picname"></div>
+<div style="border:2px solid white; width:240px; text-align:center;">
+<img id="pic" src="{$ADMIN_MEDIA_URL}img/zero.gif" width="240" height="150" /></div>
+<div class="submit-row">
+<input type="button" value="Select & Close" onclick="FileBrowserDialogue.mySubmit()" />
+</div>
+
+{/block}
+
+{block content}
+
+<div class="module" id="changelist">
+<table>
+<thead>
+<tr>
+	<th>Filename</th>
+	<th>Type</th>
+	<th>Size</th>
+	<th>delete</th>
+</tr>
+</thead>
+<tbody>
+{foreach $dirs as $dir}
+<tr>
+	<td><a href="{$dir['name']}">{$dir['name']}</a></td>
+	<td colspan="2">SUB-DIR</td>
+	<td>{if $dir['name']!='..'}<a href="?delete={$dir['name']}">delete</a>{/if}</td>
+</tr>
+{/foreach}
+{foreach $files as $file}
+<tr>
+	<td><a href="#" onclick="return click_file('{$file['name']}', '{$file['image']}', {$file['zw']}, {$file['zh']})">{$file['name']}</a></td>
+	<td>{$file['type']}</td>
+	<td>{$file['size']}</td>
+	<td><a href="?delete={$file['name']}">delete</a></td>
+</tr>
+{/foreach}
+</tbody>
+</table>
+
+</div>
+{/block}
+
