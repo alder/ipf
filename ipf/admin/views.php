@@ -264,7 +264,14 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     if ($ca!==true) return $ca;
     
     $curr_dir = urldecode(substr($match[1],1));
-    $dir = IPF::get('upload_path').$curr_dir;
+    $upload_path = IPF::get('editor_upload_path','');
+    if ($upload_path=='')
+        $upload_path = IPF::get('upload_path','');
+    $upload_url = IPF::get('editor_upload_url','');
+    if ($upload_url=='')
+        $upload_url = IPF::get('upload_url','');
+
+    $dir = $upload_path.$curr_dir;
 
     if ($request->method=="GET"){
     	if (@$request->GET['delete']){
@@ -288,7 +295,7 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     $files = array();
     if ($dh = @opendir($dir)) {
         while (($file = readdir($dh)) !== false) {
-        	if ($file=='.')
+            if ($file=='.')
         		continue;
         	if (($curr_dir=='') && ($file=='..'))
         		continue;
@@ -335,6 +342,7 @@ function IPF_Admin_Views_FileBrowser($request, $match){
         'dirs' => $dirs,
         'files' => $files,
     	'path' => $path,
+        'upload_url' => $upload_url,
     	'curr_dir' => $curr_dir,
     );
     return IPF_Shortcuts::RenderToResponse('admin/filebrowser.html', $context, $request);
