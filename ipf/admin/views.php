@@ -328,6 +328,7 @@ function IPF_Admin_Views_FileBrowser($request, $match){
         }
         closedir($dh);
     }
+    sort(&$dirs);
     
     $pth = split(DIRECTORY_SEPARATOR,$curr_dir);
     $path = array();

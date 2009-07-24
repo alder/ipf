@@ -201,6 +201,7 @@ class IPF_Admin_Model{
     }
 
     protected function _setupForm($form){
+    	
     }
 
     public function fields(){return null;}
