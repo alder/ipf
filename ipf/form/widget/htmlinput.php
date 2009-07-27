@@ -73,6 +73,7 @@ class IPF_Form_Widget_HTMLInput extends IPF_Form_Widget
                     theme_advanced_buttons3 : "tablecontrols",
                     theme_advanced_toolbar_location : "top",
                     theme_advanced_toolbar_align: "left",
+                    extended_valid_elements : "span[class|style],code[class],iframe[src|width|height|name|align|frameborder|scrolling]",
                     mode : "specific_textareas",
                     editor_selector : "htmlEditor",
                  	theme : "advanced",
