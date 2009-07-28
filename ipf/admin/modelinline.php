@@ -104,7 +104,8 @@ abstract class IPF_Admin_ModelInline{
             }
         }
 
-        for($i=0; $i<$this->getAddNum(); $i++ ){
+        $n_addnum = $this->getAddNum();
+        for($i=0; $i<$n_addnum; $i++ ){
             $form = $this->_getForm($this->model->copy(), null, array('exclude'=>array($this->getFkName(),$this->getFkLocal())));
             $form->fields = array_merge(array(new IPF_Form_Field_Boolean(array('label'=>'Del','name'=>'delete_', 'widget_attrs'=>array('disabled'=>'disabled')))),$form->fields);
             $form->prefix = 'add_'.get_class($this->model).'_'.$i.'_';
