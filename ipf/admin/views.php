@@ -285,12 +285,21 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     	if (@$request->POST['new_folder']!='')
     		@mkdir($dir.$request->POST['new_folder']);
 
+    	if (@$request->POST['new_name']!='')
+    		@rename($dir.$request->POST['old_name'], $dir.$request->POST['new_name']);
+    		
+    	if (@$request->POST['move']!=''){
+    		@rename($dir.$request->POST['old_name'], $dir.$request->POST['move'].DIRECTORY_SEPARATOR.$request->POST['old_name']);
+    	}
+    	
+    		
     	if (@$_FILES['file']){
 			$uploadfile = $dir . basename($_FILES['file']['name']);
 			@move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile); 
     	}
     }
     
+    $id = 1;
     $dirs = array();
     $files = array();
     if ($dh = @opendir($dir)) {
@@ -299,8 +308,10 @@ function IPF_Admin_Views_FileBrowser($request, $match){
         		continue;
         	if (($curr_dir=='') && ($file=='..'))
         		continue;
-        	if (filetype($dir . $file)=='dir')
-        		$dirs[] = array('name'=>$file);
+        	if (filetype($dir . $file)=='dir'){
+        		$dirs[] = array('id'=>$id, 'name'=>$file);
+        		$id++;
+        	}
         	else{
         		
         		$sx = getimagesize($dir.$file);
@@ -321,9 +332,10 @@ function IPF_Admin_Views_FileBrowser($request, $match){
         			$image = '0';
         			$type = 'binary';
         			$zw = 200;
-        			$zw = 150;
+        			$zh = 150;
         		}
-        		$files[] = array('name'=>$file, 'image'=>$image, 'type'=>$type, 'zw'=>$zw, 'zh'=>$zh, 'size'=>filesize($dir . $file));
+        		$files[] = array('id'=>$id, 'name'=>$file, 'image'=>$image, 'type'=>$type, 'zw'=>$zw, 'zh'=>$zh, 'size'=>filesize($dir . $file));
+        		$id++;
         	}
         }
         closedir($dh);
@@ -348,3 +360,18 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     );
     return IPF_Shortcuts::RenderToResponse('admin/filebrowser.html', $context, $request);
 }
+
+function IPF_Admin_Views_FileBrowserRename($request, $match){
+    $ca = IPF_Admin_App::checkAdminAuth($request);
+    if ($ca!==true) return $ca;
+	
+    $old_name = @$request->POST['old_value'];
+	$name = @$request->POST['value'];
+	$curr_dir = @$request->POST['curr_dir'];
+	if ($name=='')
+        $name==$old_name;
+    else
+    	$name = $name;
+    return new IPF_HTTP_Response($name);
+}
+

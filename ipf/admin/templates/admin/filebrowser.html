@@ -9,7 +9,8 @@
 
 <style>
 {literal}
-a{color:#2B6FB6}
+a{color:#2B6FB6 !important;}
+a:hover{color:black !important;}
 {/literal}
 </style>
 
@@ -22,7 +23,11 @@ var admin_media_url = '{$ADMIN_MEDIA_URL}';
 {literal}
 function click_file(filename, image, w, h){
 	var fname = upload_url+curr_dir+filename;
-	$('#picname').text(filename);
+	$('#picname').show();
+    $('#id_old_name').val(filename);
+    $('#id_old_name2').val(filename);
+    $('#id_curr_dir').val(curr_dir);
+    $('#id_new_name').val(filename);
 	if (image=='1')
 		$('#pic').attr('src',fname);
 	else
@@ -38,7 +43,7 @@ var FileBrowserDialogue = {
         // Here goes your code for setting your custom things onLoad.
     },
     mySubmit : function () {
-		var URL = upload_url + curr_dir + $('#picname').text(); 
+		var URL = upload_url + curr_dir + $('#id_old_name').val(); 
         var win = tinyMCEPopup.getWindowArg("window");
         // insert information now
         win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = URL;
@@ -79,9 +84,29 @@ tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
 </div>
 </form>
 
-<h3 style="border-top:1px dashed #a0a0a0; padding-top:5px;">View File</h3>
+<div id="picname" style="display:none;">
+<h3 style="border-top:1px dashed #a0a0a0; padding:5px 0;">File Option</h3>
+<form method="post">
+	<input type="hidden" name="old_name" id="id_old_name" />
+	<input type="hidden" name="curr_dir" id="id_curr_dir" />
+	<table cellpadding="0" cellspacing="0"><tr>
+	<td> <input name="new_name" id="id_new_name" /></td><td>
+	<div class="submit-row" style="float:left;"><input class="default" type="submit" value="Rename"/></div>
+	</td></tr></table>
+</form>
 
-<div id="picname"></div>
+<form method="post">
+	<table cellpadding="0" cellspacing="0"><tr>
+	<input type="hidden" name="old_name" id="id_old_name2" />
+	<td><select name="move">{foreach $dirs as $dir}<option value="{$dir['name']}">{$dir['name']}</option>{/foreach}</select></td><td>
+	<div class="submit-row" style="float:left;"><input class="default" type="submit" value="Move To"/></div>
+	</td></tr></table>
+</form>
+
+
+</div>
+<h3 style="border-top:1px dashed #a0a0a0; padding:5px 0;">View File</h3>
+
 <div style="border:2px solid white; width:240px; text-align:center;">
 <img id="pic" src="{$ADMIN_MEDIA_URL}img/zero.gif" width="240" height="150" /></div>
 <div class="submit-row">
@@ -104,7 +129,7 @@ tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
 </thead>
 <tbody>
 {foreach $dirs as $dir}
-<tr>
+<tr id="id_">
 	<td><a href="{$dir['name']}">{$dir['name']}</a></td>
 	<td colspan="2">SUB-DIR</td>
 	<td>{if $dir['name']!='..'}<a href="?delete={$dir['name']}">delete</a>{/if}</td>

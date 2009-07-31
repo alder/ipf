@@ -8,7 +8,8 @@ class IPF_Admin_App extends IPF_Application{
     }
     public static function urls(){
         return array(
-            array('regex'=>'filebrowser(.+)#', 'func'=>'IPF_Admin_Views_FileBrowser'),
+            array('regex'=>'fb_rename/$#', 'func'=>'IPF_Admin_Views_FileBrowserRename'),
+        	array('regex'=>'filebrowser(.+)#', 'func'=>'IPF_Admin_Views_FileBrowser'),
         	array('regex'=>'$#', 'func'=>'IPF_Admin_Views_Index'),
             array('regex'=>'([\w\_\-]+)/([\w\_\-]+)/$#i', 'func'=>'IPF_Admin_Views_ListItems'),
             array('regex'=>'([\w\_\-]+)/([\w\_\-]+)/reorder/$#i', 'func'=>'IPF_Admin_Views_Reorder'),
