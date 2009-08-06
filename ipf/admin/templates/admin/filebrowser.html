@@ -20,7 +20,17 @@ a:hover{color:black !important;}
 var curr_dir = '{$curr_dir}';
 var upload_url = '{$upload_url}';
 var admin_media_url = '{$ADMIN_MEDIA_URL}';
+var mouseX = 0;
+var mouseY = 0;
 {literal}
+
+$().mousemove( function(e) {
+	mouseX = e.pageX;
+	mouseY = e.pageY;
+	$('#prop').css('top',mouseY+5);
+	$('#prop').css('left',mouseX+10);
+});
+
 function click_file(filename, image, w, h){
 	var fname = upload_url+curr_dir+filename;
 	$('#picname').show();
@@ -37,6 +47,20 @@ function click_file(filename, image, w, h){
 	return false;
 }
 
+function line_over(id, is_dir, is_image, type, size, filename){
+	if (is_image==1){
+		$('#prop').hide();
+		var fname = upload_url+curr_dir+filename;
+		$('#prop').html('<img src="'+fname+'" width="100" />');
+		$('#prop').css('top',mouseY+5);
+		$('#prop').css('left',mouseX+10);
+		$('#prop').show();
+	}
+}
+
+function line_out(id){
+	$('#prop').hide();
+}
 
 var FileBrowserDialogue = {
     init : function () {
@@ -97,8 +121,9 @@ tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
 
 <form method="post">
 	<table cellpadding="0" cellspacing="0"><tr>
+	<input type="hidden" name="action" value="move" />
 	<input type="hidden" name="old_name" id="id_old_name2" />
-	<td><select name="move">{foreach $dirs as $dir}<option value="{$dir['name']}">{$dir['name']}</option>{/foreach}</select></td><td>
+	<td><select name="move">{foreach $dirtree as $dir}<option value="{$dir['path']}">{$dir['name']}</option>{/foreach}</select></td><td>
 	<div class="submit-row" style="float:left;"><input class="default" type="submit" value="Move To"/></div>
 	</td></tr></table>
 </form>
@@ -129,14 +154,14 @@ tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
 </thead>
 <tbody>
 {foreach $dirs as $dir}
-<tr id="id_">
+<tr id="id_{$dir['id']}" onmouseover="line_over({$dir['id']},1,0,'SUB-DIR',0,'{$dir['name']}')" onmouseout="line_out({$dir['id']})">
 	<td><a href="{$dir['name']}">{$dir['name']}</a></td>
 	<td colspan="2">SUB-DIR</td>
 	<td>{if $dir['name']!='..'}<a href="?delete={$dir['name']}">delete</a>{/if}</td>
 </tr>
 {/foreach}
 {foreach $files as $file}
-<tr>
+<tr id="id_{$file['id']}" onmouseover="line_over({$file['id']},0,{$file['image']}, '{$file['type']}', {$file['size']}, '{$file['name']}')" onmouseout="line_out({$dir['id']})">
 	<td><a href="#" onclick="return click_file('{$file['name']}', '{$file['image']}', {$file['zw']}, {$file['zh']})">{$file['name']}</a></td>
 	<td>{$file['type']}</td>
 	<td>{$file['size']}</td>
@@ -145,7 +170,8 @@ tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
 {/foreach}
 </tbody>
 </table>
-
 </div>
+
+<div id="prop" style="display:none; position:absolute; left:0; top:0; z-index:400000; background:white; border:2px solid #aaa;">wewfwf</div>
 {/block}
 

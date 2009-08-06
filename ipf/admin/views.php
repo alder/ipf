@@ -259,6 +259,35 @@ function IPF_Admin_Views_Logout($request, $match){
     return IPF_Shortcuts::RenderToResponse('admin/logout.html', $context, $request);
 }
 
+function cmp($a, $b){
+    if ($a['name'] == $b['name']) {
+        return 0;
+    }
+    return ($a['name'] < $b['name']) ? -1 : 1;
+}
+
+function dir_recursive($dir, $path=DIRECTORY_SEPARATOR, $level=''){
+	$dirtree = array();
+	if ($level=='')
+       	$dirtree[] = array('path'=>'', 'name'=>'Root Folder');
+	$dd = array();
+    if ($dh = @opendir($dir)) {
+        while (($file = readdir($dh)) !== false) {
+	    	if (($file=='.') || ($file=='..')) continue;
+        	if (filetype($dir . $file)=='dir')
+		    	$dd[] = $file;
+        }
+		closedir($dh);
+    	sort($dd);
+    	foreach($dd as $file){
+        	$dirtree[] = array('path'=>$path.$file, 'name'=>$level.$file);
+        	$dirtree = array_merge($dirtree, dir_recursive($dir.$file.DIRECTORY_SEPARATOR, $path.$file.DIRECTORY_SEPARATOR, $level.'--'));
+    	}        
+    }
+    return $dirtree;
+   	//print_r($dirtree);
+}
+
 function IPF_Admin_Views_FileBrowser($request, $match){
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
@@ -280,7 +309,6 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     	}
     }
     
-    
     if ($request->method=="POST"){
     	if (@$request->POST['new_folder']!='')
     		@mkdir($dir.$request->POST['new_folder']);
@@ -288,11 +316,9 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     	if (@$request->POST['new_name']!='')
     		@rename($dir.$request->POST['old_name'], $dir.$request->POST['new_name']);
     		
-    	if (@$request->POST['move']!=''){
-    		@rename($dir.$request->POST['old_name'], $dir.$request->POST['move'].DIRECTORY_SEPARATOR.$request->POST['old_name']);
+    	if (@$request->POST['action']=='move'){
+    		@rename($dir.$request->POST['old_name'], $upload_path.$request->POST['move'].DIRECTORY_SEPARATOR.$request->POST['old_name']);
     	}
-    	
-    		
     	if (@$_FILES['file']){
 			$uploadfile = $dir . basename($_FILES['file']['name']);
 			@move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile); 
@@ -340,8 +366,11 @@ function IPF_Admin_Views_FileBrowser($request, $match){
         }
         closedir($dh);
     }
-    sort(&$dirs);
+    usort(&$dirs, 'cmp');
+    usort(&$files, 'cmp');
     
+    $dirtree = dir_recursive($upload_path);
+        
     $pth = split(DIRECTORY_SEPARATOR,$curr_dir);
     $path = array();
     $cd = '/admin/filebrowser/';
@@ -352,8 +381,9 @@ function IPF_Admin_Views_FileBrowser($request, $match){
         
     $context = array(
         'page_title' => __('File Browser'),
+        'dirtree' => $dirtree,
         'dirs' => $dirs,
-        'files' => $files,
+    	'files' => $files,
     	'path' => $path,
         'upload_url' => $upload_url,
     	'curr_dir' => $curr_dir,
