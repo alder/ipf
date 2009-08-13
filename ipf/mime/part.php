@@ -41,7 +41,7 @@ class IPF_Mime_Part {
                     'convert.quoted-printable-encode',
                     STREAM_FILTER_READ,
                     array(
-                        'line-length'      => 76,
+                        'line-length'      => 72,
                         'line-break-chars' => IPF_Mime::LINEEND
                     )
                 );
@@ -55,7 +55,7 @@ class IPF_Mime_Part {
                     'convert.base64-encode',
                     STREAM_FILTER_READ,
                     array(
-                        'line-length'      => 76,
+                        'line-length'      => 72,
                         'line-break-chars' => IPF_Mime::LINEEND
                     )
                 );
