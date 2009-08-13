@@ -5,6 +5,7 @@ class IPF_Form_Field_File extends IPF_Form_Field
     public $widget = 'IPF_Form_Widget_FileInput';
     public $move_function = 'IPF_Form_Field_moveToUploadFolder';
     public $remove_function = 'IPF_Form_Field_removeFile';
+    public $rename_function = 'IPF_Form_Field_renameFile';
     public $max_size =  8388608; // 8MB
     public $move_function_params = array();
 
@@ -14,10 +15,15 @@ class IPF_Form_Field_File extends IPF_Form_Field
             IPF::loadFunction($this->remove_function);
             return call_user_func($this->remove_function, $value['data']);
         }
+        if (@$value['name']!=@$value['rename']){
+            IPF::loadFunction($this->rename_function);
+        	return call_user_func($this->rename_function, &$value);
+        }
         $value = $value['data'];
-
+        
         if ($value['name']=='')
             return '';
+
         parent::clean($value);
 
         $errors = array();
@@ -69,7 +75,14 @@ function IPF_Form_Field_moveToUploadFolder($value, $params=array())
 }
 
 
-function IPF_Form_Field_removeFile($value, $params=array())
-{
+function IPF_Form_Field_removeFile($value, $params=array()){
     return null;
+}
+
+function IPF_Form_Field_renameFile($value, $params=array()){
+	$upload_path = IPF::getUploadPath($params);
+    $old_name = @$upload_path.DIRECTORY_SEPARATOR.$value['name'];
+    $new_name = @$upload_path.DIRECTORY_SEPARATOR.$value['rename'];
+    @rename($old_name, $new_name);
+    return @$value['rename'];
 }
