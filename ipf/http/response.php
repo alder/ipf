@@ -2,7 +2,8 @@
 
 class IPF_HTTP_Response
 {
-    public $content = '';
+    public $short_session = false;
+	public $content = '';
     public $headers = array();
     public $status_code = 200;
     public $cookies = array();
@@ -84,10 +85,14 @@ class IPF_HTTP_Response
             foreach ($this->headers as $header => $ch) {
                 header($header.': '.$ch);
             }
+            if ($this->short_session)
+            	$exp = 0;
+            else
+            	$exp = time()+31536000; 
             foreach ($this->cookies as $cookie => $data) {
                 // name, data, expiration, path, domain, secure, http only
                 setcookie($cookie, $data, 
-                          time()+31536000, 
+                          $exp, 
                           IPF::get('cookie_path', '/'), 
                           IPF::get('cookie_domain', null), 
                           IPF::get('cookie_secure', false), 
