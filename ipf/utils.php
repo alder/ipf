@@ -247,6 +247,14 @@ class IPF_Utils {
     static function moneyFormat($val){
         return number_format((float)$val,2);
     }
+    
+    static function toSlug($slug){
+        if ($slug){ 
+            return strtolower(preg_replace('/[^A-Z^a-z^0-9^\/]+/', '-', $slug));
+        }
+        return $slug;
+    }
+    
 
 }
 
