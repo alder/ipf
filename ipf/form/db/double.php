@@ -1,0 +1,8 @@
+<?php
+
+class IPF_Form_DB_Double extends IPF_Form_DB{
+    function formField($def, $form_field='IPF_Form_Field_Float'){
+        $def['widget_attrs'] = array('style'=>'width:40px;');
+        return parent::formField($def, $form_field);
+    }
+}
