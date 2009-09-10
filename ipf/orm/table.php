@@ -658,6 +658,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
                 case 'string':
                 case 'clob':
                 case 'float':
+                case 'double':
                 case 'integer':
                 case 'array':
                 case 'object':

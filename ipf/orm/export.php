@@ -8,6 +8,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         'integer'   => 0,
         'decimal'   => 0.0,
         'float'     => 0.0,
+        'double'    => 0.0,
         'timestamp' => '1970-01-01 00:00:00',
         'time'      => '00:00:00',
         'date'      => '1970-01-01',
@@ -595,7 +596,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
 
         foreach ($table->getGenerators() as $name => $generator) {
             if ($generator === null) {
-                continue;                     	
+                continue;                       
             }
 
             $generators[] = $generator;
@@ -612,7 +613,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
 
     public function exportGeneratorsSql(IPF_ORM_Table $table)
     {
-    	$sql = array();
+        $sql = array();
 
         foreach ($this->getAllGenerators($table) as $name => $generator) {
             $table = $generator->getTable();

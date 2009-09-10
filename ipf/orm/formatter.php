@@ -54,7 +54,7 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
             $arr[$k] = $this->quoteIdentifier($v, $checkOption);
         }
 
-		return $arr;
+        return $arr;
     }
 
     public function quote($input, $type = null)
