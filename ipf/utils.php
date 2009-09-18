@@ -51,7 +51,7 @@ class IPF_Utils {
         while(file_exists($path.$name)){
             $pathinfo = pathinfo($name);
             $filename = $pathinfo['filename'];
-            $split = split('_', $filename);
+            $split = explode('_', $filename);
 
             $n = count($split);
             if ($n<2){
@@ -230,7 +230,7 @@ class IPF_Utils {
     }
 
     public static function timestamp(){
-		list($f,$i) = split(' ',microtime());
+		list($f,$i) = explode(' ',microtime());
 		return $i.substr((string)$f,2,6);
     }
 

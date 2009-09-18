@@ -118,7 +118,7 @@ class User extends BaseUser
     function checkPassword($password){
         if ( ($this->password=='') || ($this->password==User::UNUSABLE_PASSWORD) )
             return false;
-        list($algo, $salt, $hash) = split(':', $this->password);
+        list($algo, $salt, $hash) = explode(':', $this->password);
         if ($hash == $algo($salt.$password))
             return true;
         else

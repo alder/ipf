@@ -103,8 +103,8 @@ function IPF_Admin_Views_Reorder($request, $match){
                 else
                     return new IPF_HTTP_Response_NotFound();
 
-                $ids      = split(',',(string)$request->POST['ids']);
-                $prev_ids = split(',',(string)$request->POST['prev_ids']);
+                $ids      = explode(',',(string)$request->POST['ids']);
+                $prev_ids = explode(',',(string)$request->POST['prev_ids']);
                 $drop_id  = $request->POST['drop_id'];
 
                 $o = new $m();
@@ -371,7 +371,7 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     
     $dirtree = dir_recursive($upload_path);
         
-    $pth = split(DIRECTORY_SEPARATOR,$curr_dir);
+    $pth = explode(DIRECTORY_SEPARATOR,$curr_dir);
     $path = array();
     $cd = '/admin/filebrowser/';
     foreach($pth as $p){

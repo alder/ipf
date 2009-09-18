@@ -133,7 +133,7 @@ abstract class IPF_Admin_ModelInline{
                     if ($form->isAdd)
                         continue;
 
-                    @list($x1,$x2,$id,$x3) = @split('_',$form->prefix);
+                    @list($x1,$x2,$id,$x3) = @explode('_',$form->prefix);
                     if ($id==$obj->id){
                         if ($form->cleaned_data[0]==true)
                             $obj->delete();

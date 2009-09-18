@@ -101,7 +101,9 @@ final class IPF{
         if (!isset(IPF::$settings['file_permission']))
             IPF::$settings['file_permission'] = 0666;
 
-        //print_r(IPF::$settings);
+        if (!isset(IPF::$settings['time_zome'])){
+            IPF::$settings['time_zone'] = 'America/Toronto';
+        }
     }
 
     public static function boot($ipf_path, $project_path)
@@ -110,6 +112,7 @@ final class IPF{
         IPF::$settings['project_path']=$project_path;
         try{
             IPF::loadSettings();
+			date_default_timezone_set(IPF::$settings['time_zone']);            
         }catch(IPF_Exception_Settings $e){
             die('Setting Error: '.$e->getMessage()."\n");
         }
