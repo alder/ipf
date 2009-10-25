@@ -11,7 +11,7 @@ class IPF_Form_Field_File extends IPF_Form_Field
 
     function clean($value)
     {
-        if ($value['remove']===true){
+    	if (@$value['remove']===true){
             IPF::loadFunction($this->remove_function);
             return call_user_func($this->remove_function, $value['data']);
         }
@@ -19,9 +19,9 @@ class IPF_Form_Field_File extends IPF_Form_Field
             IPF::loadFunction($this->rename_function);
         	return call_user_func($this->rename_function, &$value);
         }
-        $value = $value['data'];
+        $value = @$value['data'];
         
-        if ($value['name']=='')
+        if (@$value['name']=='')
             return '';
 
         parent::clean($value);

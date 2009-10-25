@@ -160,7 +160,7 @@ abstract class IPF_Admin_ModelInline{
         $fk_local = $this->getFkLocal();
         foreach($this->formset as $form){
             if ($form->isValid()){
-                if ($form->isAdd){
+            	if ($form->isAdd){
                     unset($form->cleaned_data[0]);
                     $form->cleaned_data[$fk_local] = $parent_obj->id;
                     $form->save();

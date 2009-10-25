@@ -110,7 +110,7 @@ class ListTreeFilter extends BaseListFilter{
 		if (isset($request->GET[$param_name])){
 		    $id = $request->GET[$param_name];
 		    if ($this->IsChoice($id)){
-		    	$l = explode("\.",$id);
+		    	$l = explode(".",$id);
 		    	$wh = array();
 		    	for($i=0; $i<count($this->fields); $i++){
 		    		if ($i>=(count($l)))

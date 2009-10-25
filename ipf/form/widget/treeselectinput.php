@@ -27,7 +27,7 @@ class IPF_Form_Widget_TreeSelectInput extends IPF_Form_Widget_SelectInput
 	public function valueFromFormData($name, $data)
     {
         if (isset($data[$name])) {
-        	$vals = explode("\.",(string)$data[$name]);
+        	$vals = explode(".",(string)$data[$name]);
 	    	for($i=0; $i<count($this->_levels); $i++){
 	    		if ( ($i<count($vals)) && ($data[$name]!='')){
 	    			$data[$this->_levels[$i]] = $vals[$i];
