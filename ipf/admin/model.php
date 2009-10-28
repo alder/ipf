@@ -424,7 +424,9 @@ class IPF_Admin_Model{
         if ($request->method == 'POST'){
             AdminLog::logAction($request, $o, AdminLog::DELETION);
             $o->delete();
-            $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+            $url = @$request->POST['ipf_referrer'];
+            if ($url=='')
+	            $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
             return new IPF_HTTP_Response_Redirect($url);
         }
         $context = array(
@@ -434,6 +436,7 @@ class IPF_Admin_Model{
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
             'affected'=>array(),
+            'ipf_referrer'=>@$request->GET['ipf_referrer'],
 	       	'admin_title' => IPF::get('admin_title'),
         );
         return IPF_Shortcuts::RenderToResponse('admin/delete.html', $context, $request);

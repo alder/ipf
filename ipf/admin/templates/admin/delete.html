@@ -6,6 +6,7 @@
 <div id="content" class="colM">
     <h1>{$page_title}</h1>
     <form method="post">
+	<input type="hidden" name="ipf_referrer" id="id_ipf_referrer" value="{$ipf_referrer}" />
     <p>Are you sure you want to delete <em>{$object}</em>?
     </p>
     {if count($affected) > 0}

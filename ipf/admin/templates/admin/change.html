@@ -10,6 +10,8 @@
 {literal}
 $(document).ready(function(){
 	$("#id_ipf_referrer").val(document.referrer);
+	var del_href = $("#id_a_delete").attr("href");
+	$("#id_a_delete").attr("href", del_href+'?ipf_referrer='+document.referrer);
 });
 {/literal}
 </script>
@@ -58,7 +60,7 @@ $(document).ready(function(){
             {/foreach}
     		{/if}
 		    <div class="submit-row">
-		        {if ($mode=='change') && (array_search('delete',$perms)!==false)}<p class="float-left"><a href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.pk())}" class="deletelink">Delete</a></p>{/if}
+		        {if ($mode=='change') && (array_search('delete',$perms)!==false)}<p class="float-left"><a id="id_a_delete" href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.pk())}" class="deletelink">Delete</a></p>{/if}
 		        {if ($mode=='change') && (array_search('change',$perms)!==false)}<input type="submit" value="Save" class="default" />{/if}
                 {if ($mode=='add') && (array_search('add',$perms)!==false)}<input type="submit" value="Add" class="default" />{/if}
                 <input type="button" value="Cancel" onclick="javascript:history.back();" />
