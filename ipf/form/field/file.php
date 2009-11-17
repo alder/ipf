@@ -6,7 +6,7 @@ class IPF_Form_Field_File extends IPF_Form_Field
     public $move_function = 'IPF_Form_Field_moveToUploadFolder';
     public $remove_function = 'IPF_Form_Field_removeFile';
     public $rename_function = 'IPF_Form_Field_renameFile';
-    public $max_size =  8388608; // 8MB
+    public $max_size =  20971520; // 20MB
     public $move_function_params = array();
 
     function clean($value)
