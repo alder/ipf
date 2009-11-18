@@ -800,6 +800,19 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return $parser->query($query, $params, $hydrationMode);
     }
 
+    public function findOneByDql($dql, $params = array(), $hydrationMode = null)
+    {
+    	$results = $this->findByDql($dql, $params, $hydrationMode);
+        if (is_array($results) && isset($results[0])) {
+            return $results[0];
+        } else if ($results instanceof IPF_ORM_Collection && $results->count() > 0) {
+            return $results->getFirst();
+        } else {
+            return false;
+        }
+    }
+    
+    
     public function execute($queryKey, $params = array(), $hydrationMode = IPF_ORM::HYDRATE_RECORD)
     {
         return IPF_ORM_Manager::getInstance()
