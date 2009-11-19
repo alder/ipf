@@ -27,7 +27,7 @@ class IPF_Form_Field_TreeModelChoice extends IPF_Form_Field_Choice{
         	    	continue;
         	}
         	$name = str_repeat("-", $level).$o['name'];
-        	$choices[$name] = $valname.$o->id;
+        	$choices[$name.' ('.$valname.$o->id.')'] = $valname.$o->id;
         	if ($level<(count($this->_models)-1)){
         	    $this->_collectTreeRecursive(&$choices,$level+1,$o->id,$valname.$o->id.'.');
         	}
