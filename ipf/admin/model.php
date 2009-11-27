@@ -550,7 +550,7 @@ class IPF_Admin_Model{
 
         $context = array(
         	'orderable'=>$this->_orderable(),
-            'page_title'=>$this->verbose_name().' List',
+        	'page_title'=>$this->page_title(),
             'header'=>$this->header,
             'objects'=>$objects,
             'pager'=>$pager,
@@ -564,5 +564,9 @@ class IPF_Admin_Model{
 	       	'lmodel'=>$lmodel,
         );
         return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
+    }
+    
+    function page_title(){
+        return $this->verbose_name().' List';
     }
 }
