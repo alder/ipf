@@ -19,6 +19,10 @@ class Session extends BaseSession
         $this->touched = true;
     }
 
+    function getSessionData(){
+    	return unserialize($this->session_data);
+    }
+    
     function getData($key=null, $default=''){
         if (is_null($key)) 
             return parent::getData();
