@@ -10,7 +10,13 @@
 </head>
 
 <body class="{block bodyclass}{/block}">
-{block commonjs}<script language="javascript" type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.js"></script>{/block}
+{block commonjs}
+{if isset($form) && method_exists($form, 'render_commonjs')}
+{$form.render_commonjs()|safe}
+{else}
+<script language="javascript" type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.js"></script>
+{/if}
+{/block}
 <div id="container">
     <div id="header">
         <div id="branding">
