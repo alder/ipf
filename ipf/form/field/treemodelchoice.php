@@ -9,15 +9,19 @@ class IPF_Form_Field_TreeModelChoice extends IPF_Form_Field_Choice{
         parent::__construct($params);
         $this->_models = $params['models'];
         $choices = array('--------'=>'');
+        $this->_collectTreeRecursive(&$choices);
+        $this->setChoices($choices);
+        $this->widget->setLevels($this->_getLevels());
+    }
+    
+    protected function _getLevels(){
         $levels = array();
         foreach($this->_models as &$m){
         	$m['objects'] = IPF_ORM_Query::create()->from($m['model'])->orderby('ord')->execute();
         	$levels[] = $m['field'];
         }
-        $this->_collectTreeRecursive(&$choices);
-        $this->setChoices($choices);
-        $this->widget->setLevels($levels);
-    }
+        return $levels;
+    } 
 
     protected function _collectTreeRecursive(&$choices,$level=0,$parent_id=null,$valname=''){
         foreach($this->_models[$level]['objects'] as $o){
