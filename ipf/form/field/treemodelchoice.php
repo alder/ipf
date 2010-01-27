@@ -5,14 +5,15 @@ class IPF_Form_Field_TreeModelChoice extends IPF_Form_Field_Choice{
     public $widget = 'IPF_Form_Widget_TreeSelectInput';
     protected $_models;
 
-    function __construct($params=array()){
+   	function __construct($params=array()){
         parent::__construct($params);
         $this->_models = $params['models'];
         $choices = array('--------'=>'');
+        $levels = $this->_getLevels();
         $this->_collectTreeRecursive(&$choices);
         $this->setChoices($choices);
-        $this->widget->setLevels($this->_getLevels());
-    }
+        $this->widget->setLevels($levels);
+    }    
     
     protected function _getLevels(){
         $levels = array();
