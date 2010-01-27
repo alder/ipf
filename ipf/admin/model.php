@@ -77,27 +77,33 @@ class ListTreeFilter extends BaseListFilter{
         parent::__construct($title, $choices);
     }
 
+
     protected function _collectTreeRecursive(&$choices,$level=0,$parent_id=null,$valname=''){
         foreach($this->fields[$level]['objects'] as $o){
-        	if ($level>0){
-        		$foreign = $this->fields[$level]['parent_key'];
-        	    if ($parent_id!=$o->$foreign)
-        	    	continue;
-        	}
-        	$name = str_repeat("-", $level).$o->name;
-        	$id = $valname.$o->id;
-    	    $choices[] = array(
-    	    	'id'=>$id,
-    	    	'param'=>'filter_'.$this->name.'='.$id,
-    	    	'name'=>$name,
-    	    	'selected'=>false,
-    	    );
-        	if ($level<(count($this->fields)-1)){
-        	    $this->_collectTreeRecursive(&$choices,$level+1,$o->id,$valname.$o->id.'.');
-        	}
+            if ($level>0){
+                $foreign = $this->fields[$level]['parent_key'];
+                if ($parent_id!=$o->$foreign)
+                    continue;
+            }
+            $this->_addObject($o, &$choices, $level, $parent_id, $valname);
+            if ($level<(count($this->fields)-1)){
+                $this->_collectTreeRecursive(&$choices,$level+1,$o->id,$valname.$o->id.'.');
+            }
         }
     }
 
+    protected function _addObject($o, &$choices, $level, $parent_id, $valname)
+    {
+        $name = str_repeat("-", $level).$o->name;
+        $id = $valname.$o->id;
+
+        $choices[] = array(
+            'id'=>$id,
+            'param'=>'filter_'.$this->name.'='.$id,
+            'name'=>$name,
+            'selected'=>false,
+        );
+    }
     function SetSelect($request){
     	$sel_id = @$request->GET['filter_'.$this->name];
     	foreach($this->choices as &$ch){
