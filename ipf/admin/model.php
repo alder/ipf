@@ -2,76 +2,76 @@
 
 abstract class BaseListFilter{
     function __construct($title, $choices){
-    	$this->choices = $choices;
-    	$this->title = $title;
+        $this->choices = $choices;
+        $this->title = $title;
     }
 
     function IsChoice($id){
-    	foreach($this->choices as &$ch){
-    	    if ($ch['id']==$id)
-    	    	return true;
-    	}
-    	return false;
+        foreach($this->choices as &$ch){
+            if ($ch['id']==$id)
+                return true;
+        }
+        return false;
     }
 
     function selected(){
-    	foreach($this->choices as &$ch){
-    	    if ( ($ch['id']!='') && ($ch['selected']===true) )
-    	    	return true;
-    	}
-    	return false;
+        foreach($this->choices as &$ch){
+            if ( ($ch['id']!='') && ($ch['selected']===true) )
+                return true;
+        }
+        return false;
     }
 
-	abstract function FilterQuery($request,$q);
+    abstract function FilterQuery($request,$q);
 }
 
 class ListFilter extends BaseListFilter{
     function __construct($local, $foreign, $choices, $title){
         parent::__construct($title, $choices);
-    	$this->local = $local;
-    	$this->foreign = $foreign;
+        $this->local = $local;
+        $this->foreign = $foreign;
     }
 
-	function FilterQuery($request,$q){
-		$param_name = 'filter_'.$this->local;
-		if (isset($request->GET[$param_name])){
-		    $id = $request->GET[$param_name];
-		    if ($this->IsChoice($id)){
-				$q->where($this->local.'='.$id);
-		    }
-		}
-	}
+    function FilterQuery($request,$q){
+        $param_name = 'filter_'.$this->local;
+        if (isset($request->GET[$param_name])){
+            $id = $request->GET[$param_name];
+            if ($this->IsChoice($id)){
+                $q->where($this->local.'='.$id);
+            }
+        }
+    }
 }
 
 class ListTreeFilter extends BaseListFilter{
    function __construct($name, $title, $model, $fields){
-   		$this->name = $name;
+        $this->name = $name;
         $choices = array();
-    	$choices[] = array(
-	    	'id'=>null,
-	    	'param'=>'',
-	    	'name'=>'All',
-	    	'selected'=>false,
-	    );
+        $choices[] = array(
+            'id'=>null,
+            'param'=>'',
+            'name'=>'All',
+            'selected'=>false,
+        );
         $levels = array();
 
-		$mrels = $model->getTable()->getRelations();
+        $mrels = $model->getTable()->getRelations();
         $this->fields = array();
-       	foreach($fields as $fname){
-       		if (array_key_exists($fname, $mrels)){
-       			$n = count($this->fields);
-       			if ($n==0)
-       				$parent_key = null;
-       			else
-       				$parent_key = $this->fields[$n-1]['local'];
-        		$this->fields[] = array(
-        			'name'=>$fname,
-        			'local'=>$mrels[$fname]->getLocal(),
-        			'parent_key'=>$parent_key,
-        			'class'=>$mrels[$fname]->getClass(),
-        			'objects'=>IPF_ORM_Query::create()->from($mrels[$fname]->getClass())->orderby('ord')->execute(),
-        		);
-       		}
+        foreach($fields as $fname){
+            if (array_key_exists($fname, $mrels)){
+                $n = count($this->fields);
+                if ($n==0)
+                    $parent_key = null;
+                else
+                    $parent_key = $this->fields[$n-1]['local'];
+                $this->fields[] = array(
+                    'name'=>$fname,
+                    'local'=>$mrels[$fname]->getLocal(),
+                    'parent_key'=>$parent_key,
+                    'class'=>$mrels[$fname]->getClass(),
+                    'objects'=>IPF_ORM_Query::create()->from($mrels[$fname]->getClass())->orderby('ord')->execute(),
+                );
+            }
         }
         $this->_collectTreeRecursive(&$choices);
         parent::__construct($title, $choices);
@@ -85,14 +85,14 @@ class ListTreeFilter extends BaseListFilter{
                 if ($parent_id!=$o->$foreign)
                     continue;
             }
-            $this->_addObject($o, &$choices, $level, $parent_id, $valname);
+            $this->_addObject($o, &$choices, $level, $valname);
             if ($level<(count($this->fields)-1)){
                 $this->_collectTreeRecursive(&$choices,$level+1,$o->id,$valname.$o->id.'.');
             }
         }
     }
 
-    protected function _addObject($o, &$choices, $level, $parent_id, $valname)
+    protected function _addObject($o, &$choices, $level, $valname)
     {
         $name = str_repeat("-", $level).$o->name;
         $id = $valname.$o->id;
@@ -105,35 +105,35 @@ class ListTreeFilter extends BaseListFilter{
         );
     }
     function SetSelect($request){
-    	$sel_id = @$request->GET['filter_'.$this->name];
-    	foreach($this->choices as &$ch){
-    	    $ch['selected']= ($sel_id==$ch['id']);
-    	}
+        $sel_id = @$request->GET['filter_'.$this->name];
+        foreach($this->choices as &$ch){
+            $ch['selected']= ($sel_id==$ch['id']);
+        }
     }
 
-	function FilterQuery($request,$q){
-		$param_name = 'filter_'.$this->name;
-		if (isset($request->GET[$param_name])){
-		    $id = $request->GET[$param_name];
-		    if ($this->IsChoice($id)){
-		    	$l = explode(".",$id);
-		    	$wh = array();
-		    	for($i=0; $i<count($this->fields); $i++){
-		    		if ($i>=(count($l)))
-		    			$wh[] = $this->fields[$i]['local'].' IS NULL';
-		    		else
-		    			$wh[] = $this->fields[$i]['local'].'='.$l[$i];
-		    	}
-		    	$dql = '';
-		    	foreach($wh as $w){
-		    		if ($dql!='')
-		    			$dql .= ' AND ';
-	    			$dql .= $w;
-		    	}
-				$q->where($dql);
-		    }
-		}
-	}
+    function FilterQuery($request,$q){
+        $param_name = 'filter_'.$this->name;
+        if (isset($request->GET[$param_name])){
+            $id = $request->GET[$param_name];
+            if ($this->IsChoice($id)){
+                $l = explode(".",$id);
+                $wh = array();
+                for($i=0; $i<count($this->fields); $i++){
+                    if ($i>=(count($l)))
+                        $wh[] = $this->fields[$i]['local'].' IS NULL';
+                    else
+                        $wh[] = $this->fields[$i]['local'].'='.$l[$i];
+                }
+                $dql = '';
+                foreach($wh as $w){
+                    if ($dql!='')
+                        $dql .= ' AND ';
+                    $dql .= $w;
+                }
+                $q->where($dql);
+            }
+        }
+    }
 }
 
 class IPF_Admin_Model{
@@ -168,7 +168,7 @@ class IPF_Admin_Model{
     }
 
     public function verbose_name(){
-    	return IPF_Utils::humanTitle($this->modelName);
+        return IPF_Utils::humanTitle($this->modelName);
     }
 
     public function setUp(){
@@ -195,7 +195,7 @@ class IPF_Admin_Model{
     }
 
     protected function _listFilters(){
-    	return array();
+        return array();
     }
 
     protected function _setupEditForm($form){
@@ -207,7 +207,7 @@ class IPF_Admin_Model{
     }
 
     protected function _setupForm($form){
-    	
+        
     }
 
     public function fields(){return null;}
@@ -241,11 +241,11 @@ class IPF_Admin_Model{
     }
 
     public function ListItemsQuery(){
-    	if (method_exists($this->model,'ordering'))
-    		$ord = $this->model->ordering();
-    	else
-    		$ord = '1 desc';
-       	$this->q = IPF_ORM_Query::create()->from($this->modelName)->orderby($ord);
+        if (method_exists($this->model,'ordering'))
+            $ord = $this->model->ordering();
+        else
+            $ord = '1 desc';
+        $this->q = IPF_ORM_Query::create()->from($this->modelName)->orderby($ord);
     }
 
     public function ListRow($o){
@@ -351,7 +351,7 @@ class IPF_Admin_Model{
                 $this->_afterAdd($item);
                 $url = @$request->POST['ipf_referrer'];
                 if ($url=='')
-	                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+                    $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }
         }
@@ -363,7 +363,7 @@ class IPF_Admin_Model{
         }
 
         $context = array(
-        	'mode'=>'add',
+            'mode'=>'add',
             'page_title'=>'Add '.$this->verbose_name(),
             'classname'=>$this->verbose_name(),
             'form'=>$form,
@@ -390,14 +390,14 @@ class IPF_Admin_Model{
                 $this->_afterEdit($item);
                 $url = @$request->POST['ipf_referrer'];
                 if ($url=='')
-	                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+                    $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }
         }
         else{
             $data = $o->getData();
             foreach($o->getTable()->getRelations() as $rname=>$rel){
-            	$pk = $rel->getTable()->getIdentifier();
+                $pk = $rel->getTable()->getIdentifier();
                 if (array_search($rname,$this->fields())){
                     if ($rel->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
                         $data[$rname] = array();
@@ -412,7 +412,7 @@ class IPF_Admin_Model{
         }
 
         $context = array(
-        	'mode'=>'change',
+            'mode'=>'change',
             'page_title'=>'Edit '.$this->verbose_name(),
             'classname'=>$this->verbose_name(),
             'object'=>$o,
@@ -421,7 +421,7 @@ class IPF_Admin_Model{
             'lapp'=>$lapp,
             'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
-	       	'admin_title' => IPF::get('admin_title'),
+            'admin_title' => IPF::get('admin_title'),
         );
         return IPF_Shortcuts::RenderToResponse($this->_getChangeTemplate(), $context, $request);
     }
@@ -432,7 +432,7 @@ class IPF_Admin_Model{
             $o->delete();
             $url = @$request->POST['ipf_referrer'];
             if ($url=='')
-	            $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
             return new IPF_HTTP_Response_Redirect($url);
         }
         $context = array(
@@ -443,77 +443,77 @@ class IPF_Admin_Model{
             'lmodel'=>$lmodel,
             'affected'=>array(),
             'ipf_referrer'=>@$request->GET['ipf_referrer'],
-	       	'admin_title' => IPF::get('admin_title'),
+            'admin_title' => IPF::get('admin_title'),
         );
         return IPF_Shortcuts::RenderToResponse('admin/delete.html', $context, $request);
     }
 
     protected function _ListFilterQuery($request){
-    	foreach($this->filters as $f){
-    		$f->FilterQuery($request,$this->q);
-    	}
+        foreach($this->filters as $f){
+            $f->FilterQuery($request,$this->q);
+        }
     }
 
     protected function _isSearch(){
-    	if (method_exists($this,'_searchFields'))
-    		return true;
-    	return false;
+        if (method_exists($this,'_searchFields'))
+            return true;
+        return false;
     }
 
-	protected function _ListSearchQuery($request){
-	    $this->search_value = null;
-	    if (!$this->_isSearch())
-	        return;
-	    $fields = $this->_searchFields();
-	    $this->search_value = @$request->GET['q'];
-	    if ($this->search_value!=''){
-	        $wh = '';
-	        $whv = array();
-	        foreach ($fields as $f){
-	            if ($wh!='') $wh.=' or ';
-	            $wh.= $f.' like ?';
-	            $whv[] = '%'.$this->search_value.'%';
-	        }
-	        $this->q->where($wh,$whv);
-	        return true;
-	    }
-	    return false;
-	}
+    protected function _ListSearchQuery($request){
+        $this->search_value = null;
+        if (!$this->_isSearch())
+            return;
+        $fields = $this->_searchFields();
+        $this->search_value = @$request->GET['q'];
+        if ($this->search_value!=''){
+            $wh = '';
+            $whv = array();
+            foreach ($fields as $f){
+                if ($wh!='') $wh.=' or ';
+                $wh.= $f.' like ?';
+                $whv[] = '%'.$this->search_value.'%';
+            }
+            $this->q->where($wh,$whv);
+            return true;
+        }
+        return false;
+    }
 
     protected function _GetFilters($request){
-    	$this->filters = array();
-    	$rels = $this->model->getTable()->getRelations();
+        $this->filters = array();
+        $rels = $this->model->getTable()->getRelations();
         foreach($this->_listFilters() as $f){
-        	if (is_string($f)){
-	        	$local = $rels[$f]['local'];
-	        	$foreign = $rels[$f]['foreign'];
-	        	$sel_id = @$request->GET['filter_'.$local];
-	        	$choices = array();
-	    	    $choices[] = array(
-	    	    	'id'=>null,
-	    	    	'param'=>'',
-	    	    	'name'=>'All',
-	    	    	'selected'=>($sel_id==''),
-	    	    );
-	        	foreach (IPF_ORM::getTable($rels[$f]['class'])->findAll() as $val){
-		        	$selected = false;
-	      	    	$id = $val[$foreign];
-	        		if ($sel_id==$id)
-	        			$selected = true;
-	        	    $choices[] = array(
-	        	    	'id'=>$id,
-	        	    	'param'=>'filter_'.$local.'='.$id,
-	        	    	'name'=>(string)$val,
-	        	    	'selected'=>$selected,
-	        	    );
-	        	}
-	    		$this->filters[$f] = new ListFilter($local, $foreign, $choices, 'By '.IPF_Utils::humanTitle($f));
-        	} else {
-        		if ( (get_class($f)=='ListTreeFilter') || is_subclass_of($f, 'ListTreeFilter')){
-        			$f->SetSelect($request);
-	    			$this->filters[$f->name] = $f;
-        		}
-        	}
+            if (is_string($f)){
+                $local = $rels[$f]['local'];
+                $foreign = $rels[$f]['foreign'];
+                $sel_id = @$request->GET['filter_'.$local];
+                $choices = array();
+                $choices[] = array(
+                    'id'=>null,
+                    'param'=>'',
+                    'name'=>'All',
+                    'selected'=>($sel_id==''),
+                );
+                foreach (IPF_ORM::getTable($rels[$f]['class'])->findAll() as $val){
+                    $selected = false;
+                    $id = $val[$foreign];
+                    if ($sel_id==$id)
+                        $selected = true;
+                    $choices[] = array(
+                        'id'=>$id,
+                        'param'=>'filter_'.$local.'='.$id,
+                        'name'=>(string)$val,
+                        'selected'=>$selected,
+                    );
+                }
+                $this->filters[$f] = new ListFilter($local, $foreign, $choices, 'By '.IPF_Utils::humanTitle($f));
+            } else {
+                if ( (get_class($f)=='ListTreeFilter') || is_subclass_of($f, 'ListTreeFilter')){
+                    $f->SetSelect($request);
+                    $this->filters[$f->name] = $f;
+                }
+            }
         }
     }
 
@@ -532,18 +532,18 @@ class IPF_Admin_Model{
 
         $url = '';
         foreach ($request->GET as $k=>$v){
-        	if ($k=='page')
-        		continue;
+            if ($k=='page')
+                continue;
             if ($url=='')
-            	$url = '?';
+                $url = '?';
             else
-            	$url .= '&';
+                $url .= '&';
             $url .= $k.'='.$v;
         }
         if ($url=='')
-        	$pager_url = '?page={%page_number}';
+            $pager_url = '?page={%page_number}';
         else
-        	$pager_url = $url.'&page={%page_number}';
+            $pager_url = $url.'&page={%page_number}';
 
         $pager = new IPF_ORM_Pager_LayoutArrows(
             new IPF_ORM_Pager($this->q, $currentPage, $this->perPage),
@@ -555,19 +555,19 @@ class IPF_Admin_Model{
         $objects = $pager->getPager()->execute();
 
         $context = array(
-        	'orderable'=>$this->_orderable(),
-        	'page_title'=>$this->page_title(),
+            'orderable'=>$this->_orderable(),
+            'page_title'=>$this->page_title(),
             'header'=>$this->header,
             'objects'=>$objects,
             'pager'=>$pager,
             'classname'=>$this->verbose_name(),
             'perms'=>$this->getPerms($request),
             'filters'=>$this->filters,
-	       	'admin_title' => IPF::get('admin_title'),
-	       	'is_search' => $this->_isSearch(),
-	       	'search_value' => $this->search_value,
-	       	'lapp'=>$lapp,
-	       	'lmodel'=>$lmodel,
+            'admin_title' => IPF::get('admin_title'),
+            'is_search' => $this->_isSearch(),
+            'search_value' => $this->search_value,
+            'lapp'=>$lapp,
+            'lmodel'=>$lmodel,
         );
         return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
     }
