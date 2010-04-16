@@ -7,6 +7,8 @@ abstract class IPF_Admin_ModelInline{
     var $parentModel = null;
     var $formset = null;
 
+    var $orderby = 'id';
+
     function __construct($parentModel,$data=null){
         $this->parentModel = $parentModel;
 
@@ -63,7 +65,7 @@ abstract class IPF_Admin_ModelInline{
         if ($this->parentModel->exists()){
             $objects = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
-                ->orderby('id')
+                ->orderby($this->orderby)
                 ->where($this->getFkLocal().'='.$this->parentModel->id)
                 ->execute();
 
@@ -160,7 +162,7 @@ abstract class IPF_Admin_ModelInline{
         $fk_local = $this->getFkLocal();
         foreach($this->formset as $form){
             if ($form->isValid()){
-            	if ($form->isAdd){
+                if ($form->isAdd){
                     unset($form->cleaned_data[0]);
                     $form->cleaned_data[$fk_local] = $parent_obj->id;
                     $form->save();
