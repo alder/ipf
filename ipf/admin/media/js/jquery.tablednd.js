@@ -17,13 +17,13 @@ jQuery.tableDnD = {
             this.tableDnDConfig = jQuery.extend({
                 onDragStyle: null,
                 onDropStyle: null,
-				// Add in the default class for whileDragging
-				onDragClass: "tDnD_whileDrag",
+                // Add in the default class for whileDragging
+                onDragClass: "tDnD_whileDrag",
                 onDrop: null,
                 onDragStart: null,
                 scrollAmount: 5,
-				serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
-				serializeParamName: null, // If you want to specify another parameter name instead of the table ID
+                serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
+                serializeParamName: null, // If you want to specify another parameter name instead of the table ID
                 dragHandle: null // If you give the name of a class here, then only Cells with this class will be draggable
             }, options || {});
             // Now make the rows draggable
@@ -43,11 +43,11 @@ jQuery.tableDnD = {
     /** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
     makeDraggable: function(table) {
         var config = table.tableDnDConfig;
-		if (table.tableDnDConfig.dragHandle) {
-			// We only need to add the event to the specified cells
-			var cells = jQuery("td."+table.tableDnDConfig.dragHandle, table);
-			cells.each(function() {
-				// The cell is bound to "this"
+        if (table.tableDnDConfig.dragHandle) {
+            // We only need to add the event to the specified cells
+            var cells = jQuery("td."+table.tableDnDConfig.dragHandle, table);
+            cells.each(function() {
+                // The cell is bound to "this"
                 jQuery(this).mousedown(function(ev) {
                     jQuery.tableDnD.dragObject = this.parentNode;
                     jQuery.tableDnD.currentTable = table;
@@ -58,39 +58,39 @@ jQuery.tableDnD = {
                     }
                     return false;
                 });
-			})
-		} else {
-			// For backwards compatibility, we add the event to the whole row
-	        var rows = jQuery("tr", table); // get all the rows as a wrapped set
-	        rows.each(function() {
-				// Iterate through each row, the row is bound to "this"
-				var row = jQuery(this);
-				if (! row.hasClass("nodrag")) {
-	                row.mousedown(function(ev) {
-	                    if (ev.target.tagName == "TD") {
-	                        jQuery.tableDnD.dragObject = this;
-	                        jQuery.tableDnD.currentTable = table;
-	                        jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
-	                        if (config.onDragStart) {
-	                            // Call the onDrop method if there is one
-	                            config.onDragStart(table, this);
-	                        }
-	                        return false;
-	                    }
-	                }).css("cursor", "move"); // Store the tableDnD object
-				}
-			});
-		}
-	},
+            })
+        } else {
+            // For backwards compatibility, we add the event to the whole row
+            var rows = jQuery("tr", table); // get all the rows as a wrapped set
+            rows.each(function() {
+                // Iterate through each row, the row is bound to "this"
+                var row = jQuery(this);
+                if (! row.hasClass("nodrag")) {
+                    row.mousedown(function(ev) {
+                        if (ev.target.tagName == "TD") {
+                            jQuery.tableDnD.dragObject = this;
+                            jQuery.tableDnD.currentTable = table;
+                            jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+                            if (config.onDragStart) {
+                                // Call the onDrop method if there is one
+                                config.onDragStart(table, this);
+                            }
+                            return false;
+                        }
+                    }).css("cursor", "move"); // Store the tableDnD object
+                }
+            });
+        }
+    },
 
-	updateTables: function() {
-		this.each(function() {
-			// this is now bound to each matching table
-			if (this.tableDnDConfig) {
-				jQuery.tableDnD.makeDraggable(this);
-			}
-		})
-	},
+    updateTables: function() {
+        this.each(function() {
+            // this is now bound to each matching table
+            if (this.tableDnDConfig) {
+                jQuery.tableDnD.makeDraggable(this);
+            }
+        })
+    },
 
     /** Get the mouse coordinates from the event (allowing for browser differences) */
     mouseCoords: function(ev){
@@ -150,23 +150,23 @@ jQuery.tableDnD = {
         var mousePos = jQuery.tableDnD.mouseCoords(ev);
         var y = mousePos.y - jQuery.tableDnD.mouseOffset.y;
         //auto scroll the window
-	    var yOffset = window.pageYOffset;
-	 	if (document.all) {
-	        // Windows version
-	        //yOffset=document.body.scrollTop;
-	        if (typeof document.compatMode != 'undefined' &&
-	             document.compatMode != 'BackCompat') {
-	           yOffset = document.documentElement.scrollTop;
-	        }
-	        else if (typeof document.body != 'undefined') {
-	           yOffset=document.body.scrollTop;
-	        }
+        var yOffset = window.pageYOffset;
+        if (document.all) {
+            // Windows version
+            //yOffset=document.body.scrollTop;
+            if (typeof document.compatMode != 'undefined' &&
+                 document.compatMode != 'BackCompat') {
+               yOffset = document.documentElement.scrollTop;
+            }
+            else if (typeof document.body != 'undefined') {
+               yOffset=document.body.scrollTop;
+            }
 
-	    }
-		    
-		if (mousePos.y-yOffset < config.scrollAmount) {
-	    	window.scrollBy(0, -config.scrollAmount);
-	    } else {
+        }
+            
+        if (mousePos.y-yOffset < config.scrollAmount) {
+            window.scrollBy(0, -config.scrollAmount);
+        } else {
             var windowHeight = window.innerHeight ? window.innerHeight
                     : document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;
             if (windowHeight-(mousePos.y-yOffset) < config.scrollAmount) {
@@ -181,11 +181,11 @@ jQuery.tableDnD = {
             // update the old value
             jQuery.tableDnD.oldY = y;
             // update the style to show we're dragging
-			if (config.onDragClass) {
-				dragObj.addClass(config.onDragClass);
-			} else {
-	            dragObj.css(config.onDragStyle);
-			}
+            if (config.onDragClass) {
+                dragObj.addClass(config.onDragClass);
+            } else {
+                dragObj.css(config.onDragStyle);
+            }
             // If we're over a row then move the dragged row to there so that the user sees the
             // effect dynamically
             var currentRow = jQuery.tableDnD.findDropTargetRow(dragObj, y);
@@ -216,8 +216,8 @@ jQuery.tableDnD = {
             // Because we always have to insert before, we need to offset the height a bit
             if ((y > rowY - rowHeight) && (y < (rowY + rowHeight))) {
                 // that's the row we're over
-				// If it's the same as the current row, ignore it
-				if (row == draggedRow) {return null;}
+                // If it's the same as the current row, ignore it
+                if (row == draggedRow) {return null;}
                 var config = jQuery.tableDnD.currentTable.tableDnDConfig;
                 if (config.onAllowDrop) {
                     if (config.onAllowDrop(draggedRow, row)) {
@@ -226,7 +226,7 @@ jQuery.tableDnD = {
                         return null;
                     }
                 } else {
-					// If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
+                    // If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
                     var nodrop = jQuery(row).hasClass("nodrop");
                     if (! nodrop) {
                         return row;
@@ -246,11 +246,11 @@ jQuery.tableDnD = {
             var config = jQuery.tableDnD.currentTable.tableDnDConfig;
             // If we have a dragObject, then we need to release it,
             // The row will already have been moved to the right place so we just reset stuff
-			if (config.onDragClass) {
-	            jQuery(droppedRow).removeClass(config.onDragClass);
-			} else {
-	            jQuery(droppedRow).css(config.onDropStyle);
-			}
+            if (config.onDragClass) {
+                jQuery(droppedRow).removeClass(config.onDragClass);
+            } else {
+                jQuery(droppedRow).css(config.onDropStyle);
+            }
             jQuery.tableDnD.dragObject   = null;
             if (config.onDrop) {
                 // Call the onDrop method if there is one
@@ -268,7 +268,7 @@ jQuery.tableDnD = {
         }
     },
 
-	serializeTable: function(table) {
+    serializeTable: function(table) {
         var result = "";
         var tableId = table.id;
         var rows = table.rows;
@@ -281,23 +281,23 @@ jQuery.tableDnD = {
             result += rowId;
         }
         return result;
-	},
+    },
 
-	serializeTables: function() {
+    serializeTables: function() {
         var result = "";
         this.each(function() {
-			// this is now bound to each matching table
-			result += jQuery.tableDnD.serializeTable(this);
-		});
+            // this is now bound to each matching table
+            result += jQuery.tableDnD.serializeTable(this);
+        });
         return result;
     }
 
 }
 
 jQuery.fn.extend(
-	{
-		tableDnD : jQuery.tableDnD.build,
-		tableDnDUpdate : jQuery.tableDnD.updateTables,
-		tableDnDSerialize: jQuery.tableDnD.serializeTables
-	}
+    {
+        tableDnD : jQuery.tableDnD.build,
+        tableDnDUpdate : jQuery.tableDnD.updateTables,
+        tableDnDSerialize: jQuery.tableDnD.serializeTables
+    }
 );

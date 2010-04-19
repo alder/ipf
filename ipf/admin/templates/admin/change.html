@@ -38,7 +38,7 @@ $(document).ready(function(){
                         {foreach $inline.formset as $formset}
                         {if $formset.isFirst}
                         <thead>
-                        <tr>
+                        <tr class="nodrop">
                             {foreach $formset.fields as $fieldname=>$field}
                             <th{if $formset.field($fieldname).label=='Del'} style="width:20px;"{elseif $field.widget.is_hidden} style="display:none;"{/if}>{if !$field.widget.is_hidden}{$formset.field($fieldname).label}{/if}</th>
                             {/foreach}
