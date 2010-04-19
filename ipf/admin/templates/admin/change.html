@@ -9,9 +9,9 @@
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
-	$("#id_ipf_referrer").val(document.referrer);
-	var del_href = $("#id_a_delete").attr("href");
-	$("#id_a_delete").attr("href", del_href+'?ipf_referrer='+document.referrer);
+    $("#id_ipf_referrer").val(document.referrer);
+    var del_href = $("#id_a_delete").attr("href");
+    $("#id_a_delete").attr("href", del_href+'?ipf_referrer='+document.referrer);
 });
 {/literal}
 </script>
@@ -19,56 +19,56 @@ $(document).ready(function(){
 <div id="content" class="colM">
     <h1>{$page_title}</h1>
     <div id="content-main">
-	    <form method="post" {if $form.hasFileField()}enctype="multipart/form-data"{/if}>
-	    <input type="hidden" name="ipf_referrer" id="id_ipf_referrer" value="" />
-	    <div>
+        <form method="post" {if $form.hasFileField()}enctype="multipart/form-data"{/if}>
+        <input type="hidden" name="ipf_referrer" id="id_ipf_referrer" value="" />
+        <div>
             {if $form.errors}
             <p class="errornote">Please correct the error below.</p>
             {/if}
-		    <fieldset class="module aligned">
-		    {$form.render_admin()}
-		    </fieldset>
-		    {if $inlineInstances}
-    	    {foreach $inlineInstances as $inline}
+            <fieldset class="module aligned">
+            {$form.render_admin()}
+            </fieldset>
+            {if $inlineInstances}
+            {foreach $inlineInstances as $inline}
             <div class="inline-group">
                 <div class="tabular inline-related">
-				    <fieldset class="module">
-				    <h2>{$inline->getLegend()}</h2>
-				    <table>
-    				    {foreach $inline.formset as $formset}
-	   			        {if $formset.isFirst}
+                    <fieldset class="module">
+                    <h2>{$inline->getLegend()}</h2>
+                    <table>
+                        {foreach $inline.formset as $formset}
+                        {if $formset.isFirst}
                         <thead>
-				        <tr>
-				            {foreach $formset.fields as $fieldname=>$field}
-				            <th{if $formset.field($fieldname).label=='Del'} style="width:20px;"{/if}>{$formset.field($fieldname).label}</th>
-        				    {/foreach}
-		  		        </tr>
-					    </thead>
-						<tbody>
-				        {/if}
-    				    <tr>
+                        <tr>
                             {foreach $formset.fields as $fieldname=>$field}
-				            <td>{$formset.field($fieldname).fieldErrors()}{$formset.field($fieldname)|safe}</td>
-				            {/foreach}
-				        </tr>
-				        {/foreach}
-						</tbody>
-				    </table>
-				    </fieldset>
-				</div>
-			</div>
+                            <th{if $formset.field($fieldname).label=='Del'} style="width:20px;"{elseif $field.widget.is_hidden} style="display:none;"{/if}>{if !$field.widget.is_hidden}{$formset.field($fieldname).label}{/if}</th>
+                            {/foreach}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {/if}
+                        <tr>
+                            {foreach $formset.fields as $fieldname=>$field}
+                            <td{if $field.widget.is_hidden} style="display:none;"{/if}>{$formset.field($fieldname).fieldErrors()}{$formset.field($fieldname)|safe}</td>
+                            {/foreach}
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    </fieldset>
+                </div>
+            </div>
             {/foreach}
-    		{/if}
-		    <div class="submit-row">
-		        {if ($mode=='change') && (array_search('delete',$perms)!==false)}<p class="float-left"><a id="id_a_delete" href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.pk())}" class="deletelink">Delete</a></p>{/if}
-		        {if ($mode=='change') && (array_search('change',$perms)!==false)}<input type="submit" value="Save" class="default" />{/if}
+            {/if}
+            <div class="submit-row">
+                {if ($mode=='change') && (array_search('delete',$perms)!==false)}<p class="float-left"><a id="id_a_delete" href="{url 'IPF_Admin_Views_DeleteItem', array($lapp, $lmodel, $object.pk())}" class="deletelink">Delete</a></p>{/if}
+                {if ($mode=='change') && (array_search('change',$perms)!==false)}<input type="submit" value="Save" class="default" />{/if}
                 {if ($mode=='add') && (array_search('add',$perms)!==false)}<input type="submit" value="Add" class="default" />{/if}
                 <input type="button" value="Cancel" onclick="javascript:history.back();" />
-		    </div>
-		</div>
-	    </form>
+            </div>
+        </div>
+        </form>
     </div>
-	<br class="clear" />
+    <br class="clear" />
 </div>
 
 {/block}
