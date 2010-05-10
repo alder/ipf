@@ -20,11 +20,11 @@
 <div id="container">
     <div id="header">
         <div id="branding">
-            <h1 id="site-name"><a href="/">{$admin_title}</a></h1>
+            <h1 id="site-name"><a href={if isset($indexpage_url)}"{$indexpage_url}"{else}"/"{/if}>{$admin_title}</a></h1>
         </div>
         {block usertools}<div id="user-tools">Welcome, <strong>{$user}</strong>. <a href="{url 'IPF_Admin_Views_Logout'}">Log out</a><br /><span id="ipfver">Version: {$IPF_VER}</span></div>{/block}
     </div>
-	{block breadcrumbs}{/block}
+    {block breadcrumbs}{/block}
     {block content}{/block}
     <div id="footer"></div>
 </div>

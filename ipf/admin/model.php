@@ -372,6 +372,7 @@ class IPF_Admin_Model{
             'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
             'admin_title' => IPF::get('admin_title'),
+            'indexpage_url'=>IPF::get('indexpage_url','/'),
         );
         return IPF_Shortcuts::RenderToResponse($this->_getAddTemplate(), $context, $request);
     }
@@ -422,6 +423,7 @@ class IPF_Admin_Model{
             'perms'=>$this->getPerms($request),
             'lmodel'=>$lmodel,
             'admin_title' => IPF::get('admin_title'),
+            'indexpage_url'=>IPF::get('indexpage_url','/'),
         );
         return IPF_Shortcuts::RenderToResponse($this->_getChangeTemplate(), $context, $request);
     }
@@ -444,6 +446,7 @@ class IPF_Admin_Model{
             'affected'=>array(),
             'ipf_referrer'=>@$request->GET['ipf_referrer'],
             'admin_title' => IPF::get('admin_title'),
+            'indexpage_url'=>IPF::get('indexpage_url','/'),
         );
         return IPF_Shortcuts::RenderToResponse('admin/delete.html', $context, $request);
     }
@@ -568,6 +571,7 @@ class IPF_Admin_Model{
             'search_value' => $this->search_value,
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
+            'indexpage_url'=>IPF::get('indexpage_url','/'),
         );
         return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
     }
