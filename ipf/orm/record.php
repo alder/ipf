@@ -854,6 +854,11 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         }
     }
 
+    protected function _synchronizeWithArrayForRelation($key, $value)
+    {
+        $this->get($key)->synchronizeWithArray($value);
+    }
+
     public function synchronizeWithArray(array $array, $deep = true)
     {
         $refresh = false;
@@ -864,7 +869,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 continue;
             }
             if ($deep && $this->getTable()->hasRelation($key)) {
-                $this->get($key)->synchronizeWithArray($value);
+                $this->_synchronizeWithArrayForRelation($key, $value);
             } else if ($this->getTable()->hasField($key)) {
                 $this->set($key, $value);
             }
@@ -1009,12 +1014,12 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
     public function pk($sep='_')
     {
-    	$pk = '';
-    	foreach($this->_id as $val) {
-    		if ($pk!='')
-    			$pk .= $sep;
-    		$pk .= $val;
-		}
+        $pk = '';
+        foreach($this->_id as $val) {
+            if ($pk!='')
+                $pk .= $sep;
+            $pk .= $val;
+        }
         return $pk;
     }
 
@@ -1287,16 +1292,16 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     }
 
     public function SetCustom($name, $val){
-    	$this->_custom[$name] = $val;
+        $this->_custom[$name] = $val;
     }
 
     public function GetCustom($name){
-    	if (isset($this->_custom[$name]))
-    		return $this->_custom[$name];
-    	return null;
+        if (isset($this->_custom[$name]))
+            return $this->_custom[$name];
+        return null;
     }
 
-	public function _reorder($ids, $ord_field, $drop_id, $prev_ids, $ord=1){
+    public function _reorder($ids, $ord_field, $drop_id, $prev_ids, $ord=1){
         foreach($ids as $id){
             $item = $this->getTable()->find($id);
             $item[$ord_field] = $ord;
