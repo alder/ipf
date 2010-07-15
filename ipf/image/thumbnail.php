@@ -34,7 +34,7 @@ class IPF_Image_Thumbnail {
         $this->sourceRemove = $sourceRemove;
     }
 
-    public function execute(){
+    public function execute($keepTransparency=false){
         $ImageInfo = getimagesize($this->Source);
         if(!$ImageInfo)
             throw new IPF_Exception_Image(sprintf(__('Cannot open %s image file'), $this->Source));
@@ -81,6 +81,13 @@ class IPF_Image_Thumbnail {
             $this->ThumbnailHeight = $this->SourceHeight/$c;
 
             $tn = imagecreatetruecolor($this->ThumbnailWidth, $this->ThumbnailHeight);
+
+            if ($keepTransparency && $this->SourceType==IMAGETYPE_PNG)
+            {
+                imagealphablending($tn, false);
+                imagefill($tn, 0, 0, imagecolortransparent($tn, imagecolorallocatealpha($tn, 0, 0, 0, 127)));
+                imagesavealpha($tn, true);
+            }
 
             imagecopyresampled(
                 $tn, $im, 0, 0, 0, 0,
