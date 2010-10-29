@@ -250,7 +250,7 @@ class IPF_Utils {
     
     static function toSlug($slug){
         if ($slug){ 
-            return strtolower(preg_replace('/[^A-Z^a-z^0-9^\/]+/', '-', $slug));
+            return strtolower(preg_replace('/[^A-Z^a-z^0-9^\/\_]+/', '-', $slug));
         }
         return $slug;
     }
