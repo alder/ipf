@@ -69,7 +69,7 @@ class ListTreeFilter extends BaseListFilter{
                     'local'=>$mrels[$fname]->getLocal(),
                     'parent_key'=>$parent_key,
                     'class'=>$mrels[$fname]->getClass(),
-                    'objects'=>IPF_ORM_Query::create()->from($mrels[$fname]->getClass())->orderby('ord')->execute(),
+                    'objects'=>$this->_getObjects($mrels[$fname]->getClass()),
                 );
             }
         }
@@ -77,6 +77,13 @@ class ListTreeFilter extends BaseListFilter{
         parent::__construct($title, $choices);
     }
 
+    protected function _getObjects($modelName)
+    {
+        return IPF_ORM_Query::create()
+            ->from($modelName)
+            ->orderby('ord')
+            ->execute();
+    }
 
     protected function _collectTreeRecursive(&$choices,$level=0,$parent_id=null,$valname=''){
         foreach($this->fields[$level]['objects'] as $o){
