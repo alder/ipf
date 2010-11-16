@@ -307,26 +307,27 @@ function IPF_Admin_Views_FileBrowser($request, $match){
         $upload_url = IPF::get('upload_url','');
 
     $dir = $upload_path.$curr_dir;
+    $_dir = substr($dir, -1) !== DIRECTORY_SEPARATOR ? $dir.DIRECTORY_SEPARATOR : $dir;
 
     if ($request->method=="GET"){
         if (@$request->GET['delete']){
-            $del = $dir.$request->GET['delete'];
+            $del = $_dir.$request->GET['delete'];
             @IPF_Utils::removeDirectories($del);
         }
     }
     
     if ($request->method=="POST"){
         if (@$request->POST['new_folder']!='')
-            @mkdir($dir.$request->POST['new_folder']);
+            @mkdir($_dir.$request->POST['new_folder']);
 
         if (@$request->POST['new_name']!='')
-            @rename($dir.$request->POST['old_name'], $dir.$request->POST['new_name']);
+            @rename($_dir.$request->POST['old_name'], $_dir.$request->POST['new_name']);
             
         if (@$request->POST['action']=='move'){
-            @rename($dir.$request->POST['old_name'], $upload_path.$request->POST['move'].DIRECTORY_SEPARATOR.$request->POST['old_name']);
+            @rename($_dir.$request->POST['old_name'], $upload_path.$request->POST['move'].DIRECTORY_SEPARATOR.$request->POST['old_name']);
         }
         if (@$_FILES['file']){
-            $uploadfile = $dir . basename($_FILES['file']['name']);
+            $uploadfile = $_dir . basename($_FILES['file']['name']);
             @move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile); 
         }
     }
@@ -335,7 +336,6 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     $dirs = array();
     $files = array();
     if ($dh = @opendir($dir)) {
-        $_dir = substr($dir, -1) !== DIRECTORY_SEPARATOR ? $dir.DIRECTORY_SEPARATOR : $dir;
         while (($file = readdir($dh)) !== false) {
             if ($file=='.')
                 continue;
