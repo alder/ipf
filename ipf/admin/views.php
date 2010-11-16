@@ -294,8 +294,11 @@ function dir_recursive($dir, $path=DIRECTORY_SEPARATOR, $level=''){
 function IPF_Admin_Views_FileBrowser($request, $match){
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
-    
+
     $curr_dir = urldecode(substr($match[1],1));
+    if (substr($curr_dir, -1) == '/')
+      $curr_dir = substr($curr_dir, 0, strlen($curr_dir)-1);
+
     $upload_path = IPF::get('editor_upload_path','');
     if ($upload_path=='')
         $upload_path = IPF::get('upload_path','');
@@ -332,18 +335,19 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     $dirs = array();
     $files = array();
     if ($dh = @opendir($dir)) {
+        $_dir = substr($dir, -1) !== DIRECTORY_SEPARATOR ? $dir.DIRECTORY_SEPARATOR : $dir;
         while (($file = readdir($dh)) !== false) {
             if ($file=='.')
                 continue;
             if (($curr_dir=='') && ($file=='..'))
                 continue;
-            if (filetype($dir . $file)=='dir'){
+            if (filetype($_dir . $file)=='dir'){
                 $dirs[] = array('id'=>$id, 'name'=>$file);
                 $id++;
             }
             else{
                 
-                $sx = getimagesize($dir.$file);
+                $sx = getimagesize($_dir.$file);
                 if ($sx){
                     $image = '1';
                     $type = str_replace('image/','',$sx['mime']).' '.$sx[0].'x'.$sx[1];
@@ -363,7 +367,7 @@ function IPF_Admin_Views_FileBrowser($request, $match){
                     $zw = 200;
                     $zh = 150;
                 }
-                $files[] = array('id'=>$id, 'name'=>$file, 'image'=>$image, 'type'=>$type, 'zw'=>$zw, 'zh'=>$zh, 'size'=>filesize($dir . $file));
+                $files[] = array('id'=>$id, 'name'=>$file, 'image'=>$image, 'type'=>$type, 'zw'=>$zw, 'zh'=>$zh, 'size'=>filesize($_dir . $file));
                 $id++;
             }
         }
@@ -374,11 +378,11 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     
     $dirtree = dir_recursive($upload_path);
 
-    $pth = explode(DIRECTORY_SEPARATOR,$curr_dir);
+    $pth = explode('/',$curr_dir);
     $path = array();
     $cd = '/admin/filebrowser/';
     foreach($pth as $p){
-        $cd.=$p.DIRECTORY_SEPARATOR;
+        $cd.=$p.'/';
         $path[] = array('cd'=>$cd, 'name'=>$p);
     }
         

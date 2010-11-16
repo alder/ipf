@@ -25,41 +25,41 @@ var mouseY = 0;
 {literal}
 
 $().mousemove( function(e) {
-	mouseX = e.pageX;
-	mouseY = e.pageY;
-	$('#prop').css('top',mouseY+5);
-	$('#prop').css('left',mouseX+10);
+    mouseX = e.pageX;
+    mouseY = e.pageY;
+    $('#prop').css('top',mouseY+5);
+    $('#prop').css('left',mouseX+10);
 });
 
 function click_file(filename, image, w, h){
-	var fname = upload_url+curr_dir+filename;
-	$('#picname').show();
+    var fname = upload_url+curr_dir+filename;
+    $('#picname').show();
     $('#id_old_name').val(filename);
     $('#id_old_name2').val(filename);
     $('#id_curr_dir').val(curr_dir);
     $('#id_new_name').val(filename);
-	if (image=='1')
-		$('#pic').attr('src',fname);
-	else
-		$('#pic').attr('src',admin_media_url+'img/zero.gif');
-	$('#pic').attr('width',w);
-	$('#pic').attr('height',h);
-	return false;
+    if (image=='1')
+        $('#pic').attr('src',fname);
+    else
+        $('#pic').attr('src',admin_media_url+'img/zero.gif');
+    $('#pic').attr('width',w);
+    $('#pic').attr('height',h);
+    return false;
 }
 
 function line_over(id, is_dir, is_image, type, size, filename){
-	if (is_image==1){
-		$('#prop').hide();
-		var fname = upload_url+curr_dir+filename;
-		$('#prop').html('<img src="'+fname+'" width="100" />');
-		$('#prop').css('top',mouseY+5);
-		$('#prop').css('left',mouseX+10);
-		$('#prop').show();
-	}
+    if (is_image==1){
+        $('#prop').hide();
+        var fname = upload_url+curr_dir+filename;
+        $('#prop').html('<img src="'+fname+'" width="100" />');
+        $('#prop').css('top',mouseY+5);
+        $('#prop').css('left',mouseX+10);
+        $('#prop').show();
+    }
 }
 
 function line_out(id){
-	$('#prop').hide();
+    $('#prop').hide();
 }
 
 var FileBrowserDialogue = {
@@ -67,7 +67,7 @@ var FileBrowserDialogue = {
         // Here goes your code for setting your custom things onLoad.
     },
     mySubmit : function () {
-		var URL = upload_url + curr_dir + $('#id_old_name').val(); 
+        var URL = upload_url + curr_dir + $('#id_old_name').val(); 
         var win = tinyMCEPopup.getWindowArg("window");
         // insert information now
         win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = URL;
@@ -111,21 +111,21 @@ tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
 <div id="picname" style="display:none;">
 <h3 style="border-top:1px dashed #a0a0a0; padding:5px 0;">File Option</h3>
 <form method="post">
-	<input type="hidden" name="old_name" id="id_old_name" />
-	<input type="hidden" name="curr_dir" id="id_curr_dir" />
-	<table cellpadding="0" cellspacing="0"><tr>
-	<td> <input name="new_name" id="id_new_name" /></td><td>
-	<div class="submit-row" style="float:left;"><input class="default" type="submit" value="Rename"/></div>
-	</td></tr></table>
+    <input type="hidden" name="old_name" id="id_old_name" />
+    <input type="hidden" name="curr_dir" id="id_curr_dir" />
+    <table cellpadding="0" cellspacing="0"><tr>
+    <td> <input name="new_name" id="id_new_name" /></td><td>
+    <div class="submit-row" style="float:left;"><input class="default" type="submit" value="Rename"/></div>
+    </td></tr></table>
 </form>
 
 <form method="post">
-	<table cellpadding="0" cellspacing="0"><tr>
-	<input type="hidden" name="action" value="move" />
-	<input type="hidden" name="old_name" id="id_old_name2" />
-	<td><select name="move">{foreach $dirtree as $dir}<option value="{$dir['path']}">{$dir['name']}</option>{/foreach}</select></td><td>
-	<div class="submit-row" style="float:left;"><input class="default" type="submit" value="Move To"/></div>
-	</td></tr></table>
+    <table cellpadding="0" cellspacing="0"><tr>
+    <input type="hidden" name="action" value="move" />
+    <input type="hidden" name="old_name" id="id_old_name2" />
+    <td><select name="move">{foreach $dirtree as $dir}<option value="{$dir['path']}">{$dir['name']}</option>{/foreach}</select></td><td>
+    <div class="submit-row" style="float:left;"><input class="default" type="submit" value="Move To"/></div>
+    </td></tr></table>
 </form>
 
 
@@ -146,26 +146,26 @@ tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
 <table>
 <thead>
 <tr>
-	<th>Filename</th>
-	<th>Type</th>
-	<th>Size</th>
-	<th>delete</th>
+    <th>Filename</th>
+    <th>Type</th>
+    <th>Size</th>
+    <th>delete</th>
 </tr>
 </thead>
 <tbody>
 {foreach $dirs as $dir}
 <tr id="id_{$dir['id']}" onmouseover="line_over({$dir['id']},1,0,'SUB-DIR',0,'{$dir['name']}')" onmouseout="line_out({$dir['id']})">
-	<td><a href="{$dir['name']}">{$dir['name']}</a></td>
-	<td colspan="2">SUB-DIR</td>
-	<td>{if $dir['name']!='..'}<a href="?delete={$dir['name']}">delete</a>{/if}</td>
+    <td><a href="{$dir['name']}/">{$dir['name']}</a></td>
+    <td colspan="2">SUB-DIR</td>
+    <td>{if $dir['name']!='..'}<a href="?delete={$dir['name']}">delete</a>{/if}</td>
 </tr>
 {/foreach}
 {foreach $files as $file}
 <tr id="id_{$file['id']}" onmouseover="line_over({$file['id']},0,{$file['image']}, '{$file['type']}', {$file['size']}, '{$file['name']}')" onmouseout="line_out({$dir['id']})">
-	<td><a href="#" onclick="return click_file('{$file['name']}', '{$file['image']}', {$file['zw']}, {$file['zh']})">{$file['name']}</a></td>
-	<td>{$file['type']}</td>
-	<td>{$file['size']}</td>
-	<td><a href="?delete={$file['name']}">delete</a></td>
+    <td><a href="#" onclick="return click_file('{$file['name']}', '{$file['image']}', {$file['zw']}, {$file['zh']})">{$file['name']}</a></td>
+    <td>{$file['type']}</td>
+    <td>{$file['size']}</td>
+    <td><a href="?delete={$file['name']}">delete</a></td>
 </tr>
 {/foreach}
 </tbody>
