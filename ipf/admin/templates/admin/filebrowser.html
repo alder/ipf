@@ -32,7 +32,7 @@ $().mousemove( function(e) {
 });
 
 function click_file(filename, image, w, h){
-    var fname = upload_url+curr_dir+filename;
+    var fname = upload_url+curr_dir+'/'+filename;
     $('#picname').show();
     $('#id_old_name').val(filename);
     $('#id_old_name2').val(filename);
@@ -50,7 +50,7 @@ function click_file(filename, image, w, h){
 function line_over(id, is_dir, is_image, type, size, filename){
     if (is_image==1){
         $('#prop').hide();
-        var fname = upload_url+curr_dir+filename;
+        var fname = upload_url+curr_dir+'/'+filename;
         $('#prop').html('<img src="'+fname+'" width="100" />');
         $('#prop').css('top',mouseY+5);
         $('#prop').css('left',mouseX+10);
