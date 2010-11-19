@@ -67,7 +67,7 @@ var FileBrowserDialogue = {
         // Here goes your code for setting your custom things onLoad.
     },
     mySubmit : function () {
-        var URL = upload_url + curr_dir + $('#id_old_name').val(); 
+        var URL = upload_url + curr_dir +'/'+ $('#id_old_name').val(); 
         var win = tinyMCEPopup.getWindowArg("window");
         // insert information now
         win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = URL;
