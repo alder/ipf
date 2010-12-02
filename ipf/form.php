@@ -3,6 +3,7 @@
 class IPF_Form implements Iterator
 {
     public $fields = array();
+    public $field_groups = array();
 
     public $prefix = '';
     public $id_fields = 'id_%s';
@@ -121,57 +122,100 @@ class IPF_Form implements Iterator
     {
         return (isset($this->errors['__all__'])) ? $this->errors['__all__'] : array();
     }
-
+    
     protected function htmlOutput($normal_row, $error_row, $row_ender,
-                                  $help_text_html, $errors_on_separate_row)
+                                  $help_text_html, $errors_on_separate_row, $group_title=null)
     {
         $top_errors = (isset($this->errors['__all__'])) ? $this->errors['__all__'] : array();
         array_walk($top_errors, 'IPF_Form_htmlspecialcharsArray');
         $output = array();
         $hidden_fields = array();
-        foreach ($this->fields as $name=>$field) {
-            $bf = new IPF_Form_BoundField($this, $field, $name);
-            $bf_errors = $bf->errors;
-            array_walk($bf_errors, 'IPF_Form_htmlspecialcharsArray');
-            if ($field->widget->is_hidden) {
-                foreach ($bf_errors as $_e) {
-                    $top_errors[] = sprintf(__('(Hidden field %1$s) %2$s'),
-                                            $name, $_e);
-                }
-                $hidden_fields[] = $bf; // Not rendered
-            } else {
-                if ($errors_on_separate_row and count($bf_errors)) {
-                    $output[] = sprintf($error_row, IPF_Form_renderErrorsAsHTML($bf_errors));
-                }
-                if (strlen($bf->label) > 0) {
-                    $label = htmlspecialchars($bf->label, ENT_COMPAT, 'UTF-8');
-                    if ($this->label_suffix) {
-                        if (!in_array(mb_substr($label, -1, 1),
-                                      array(':','?','.','!'))) {
-                            $label .= $this->label_suffix;
-                        }
+        
+        $groups = array();        
+        
+        if (count($this->field_groups))
+        {
+            foreach ($this->field_groups as $field_group)
+            {
+                if (array_key_exists('fields', $field_group) && is_array($field_group['fields']))
+                {
+                    $_fields = array();
+                
+                    foreach ($field_group['fields'] as $field_name)
+                    {
+                        if (array_key_exists($field_name, $this->fields))
+                            $_fields[$field_name] = $this->fields[$field_name];
                     }
-                    if ($field->required)
-                        $label_attrs = array('class'=>'required');
-                    else
-                        $label_attrs = array();
-                    $label = $bf->labelTag($label,$label_attrs);
+                    
+                    if (count($_fields))
+                    {
+                        $_group = array('fields'=>$_fields);
+                        
+                        if (array_key_exists('label', $field_group))
+                            $_group['label'] = $field_group['label'];
+                        
+                        $groups[] = $_group;
+                    }
+                }
+            }
+        }
+        
+        if (!count($groups))
+        {
+            $groups = array(array('fields'=>$this->fields));
+            $render_group_title = false;
+        }
+        else $render_group_title = $group_title ? true : false;
+        
+        foreach ($groups as $group)
+        {
+            if ($render_group_title && array_key_exists('label', $group))
+                $output[] = sprintf($group_title, $group['label']);
+            
+            foreach ($group['fields'] as $name=>$field) {
+                $bf = new IPF_Form_BoundField($this, $field, $name);
+                $bf_errors = $bf->errors;
+                array_walk($bf_errors, 'IPF_Form_htmlspecialcharsArray');
+                if ($field->widget->is_hidden) {
+                    foreach ($bf_errors as $_e) {
+                        $top_errors[] = sprintf(__('(Hidden field %1$s) %2$s'),
+                                                $name, $_e);
+                    }
+                    $hidden_fields[] = $bf; // Not rendered
                 } else {
-                    $label = '';
+                    if ($errors_on_separate_row and count($bf_errors)) {
+                        $output[] = sprintf($error_row, IPF_Form_renderErrorsAsHTML($bf_errors));
+                    }
+                    if (strlen($bf->label) > 0) {
+                        $label = htmlspecialchars($bf->label, ENT_COMPAT, 'UTF-8');
+                        if ($this->label_suffix) {
+                            if (!in_array(mb_substr($label, -1, 1),
+                                        array(':','?','.','!'))) {
+                                $label .= $this->label_suffix;
+                            }
+                        }
+                        if ($field->required)
+                            $label_attrs = array('class'=>'required');
+                        else
+                            $label_attrs = array();
+                        $label = $bf->labelTag($label,$label_attrs);
+                    } else {
+                        $label = '';
+                    }
+                    if ($bf->help_text) {
+                        // $bf->help_text can contains HTML and is not
+                        // escaped.
+                        $help_text = sprintf($help_text_html, $bf->help_text);
+                    } else {
+                        $help_text = '';
+                    }
+                    $errors = '';
+                    if (!$errors_on_separate_row and count($bf_errors)) {
+                        $errors = IPF_Form_renderErrorsAsHTML($bf_errors);
+                    }
+                    $output[] = sprintf($normal_row, $errors, $label,
+                                        $bf->render_w(), $help_text);
                 }
-                if ($bf->help_text) {
-                    // $bf->help_text can contains HTML and is not
-                    // escaped.
-                    $help_text = sprintf($help_text_html, $bf->help_text);
-                } else {
-                    $help_text = '';
-                }
-                $errors = '';
-                if (!$errors_on_separate_row and count($bf_errors)) {
-                    $errors = IPF_Form_renderErrorsAsHTML($bf_errors);
-                }
-                $output[] = sprintf($normal_row, $errors, $label,
-                                    $bf->render_w(), $help_text);
             }
         }
         if (count($top_errors)) {
@@ -218,7 +262,8 @@ class IPF_Form implements Iterator
         return $this->htmlOutput(
 			'<div class="form-row"><div>%2$s %1$s%3$s%4$s</div></div>',
             '<div>%s</div>',
-            '</div>', '<p class="help">%s</p>', true
+            '</div>', '<p class="help">%s</p>', true,
+            '<div class="form-group-title">%s</div>'
         );
     }
 

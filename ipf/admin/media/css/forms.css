@@ -6,6 +6,13 @@
 .form-row img, .form-row input { vertical-align:middle; }
 form .form-row p { padding-left:0; font-size:11px; }
 
+/* FORM GROUP TITLE */
+.form-group-title {
+    background-color:#CFCFCF; 
+    padding:2px 8px 3px 16px; font-size:12px;  color:#006A95;  border-top:1px solid #CCC; border-bottom:1px solid #CCC; text-align:left;
+    font-weight:bold;
+}
+
 /* FORM LABELS */
 form h4 { margin:0 !important; padding:0 !important; border:none !important; }
 label { font-weight:normal !important; color:#666; font-size:12px; }

@@ -9,6 +9,22 @@ class AdminUser extends IPF_Admin_Model{
     protected function _setupForm($form){
         $form->fields['username']->help_text = 'Required. 32 characters or less. Alphanumeric characters only (letters, digits and underscores).';
         $form->fields['password']->help_text = "Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change password form</a>.";
+        
+        $form->fields['email']->label = 'E-mail';
+        
+        $form->fields['is_active']->label    = 'Active';
+        $form->fields['is_staff']->label     = 'Staff status';
+        $form->fields['is_superuser']->label = 'Superuser status';
+
+        $form->fields['is_active']->help_text    = 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.';
+        $form->fields['is_staff']->help_text     = 'Designates whether the user can log into this admin site.';
+        $form->fields['is_superuser']->help_text = 'Designates that this user has all permissions without explicitly assigning them.';
+        
+        $form->field_groups = array(
+            array('fields'=>array('username', 'password')),
+            array('fields'=>array('email', 'first_name', 'last_name'), 'label'=>'Personal info'),
+            array('fields'=>array('is_active', 'is_staff', 'is_superuser'), 'label'=>'Permissions'),
+        );
     }
 
     public function AddItem($request, $lapp, $lmodel){
