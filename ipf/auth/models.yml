@@ -53,6 +53,7 @@ Role:
         name:
             unique: true 
             type: string(255)
+            notblank: true
     relations:
         Permissions:
             class: Permission
