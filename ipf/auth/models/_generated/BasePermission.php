@@ -20,6 +20,9 @@ abstract class BasePermission extends IPF_ORM_Record
     $this->hasMany('User as Users', array('refClass' => 'UserPermission',
                                           'local' => 'permission_id',
                                           'foreign' => 'user_id'));
+    $this->hasMany('Role as Roles', array('refClass' => 'RolePermission',
+                                          'local' => 'permission_id',
+                                          'foreign' => 'role_id'));
 
     $this->hasMany('RolePermission', array('local' => 'id',
                                            'foreign' => 'permission_id'));

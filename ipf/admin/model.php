@@ -344,8 +344,15 @@ class IPF_Admin_Model{
     }
 
     // Views Function
-    public function AddItem($request, $lapp, $lmodel){
-        if ($request->method == 'POST'){
+    public function AddItem($request, $lapp, $lmodel)
+    {
+        $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
+        
+        if ($perms === false || !in_array('view', $perms) || !in_array('add', $perms))
+            return new IPF_HTTP_Response_NotFound();
+
+        if ($request->method == 'POST')
+        {
             $this->_beforeAdd(new $this->model());
             $data = $request->POST+$request->FILES;
             $form = $this->_getAddForm($this->model, &$data, array('user_fields'=>$this->fields()));
@@ -376,7 +383,7 @@ class IPF_Admin_Model{
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
             'lapp'=>$lapp,
-            'perms'=>$this->getPerms($request),
+            'perms'=>$perms,
             'lmodel'=>$lmodel,
             'admin_title' => IPF::get('admin_title'),
             'indexpage_url'=>IPF::get('indexpage_url','/'),
@@ -384,8 +391,48 @@ class IPF_Admin_Model{
         return IPF_Shortcuts::RenderToResponse($this->_getAddTemplate(), $context, $request);
     }
 
-    public function EditItem($request, $lapp, $lmodel, $o){
-        if ($request->method == 'POST'){
+    public function DeleteItem($request, $lapp, $lmodel, $o)
+    {
+        $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
+        
+        if ($perms === false || !in_array('view', $perms) || !in_array('delete', $perms))
+            return new IPF_HTTP_Response_NotFound();
+
+        if ($request->method == 'POST')
+        {
+            AdminLog::logAction($request, $o, AdminLog::DELETION);
+            $o->delete();
+            $url = @$request->POST['ipf_referrer'];
+            if ($url=='')
+                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+            return new IPF_HTTP_Response_Redirect($url);
+        }
+        $context = array(
+            'page_title'=>'Delete '.$this->modelName,
+            'classname'=>$this->verbose_name(),
+            'object'=>$o,
+            'lapp'=>$lapp,
+            'lmodel'=>$lmodel,
+            'affected'=>array(),
+            'ipf_referrer'=>@$request->GET['ipf_referrer'],
+            'admin_title' => IPF::get('admin_title'),
+            'indexpage_url'=>IPF::get('indexpage_url','/'),
+        );
+        return IPF_Shortcuts::RenderToResponse('admin/delete.html', $context, $request);
+    }
+
+    public function EditItem($request, $lapp, $lmodel, $o)
+    {
+        $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
+        
+        if ($perms === false || !in_array('view', $perms))
+            return new IPF_HTTP_Response_NotFound();
+
+        if ($request->method == 'POST')
+        {
+            if (!in_array('change', $perms))
+                return new IPF_HTTP_Response_NotFound();
+        
             $this->_beforeEdit($o);
             $data = $request->POST+$request->FILES;
             $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
@@ -427,7 +474,7 @@ class IPF_Admin_Model{
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
             'lapp'=>$lapp,
-            'perms'=>$this->getPerms($request),
+            'perms'=>$perms,
             'lmodel'=>$lmodel,
             'admin_title' => IPF::get('admin_title'),
             'indexpage_url'=>IPF::get('indexpage_url','/'),
@@ -435,29 +482,64 @@ class IPF_Admin_Model{
         return IPF_Shortcuts::RenderToResponse($this->_getChangeTemplate(), $context, $request);
     }
 
-    public function DeleteItem($request, $lapp, $lmodel, $o){
-        if ($request->method == 'POST'){
-            AdminLog::logAction($request, $o, AdminLog::DELETION);
-            $o->delete();
-            $url = @$request->POST['ipf_referrer'];
+    public function ListItems($request, $lapp, $lmodel)
+    {
+        $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
+        
+        if ($perms === false || !in_array('view', $perms))
+            return new IPF_HTTP_Response_NotFound();
+    
+        $this->ListItemsQuery();
+        $this->_GetFilters($request);
+        if (!$this->_ListSearchQuery($request))
+            $this->_ListFilterQuery($request);
+        $this->ListItemsHeader();
+
+        $currentPage = (int)@$request->GET['page'];
+
+        $url = '';
+        foreach ($request->GET as $k=>$v){
+            if ($k=='page')
+                continue;
             if ($url=='')
-                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
-            return new IPF_HTTP_Response_Redirect($url);
+                $url = '?';
+            else
+                $url .= '&';
+            $url .= $k.'='.$v;
         }
+        if ($url=='')
+            $pager_url = '?page={%page_number}';
+        else
+            $pager_url = $url.'&page={%page_number}';
+
+        $pager = new IPF_ORM_Pager_LayoutArrows(
+            new IPF_ORM_Pager($this->q, $currentPage, $this->perPage),
+            new IPF_ORM_Pager_Range_Sliding(array('chunk' => 10)),
+            $pager_url
+        );
+        $pager->setTemplate('<a href="{%url}">{%page}</a> ');
+        $pager->setSelectedTemplate('<span class="this-page">{%page}</span> ');
+        $objects = $pager->getPager()->execute();
+        
         $context = array(
-            'page_title'=>'Delete '.$this->modelName,
+            'orderable'=>$this->_orderable(),
+            'page_title'=>$this->page_title(),
+            'header'=>$this->header,
+            'objects'=>$objects,
+            'pager'=>$pager,
             'classname'=>$this->verbose_name(),
-            'object'=>$o,
+            'perms'=>$perms,
+            'filters'=>$this->filters,
+            'admin_title' => IPF::get('admin_title'),
+            'is_search' => $this->_isSearch(),
+            'search_value' => $this->search_value,
             'lapp'=>$lapp,
             'lmodel'=>$lmodel,
-            'affected'=>array(),
-            'ipf_referrer'=>@$request->GET['ipf_referrer'],
-            'admin_title' => IPF::get('admin_title'),
             'indexpage_url'=>IPF::get('indexpage_url','/'),
         );
-        return IPF_Shortcuts::RenderToResponse('admin/delete.html', $context, $request);
+        return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
     }
-
+    
     protected function _ListFilterQuery($request){
         foreach($this->filters as $f){
             $f->FilterQuery($request,$this->q);
@@ -531,58 +613,6 @@ class IPF_Admin_Model{
         return method_exists($this, 'list_order');
     }
 
-    public function ListItems($request, $lapp, $lmodel){
-        $this->ListItemsQuery();
-        $this->_GetFilters($request);
-        if (!$this->_ListSearchQuery($request))
-            $this->_ListFilterQuery($request);
-        $this->ListItemsHeader();
-
-        $currentPage = (int)@$request->GET['page'];
-
-        $url = '';
-        foreach ($request->GET as $k=>$v){
-            if ($k=='page')
-                continue;
-            if ($url=='')
-                $url = '?';
-            else
-                $url .= '&';
-            $url .= $k.'='.$v;
-        }
-        if ($url=='')
-            $pager_url = '?page={%page_number}';
-        else
-            $pager_url = $url.'&page={%page_number}';
-
-        $pager = new IPF_ORM_Pager_LayoutArrows(
-            new IPF_ORM_Pager($this->q, $currentPage, $this->perPage),
-            new IPF_ORM_Pager_Range_Sliding(array('chunk' => 10)),
-            $pager_url
-        );
-        $pager->setTemplate('<a href="{%url}">{%page}</a> ');
-        $pager->setSelectedTemplate('<span class="this-page">{%page}</span> ');
-        $objects = $pager->getPager()->execute();
-
-        $context = array(
-            'orderable'=>$this->_orderable(),
-            'page_title'=>$this->page_title(),
-            'header'=>$this->header,
-            'objects'=>$objects,
-            'pager'=>$pager,
-            'classname'=>$this->verbose_name(),
-            'perms'=>$this->getPerms($request),
-            'filters'=>$this->filters,
-            'admin_title' => IPF::get('admin_title'),
-            'is_search' => $this->_isSearch(),
-            'search_value' => $this->search_value,
-            'lapp'=>$lapp,
-            'lmodel'=>$lmodel,
-            'indexpage_url'=>IPF::get('indexpage_url','/'),
-        );
-        return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
-    }
-    
     function page_title(){
         return $this->verbose_name().' List';
     }

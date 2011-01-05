@@ -11,17 +11,20 @@ function IPF_Admin_Views_Index($request, $match){
             $models = new IPF_Template_ContextVars();
             $models_found = false;
             foreach($app->modelList() as $m){
-
                 $ma = IPF_Admin_Model::getModelAdmin($m);
                 if ($ma!==null){
                     $perms = $ma->getPerms($request);
                     if (array_search('view', $perms)!==false){
-                        $models[] = new IPF_Template_ContextVars(array(
-                            'name'=>$ma->verbose_name(),
-                            'path'=>strtolower($m),
-                            'perms'=>$perms,
-                        ));
-                        $models_found = true;
+                        $user_perms = IPF_Auth_App::checkPermissions($request, $app, $m, array('view'));
+                        if ($user_perms['view'])
+                        {
+                            $models[] = new IPF_Template_ContextVars(array(
+                                'name'=>$ma->verbose_name(),
+                                'path'=>strtolower($m),
+                                'perms'=>$perms,
+                            ));
+                            $models_found = true;
+                        }
                     }
                 }
             }
@@ -53,174 +56,207 @@ function IPF_Admin_Views_Index($request, $match){
     return IPF_Shortcuts::RenderToResponse('admin/index.html', $context, $request);
 }
 
-
-
-function IPF_Admin_Views_ListItems($request, $match){
+function IPF_Admin_Views_ListItems($request, $match)
+{
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
     $lapp = $match[1];
     $lmodel = $match[2];
-    foreach (IPF_Project::getInstance()->appList() as $app){
-        foreach($app->modelList() as $m){
-            if (strtolower($m)==$lmodel){
-                $ma = IPF_Admin_Model::getModelAdmin($m);
-                if ($ma===null)
-                    return new IPF_HTTP_Response_NotFound();
-                return $ma->ListItems($request, $lapp, $lmodel);
-            }
-        }
+    
+    $am = IPF_Admin_App::GetAppModelFromSlugs($lapp, $lmodel);
+    
+    if ($am !== null)
+    {    
+        $app = $am['app'];
+        $m   = $am['modelname'];
+    
+        $ma = IPF_Admin_Model::getModelAdmin($m);
+    
+        if ($ma !== null)
+            return $ma->ListItems($request, $lapp, $lmodel);
     }
+    
+    return new IPF_HTTP_Response_NotFound();
 }
 
-function IPF_Admin_Views_Reorder($request, $match){
+function IPF_Admin_Views_AddItem($request, $match)
+{
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
-    if ($request->method != 'POST')
-        return new IPF_HTTP_Response_NotFound();
+    $lapp = $match[1];
+    $lmodel = $match[2];
+    
+    $am = IPF_Admin_App::GetAppModelFromSlugs($lapp, $lmodel);
+    
+    if ($am !== null)
+    {    
+        $app = $am['app'];
+        $m   = $am['modelname'];
 
-    if (!isset($request->POST['ids']))
-        return new IPF_HTTP_Response_NotFound();
+        $ma = IPF_Admin_Model::getModelAdmin($m);
+        
+        if ($ma !== null)
+            return $ma->AddItem($request, $lapp, $lmodel);
+    }
+    
+    return new IPF_HTTP_Response_NotFound();
+}
 
-        if (!isset($request->POST['prev_ids']))
-        return new IPF_HTTP_Response_NotFound();
+function IPF_Admin_Views_EditItem($request, $match)
+{
+    $ca = IPF_Admin_App::checkAdminAuth($request);
+    if ($ca!==true) return $ca;
 
-    if (!isset($request->POST['drop_id']))
+    $lapp = $match[1];
+    $lmodel = $match[2];
+    $id = $match[3];
+    
+    $am = IPF_Admin_App::GetAppModelFromSlugs($lapp, $lmodel);
+    
+    if ($am !== null)
+    {    
+        $app = $am['app'];
+        $m   = $am['modelname'];
+    
+        $ma = IPF_Admin_Model::getModelAdmin($m);
+        
+        if ($ma !== null)
+        {
+            $o = new $m();
+            $item = $o->getTable()->find($id);
+            
+            return $ma->EditItem($request, $lapp, $lmodel, &$item);
+        }
+    }
+    
+    return new IPF_HTTP_Response_NotFound();
+}
+
+function IPF_Admin_Views_DeleteItem($request, $match)
+{
+    $ca = IPF_Admin_App::checkAdminAuth($request);
+    if ($ca!==true) return $ca;
+
+    $lapp = $match[1];
+    $lmodel = $match[2];
+    $id = $match[3];
+    
+    $am = IPF_Admin_App::GetAppModelFromSlugs($lapp, $lmodel);
+    
+    if ($am !== null)
+    {    
+        $app = $am['app'];
+        $m   = $am['modelname'];
+
+        $ma = IPF_Admin_Model::getModelAdmin($m);
+        
+        if ($ma !== null)
+        {
+            $o = new $m();
+            $item = $o->getTable()->find($id);
+            
+            return $ma->DeleteItem($request, $lapp, $lmodel, &$item);
+        }    
+    }
+    
+    return new IPF_HTTP_Response_NotFound();
+}
+
+function IPF_Admin_Views_Reorder($request, $match)
+{
+    $ca = IPF_Admin_App::checkAdminAuth($request);
+    if ($ca!==true) return $ca;
+
+    if ($request->method != 'POST' || !isset($request->POST['ids']) || !isset($request->POST['prev_ids']) || !isset($request->POST['drop_id']))
         return new IPF_HTTP_Response_NotFound();
 
     $lapp = $match[1];
     $lmodel = $match[2];
+    
+    $am = IPF_Admin_App::GetAppModelFromSlugs($lapp, $lmodel);
+    
+    if ($am !== null)
+    {    
+        $app = $am['app'];
+        $m   = $am['modelname'];
 
-    foreach (IPF_Project::getInstance()->appList() as $app){
-        foreach($app->modelList() as $m){
-            if (strtolower($m)==$lmodel){
-                $ma = IPF_Admin_Model::getModelAdmin($m);
-                if ($ma===null)
-                    return new IPF_HTTP_Response_NotFound();
+        $user_perms = IPF_Auth_App::checkPermissions($request, $app, $m, array('view', 'change'));
+        $ma = ($user_perms['view'] && $user_perms['change']) ? IPF_Admin_Model::getModelAdmin($m) : null;
+        
+        if ($ma !==null && method_exists($ma, 'list_order'))
+        {
+            $ord_field = $ma->list_order();
 
-                if (method_exists($ma, 'list_order'))
-                    $ord_field = $ma->list_order();
-                else
-                    return new IPF_HTTP_Response_NotFound();
+            $ids      = explode(',',(string)$request->POST['ids']);
+            $prev_ids = explode(',',(string)$request->POST['prev_ids']);
+            $drop_id  = $request->POST['drop_id'];
 
-                $ids      = explode(',',(string)$request->POST['ids']);
-                $prev_ids = explode(',',(string)$request->POST['prev_ids']);
-                $drop_id  = $request->POST['drop_id'];
-
-                $o = new $m();
-                $o->_reorder($ids, $ord_field, $drop_id, $prev_ids);
-                return new IPF_HTTP_Response_Json("Ok");
-            }
-        }
+            $o = new $m();
+            $o->_reorder($ids, $ord_field, $drop_id, $prev_ids);
+            
+            return new IPF_HTTP_Response_Json("Ok");
+         }
     }
+
     return new IPF_HTTP_Response_Json("Cannot find model");
 }
 
-function IPF_Admin_Views_EditItem($request, $match){
-    $ca = IPF_Admin_App::checkAdminAuth($request);
-    if ($ca!==true) return $ca;
-
-    $lapp = $match[1];
-    $lmodel = $match[2];
-    $id = $match[3];
-    foreach (IPF_Project::getInstance()->appList() as $app){
-        foreach($app->modelList() as $m){
-            if (strtolower($m)==$lmodel){
-                $ma = IPF_Admin_Model::getModelAdmin($m);
-                if ($ma===null)
-                    return new IPF_HTTP_Response_NotFound();
-                $o = new $m();
-                $item = $o->getTable()->find($id);
-                return $ma->EditItem($request, $lapp, $lmodel, &$item);
-            }
-        }
-    }
-}
-
-function IPF_Admin_Views_DeleteItem($request, $match){
-    $ca = IPF_Admin_App::checkAdminAuth($request);
-    if ($ca!==true) return $ca;
-
-    $lapp = $match[1];
-    $lmodel = $match[2];
-    $id = $match[3];
-    foreach (IPF_Project::getInstance()->appList() as $app){
-        foreach($app->modelList() as $m){
-            if (strtolower($m)==$lmodel){
-                $ma = IPF_Admin_Model::getModelAdmin($m);
-                if ($ma===null)
-                    return new IPF_HTTP_Response_NotFound();
-                $o = new $m();
-                $item = $o->getTable()->find($id);
-                return $ma->DeleteItem($request, $lapp, $lmodel, &$item);
-            }
-        }
-    }
-}
-
-
-function IPF_Admin_Views_AddItem($request, $match){
-    $ca = IPF_Admin_App::checkAdminAuth($request);
-    if ($ca!==true) return $ca;
-
-    $lapp = $match[1];
-    $lmodel = $match[2];
-    foreach (IPF_Project::getInstance()->appList() as $app){
-        foreach($app->modelList() as $m){
-            if (strtolower($m)==$lmodel){
-                $ma = IPF_Admin_Model::getModelAdmin($m);
-                if ($ma===null)
-                    return new IPF_HTTP_Response_NotFound();
-                return $ma->AddItem($request, $lapp, $lmodel);
-            }
-        }
-    }
-}
-
-function IPF_Admin_Views_ChangePassword($request, $match){
+function IPF_Admin_Views_ChangePassword($request, $match)
+{
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
     $lapp = 'auth';
     $lmodel = 'user';
     $id = $match[1];
-    foreach (IPF_Project::getInstance()->appList() as $app){
-        foreach($app->modelList() as $m){
-            if (strtolower($m)==$lmodel){
-                $ma = IPF_Admin_Model::getModelAdmin($m);
-                if ($ma===null)
-                    return new IPF_HTTP_Response_NotFound();
-                $o = new $m();
-                $user = $o->getTable()->find($id);
+    
+    $am = IPF_Admin_App::GetAppModelFromSlugs($lapp, $lmodel);
+    
+    if ($am !== null)
+    {    
+        $app = $am['app'];
+        $m   = $am['modelname'];
+        
+        $ma = IPF_Admin_Model::getModelAdmin($m);
+        
+        if ($ma !== null)
+        {
+            $o = new $m();
+            $user = $o->getTable()->find($id);
 
-                if ($request->method == 'POST'){
-                    $form = new IPF_Auth_Forms_ChangePassword($request->POST);
-                    if ($form->isValid()) {
-                        $user->setPassword($form->cleaned_data['password1']);
-                        $user->save();
-                        $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
-                        return new IPF_HTTP_Response_Redirect($url);
-                    }
+            if ($request->method == 'POST')
+            {
+                $form = new IPF_Auth_Forms_ChangePassword($request->POST);
+                
+                if ($form->isValid())
+                {
+                    $user->setPassword($form->cleaned_data['password1']);
+                    $user->save();
+                   
+                    return new IPF_HTTP_Response_Redirect(IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel)));
                 }
-                else
-                    $form = new IPF_Auth_Forms_ChangePassword();
-                $context = array(
-                    'page_title'=>'Change Password: '.$user->username,
-                    'classname'=>'User',
-                    'object'=>$user,
-                    'form'=>$form,
-                    'lapp'=>$lapp,
-                    'lmodel'=>$lmodel,
-                    'admin_title' => IPF::get('admin_title'),
-                    'indexpage_url'=>IPF::get('indexpage_url','/'),
-                );
-                return IPF_Shortcuts::RenderToResponse('admin/changepassword.html', $context, $request);
             }
+            else $form = new IPF_Auth_Forms_ChangePassword();
+            
+            $context = array(
+                'page_title'=>'Change Password: '.$user->username,
+                'classname'=>'User',
+                'object'=>$user,
+                'form'=>$form,
+                'lapp'=>$lapp,
+                'lmodel'=>$lmodel,
+                'admin_title' => IPF::get('admin_title'),
+                'indexpage_url'=>IPF::get('indexpage_url','/'),
+            );
+                
+            return IPF_Shortcuts::RenderToResponse('admin/changepassword.html', $context, $request);
         }
     }
+    
+    return new IPF_HTTP_Response_NotFound();
 }
-
 
 function IPF_Admin_Views_Login($request, $match){
     $success_url = '';
@@ -399,17 +435,15 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     return IPF_Shortcuts::RenderToResponse('admin/filebrowser.html', $context, $request);
 }
 
-function IPF_Admin_Views_FileBrowserRename($request, $match){
+function IPF_Admin_Views_FileBrowserRename($request, $match)
+{
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
     
     $old_name = @$request->POST['old_value'];
     $name = @$request->POST['value'];
-    $curr_dir = @$request->POST['curr_dir'];
+//    $curr_dir = @$request->POST['curr_dir'];
     if ($name=='')
-        $name==$old_name;
-    else
-        $name = $name;
+        $name=$old_name;
     return new IPF_HTTP_Response($name);
 }
-

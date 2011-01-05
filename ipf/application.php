@@ -50,6 +50,11 @@ abstract class IPF_Application{
     public function getTitle(){
         return $this->name;
     }
+    
+    public function getPath()
+    {
+        return $this->path;
+    }
 
     public function getSlug(){
         $e = explode('_',$this->name);
@@ -61,7 +66,7 @@ abstract class IPF_Application{
             return;
         return IPF_ORM::createTablesFromModels($this->path.'models');
     }
-
+  
     public function generateModels(){
         IPF_ORM::generateModelsFromYaml($this->path.'models.yml', $this->path.'models');
     }

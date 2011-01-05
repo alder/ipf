@@ -75,6 +75,21 @@ final class IPF_Project{
 	    }
         return IPF_ORM::createTablesFromModels(IPF::get('project_path').DIRECTORY_SEPARATOR.'models');
     }	
+    
+    public function createPermissionsFromModels()
+    {
+        $pathes = array();
+        
+	    foreach( $this->apps as $appname=>&$app)
+	    {
+	        if (substr($appname,0,4)=='IPF_')
+	            $pathes[] = $this->getApp($appname)->getPath().'models';
+	    }
+	    
+	    $pathes[] = IPF::get('project_path').DIRECTORY_SEPARATOR.'models';
+	    
+        return IPF_Auth_App::createPermissionsFromModels($pathes);
+    }
 
 	public function generateSql(){
 	    $sql = '';

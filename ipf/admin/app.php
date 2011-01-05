@@ -35,4 +35,49 @@ class IPF_Admin_App extends IPF_Application{
 	        return new IPF_HTTP_Response_Redirect(IPF_HTTP_URL_urlForView('IPF_Admin_Views_Login'));
 	}
 
+    static function GetAppModelFromSlugs($lapp, $lmodel)
+    {
+        foreach (IPF_Project::getInstance()->appList() as $app)
+        {
+            if ($app->getSlug() == $lapp)
+            {
+                foreach($app->modelList() as $m)
+                {
+                    if (strtolower($m) == $lmodel)
+                        return array('app' => $app, 'modelname' => $m);
+                }
+            }
+        }
+
+        return null;
+    }
+    
+    static function GetAdminModelPermissions($adminModel, $request, $lapp, $lmodel)
+    {
+        $adminPerms = $adminModel->getPerms($request);
+    
+        if (!count($adminPerms))
+            return false;
+
+        $am = self::GetAppModelFromSlugs($lapp, $lmodel);
+        
+        if ($am === null)
+            return false;
+            
+        $app = $am['app'];
+        $m   = $am['modelname'];
+
+        if ($m !== $adminModel->modelName)
+            return false;
+            
+        $perms = array();
+        
+        foreach (IPF_Auth_App::checkPermissions($request, $app, $m, $adminPerms) as $permName=>$permValue)
+        {
+            if ($permValue)
+                $perms[] = $permName;
+        }
+        
+        return $perms;
+    }
 }

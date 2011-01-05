@@ -1,67 +1,140 @@
 <?php
 
-class AdminUser extends IPF_Admin_Model{
-    public function list_display(){return array('username', 'email', 'is_active', 'is_staff', 'is_superuser', 'created_at');}
-    public function fields(){return array('username','password','email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser');}
-
-    function _searchFields(){return array('username', 'email');}
-
-    protected function _setupForm($form){
-        $form->fields['username']->help_text = 'Required. 32 characters or less. Alphanumeric characters only (letters, digits and underscores).';
-        $form->fields['password']->help_text = "Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change password form</a>.";
+class IPFAuthAdminUserForm extends IPF_Form_Extra_CheckGroup
+{
+    function initFields($extra=array())
+    {
+        parent::initFields($extra);
         
-        $form->fields['email']->label = 'E-mail';
+        $this->fields['email']->label = 'E-mail';
         
-        $form->fields['is_active']->label    = 'Active';
-        $form->fields['is_staff']->label     = 'Staff status';
-        $form->fields['is_superuser']->label = 'Superuser status';
+        $this->fields['is_active']->label    = 'Active';
+        $this->fields['is_staff']->label     = 'Staff status';
+        $this->fields['is_superuser']->label = 'Superuser status';
 
-        $form->fields['is_active']->help_text    = 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.';
-        $form->fields['is_staff']->help_text     = 'Designates whether the user can log into this admin site.';
-        $form->fields['is_superuser']->help_text = 'Designates that this user has all permissions without explicitly assigning them.';
+        $this->fields['is_active']->help_text    = 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.';
+        $this->fields['is_staff']->help_text     = 'Designates whether the user can log into this admin site.';
+        $this->fields['is_superuser']->help_text = 'Designates that this user has all permissions without explicitly assigning them.';
         
-        $form->field_groups = array(
-            array('fields'=>array('username', 'password')),
-            array('fields'=>array('email', 'first_name', 'last_name'), 'label'=>'Personal info'),
-            array('fields'=>array('is_active', 'is_staff', 'is_superuser'), 'label'=>'Permissions'),
-        );
-    }
-
-    public function AddItem($request, $lapp, $lmodel){
-        if ($request->method == 'POST'){
-            $form = new IPF_Auth_Forms_UserCreation($request->POST);
-            if ($form->isValid()) {
-                $user = User::createUser(
-                    $form->cleaned_data['username'],
-                    $form->cleaned_data['password1'],
-                    $form->cleaned_data['email'],
-                    $form->cleaned_data['first_name'],
-                    $form->cleaned_data['last_name'],
-                    $form->cleaned_data['is_active'],
-                    $form->cleaned_data['is_staff'],
-                    $form->cleaned_data['is_superuser']
-                );
-                AdminLog::logAction($request, $user, AdminLog::ADDITION);
-                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
-                return new IPF_HTTP_Response_Redirect($url);
-            }
+        $this->fields['username']->help_text = 'Required. 32 characters or less. Alphanumeric characters only (letters, digits and underscores).';        
+        
+        if (!$this->model->id)
+        {
+            unset($this->fields['password']);
+            
+            $this->fields['password1'] = new IPF_Form_Field_Varchar(array(
+                'label' => 'Password',
+                'required' => true,
+                'max_length' => 32,
+                'widget' => 'IPF_Form_Widget_PasswordInput'
+            ));
+            
+            $this->fields['password2'] = new IPF_Form_Field_Varchar(array(
+                'label' => 'Password (again)',
+                'required' => true,
+                'max_length' => 32,
+                'widget' => 'IPF_Form_Widget_PasswordInput',
+                'help_text' => 'Enter the same password as above, for verification.'
+            ));
+            
+            $account = array('username', 'password1', 'password2');
         }
         else
-            $form = new IPF_Auth_Forms_UserCreation();
-        $context = array(
-            'page_title'=>'Add '.$this->modelName,
-            'classname'=>$this->modelName,
-            'form'=>$form,
-            'lapp'=>$lapp,
-            'lmodel'=>$lmodel,
-            'perms'=>array('add'),
-            'mode'=>'add',
-            'admin_title' => IPF::get('admin_title'),
+        {
+            $this->fields['password']->help_text = "Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change password form</a>."; 
+            
+            $account = array('username', 'password');
+        }
+        
+        if (IPF_Auth_App::ArePermissionsEnabled())
+        {
+            $this->fields['Roles']->label = 'Groups';
+            $this->fields['Roles']->help_text = 'In addition to the permissions manually assigned, this user will also get all permissions granted to each group he/she is in.';
+
+            parent::SetupForm($this);            
+        }
+        else
+        {
+            $this->fields['Permissions']->widget = new IPF_Form_Widget_HiddenInput();
+            $this->fields['Roles']->widget = new IPF_Form_Widget_HiddenInput();
+        }
+        
+        $this->field_groups = array(
+            array('fields' => $account),
+            array('fields' => array('email', 'first_name', 'last_name'), 'label' => 'Personal info'),
+            array('fields' => array('is_active', 'is_staff', 'is_superuser','Permissions','Roles'), 'label' => 'Permissions'),
         );
-        return IPF_Shortcuts::RenderToResponse('admin/change.html', $context, $request);
+    }
+    
+    function isValid()
+    {
+        $ok = parent::isValid();
+        
+        if ($ok===true && !$this->model->id)
+        {
+            if ($this->cleaned_data['password1'] != $this->cleaned_data['password2'])
+            {
+                $this->is_valid = false;
+                $this->errors['password2'][] = "The two password fields didn't match.";
+                
+                return false;
+            }
+            
+            $this->cleaned_data['password'] = User::SetPassword2($this->cleaned_data['password1']);
+        }
+        
+        return $ok;
     }
 }
 
+class AdminUser extends IPF_Admin_Model
+{
+    public function list_display()
+    {
+        return array(
+            'username',
+            'email',
+            'is_active',
+            'is_staff',
+            'is_superuser',
+            'created_at',
+        );
+    }
+    
+    public function fields()
+    {
+        return array(
+            'username',
+            'password',
+            'email',
+            'first_name',
+            'last_name',
+            'is_active',
+            'is_staff',
+            'is_superuser',
+            'Permissions',
+            'Roles',
+        );
+    }
+
+    function _searchFields()
+    {
+        return array(
+            'username',
+            'email',
+        );
+    }
+
+    protected function _getForm($model_obj, $data, $extra)
+    {
+        $extra['model'] = $model_obj;
+        $extra['checkgroup_fields'] = array(
+            'Permissions' => array('widget'=>'IPF_Auth_Forms_Widget_Permissions'),
+            'Roles' => array(),
+        );
+        return new IPFAuthAdminUserForm($data, $extra);
+    }
+}
 
 class User extends BaseUser
 {
@@ -85,7 +158,8 @@ class User extends BaseUser
         return $name;
     }
 
-    static function createUser($username, $password=null, $email=null, $first_name=null, $last_name=null, $is_active=false, $is_staff=false, $is_superuser=false){
+    static function createUser($username, $password=null, $email=null, $first_name=null, $last_name=null, $is_active=false, $is_staff=false, $is_superuser=false)
+    {
         $user = new User();
         $user->username = $username;
 
@@ -126,9 +200,13 @@ class User extends BaseUser
         $this->password = UNUSABLE_PASSWORD;
     }
 
-    function setPassword($raw_password){
+    static function SetPassword2($raw_password){
         $salt = IPF_Utils::randomString(5);
-        $this->password = 'sha1:'.$salt.':'.sha1($salt.$raw_password);
+        return 'sha1:'.$salt.':'.sha1($salt.$raw_password);
+    }
+    
+    function setPassword($raw_password){
+        $this->password = self::SetPassword2($raw_password);
     }
 
     function checkPassword($password){

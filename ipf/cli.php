@@ -5,7 +5,7 @@ class IPF_Cli{
     protected $commands;
 
     public function __construct(){
-        $this->commands = array('help','sql','buildmodels','buildcontribmodels','syncdb', 'createsuperuser');
+        $this->commands = array('help','sql','buildmodels','buildcontribmodels','syncdb', 'createsuperuser', 'syncperms');
     }
     
     protected function usage(&$args){
@@ -33,6 +33,12 @@ class IPF_Cli{
         print "Create Tables From Model Classes\n";
         IPF_Project::getInstance()->createTablesFromModels();
     }
+    
+    protected function syncperms(&$args)
+    {
+        print "Create/Update Permissions From Model Classes\n";
+        IPF_Project::getInstance()->createPermissionsFromModels();
+    }
 
     protected function buildmodels(&$args){
         print "Build All Model Classses\n";
@@ -43,7 +49,6 @@ class IPF_Cli{
         print "Build All Contrib Model Classses\n";
         IPF_Project::getInstance()->generateContribModels();
     }
-
 
     protected function createSuperUser(&$args){
         print "Create SuperUser\n";
