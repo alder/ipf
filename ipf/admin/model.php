@@ -274,11 +274,11 @@ class IPF_Admin_Model{
             }
             $row[$h['name']] = $str;
         }
-        $this->linksRow(&$row, $o);
+        $this->linksRow($row, $o);
         return $row;
     }
 
-    protected function linksRow($row, $o){
+    protected function linksRow(&$row, $o){
         if (method_exists($this,'list_display_links')){
             $links_display = $this->list_display_links();
         }else{
