@@ -50,7 +50,7 @@ class IPF_Form_Field
         return $value;
     }
 
-    function LateClean($data, $cleaned_data){
+    function LateClean($data, &$cleaned_data){
     }
 
     protected function getWidget(){

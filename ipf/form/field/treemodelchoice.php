@@ -46,7 +46,7 @@ class IPF_Form_Field_TreeModelChoice extends IPF_Form_Field_Choice{
         }
     }
 
-    function LateClean($data, $cleaned_data){
+    function LateClean($data, &$cleaned_data){
         foreach($this->_models as &$m){
             $cleaned_data[$m['field']] = $data[$m['field']];
         }
