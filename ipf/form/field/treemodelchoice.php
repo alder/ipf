@@ -10,7 +10,7 @@ class IPF_Form_Field_TreeModelChoice extends IPF_Form_Field_Choice{
         $this->_models = $params['models'];
         $choices = array('--------'=>'');
         $levels = $this->_getLevels();
-        $this->_collectTreeRecursive(&$choices);
+        $this->_collectTreeRecursive($choices);
         $this->setChoices($choices);
         $this->widget->setLevels($levels);
     }    
@@ -39,9 +39,9 @@ class IPF_Form_Field_TreeModelChoice extends IPF_Form_Field_Choice{
                 if ($parent_id!=$o->$foreign)
                     continue;
             }
-            $this->_addObject($o, &$choices, $level, $valname);
+            $this->_addObject($o, $choices, $level, $valname);
             if ($level<(count($this->_models)-1)){
-                $this->_collectTreeRecursive(&$choices,$level+1,$o->id,$valname.$o->id.'.');
+                $this->_collectTreeRecursive($choices,$level+1,$o->id,$valname.$o->id.'.');
             }
         }
     }

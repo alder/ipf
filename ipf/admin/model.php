@@ -73,7 +73,7 @@ class ListTreeFilter extends BaseListFilter{
                 );
             }
         }
-        $this->_collectTreeRecursive(&$choices);
+        $this->_collectTreeRecursive($choices);
         parent::__construct($title, $choices);
     }
 
@@ -92,9 +92,9 @@ class ListTreeFilter extends BaseListFilter{
                 if ($parent_id!=$o->$foreign)
                     continue;
             }
-            $this->_addObject($o, &$choices, $level, $valname);
+            $this->_addObject($o, $choices, $level, $valname);
             if ($level<(count($this->fields)-1)){
-                $this->_collectTreeRecursive(&$choices,$level+1,$o->id,$valname.$o->id.'.');
+                $this->_collectTreeRecursive($choices,$level+1,$o->id,$valname.$o->id.'.');
             }
         }
     }
@@ -355,9 +355,9 @@ class IPF_Admin_Model{
         {
             $this->_beforeAdd(new $this->model());
             $data = $request->POST+$request->FILES;
-            $form = $this->_getAddForm($this->model, &$data, array('user_fields'=>$this->fields()));
+            $form = $this->_getAddForm($this->model, $data, array('user_fields'=>$this->fields()));
             $this->_setupAddForm($form);
-            $this->setInlines($this->model, &$data);
+            $this->setInlines($this->model, $data);
             if ($form->isValid()) {
                 $item = $form->save();
                 $this->saveInlines($item);
@@ -435,9 +435,9 @@ class IPF_Admin_Model{
         
             $this->_beforeEdit($o);
             $data = $request->POST+$request->FILES;
-            $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
+            $form = $this->_getEditForm($o, $data, array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
-            $this->setInlines($o, &$data);
+            $this->setInlines($o, $data);
             if ( ($form->isValid()) && ($this->isValidInlines()) ) {
                 $item = $form->save();
                 $this->saveInlines($item);
@@ -461,7 +461,7 @@ class IPF_Admin_Model{
                     }
                 }
             }
-            $form = $this->_getEditForm($o,&$data,array('user_fields'=>$this->fields()));
+            $form = $this->_getEditForm($o, $data, array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
             $this->setInlines($o);
         }
