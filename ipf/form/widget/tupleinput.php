@@ -52,7 +52,7 @@ class IPF_Form_Widget_TupleInput extends IPF_Form_Widget
         return new IPF_Template_SafeString($s,true);
     }
 
-    public function valueFromFormData($name, $data)
+    public function valueFromFormData($name, &$data)
     {
         $s = '';
         for ($i=0; $i<$this->rows; $i++){

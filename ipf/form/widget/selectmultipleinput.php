@@ -38,7 +38,7 @@ class IPF_Form_Widget_SelectMultipleInput extends IPF_Form_Widget
         return new IPF_Template_SafeString(implode("\n", $output), true);
     }
 
-    public function valueFromFormData($name, $data)
+    public function valueFromFormData($name, &$data)
     {
         if (isset($data[$name]) and is_array($data[$name])) {
             return $data[$name];

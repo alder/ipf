@@ -22,7 +22,7 @@ class IPF_Form_Widget
         return array_merge($this->attrs, $attrs, $extra_attrs);
     }
 
-    public function valueFromFormData($name, $data)
+    public function valueFromFormData($name, &$data)
     {
         if (isset($data[$name])) {
             return $data[$name];

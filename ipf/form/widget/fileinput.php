@@ -29,7 +29,7 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
         return $sim.parent::render($name, $value, $extra_attrs);
     }
 
-    public function valueFromFormData($name, $data){
+    public function valueFromFormData($name, &$data){
         if (isset($data[$name])) {
             $remove = false;
             if (isset($data[$name.'_remove']))
