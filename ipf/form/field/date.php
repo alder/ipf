@@ -2,7 +2,7 @@
 
 class IPF_Form_Field_Date extends IPF_Form_Field
 {
-    public $widget = 'IPF_Form_Widget_TextInput';
+    public $widget = 'IPF_Form_Widget_DateInput';
     public $input_formats = array(
        '%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', // 2006-10-25, 10/25/2006, 10/25/06
        '%b %d %Y', '%b %d, %Y',      // 'Oct 25 2006', 'Oct 25, 2006'
