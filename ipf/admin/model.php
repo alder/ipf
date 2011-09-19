@@ -313,6 +313,10 @@ class IPF_Admin_Model{
         return $this->_getForm($model_obj, $data, $extra);
     }
 
+    protected function _getListTemplate(){
+        return 'admin/items.html';
+    }
+
     protected function _getAddTemplate(){
         return 'admin/change.html';
     }
@@ -485,10 +489,10 @@ class IPF_Admin_Model{
     public function ListItems($request, $lapp, $lmodel)
     {
         $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
-        
+
         if ($perms === false || !in_array('view', $perms))
             return new IPF_HTTP_Response_NotFound();
-    
+
         $this->ListItemsQuery();
         $this->_GetFilters($request);
         if (!$this->_ListSearchQuery($request))
@@ -520,7 +524,7 @@ class IPF_Admin_Model{
         $pager->setTemplate('<a href="{%url}">{%page}</a> ');
         $pager->setSelectedTemplate('<span class="this-page">{%page}</span> ');
         $objects = $pager->getPager()->execute();
-        
+
         $context = array(
             'orderable'=>$this->_orderable(),
             'page_title'=>$this->page_title(),
@@ -537,9 +541,9 @@ class IPF_Admin_Model{
             'lmodel'=>$lmodel,
             'indexpage_url'=>IPF::get('indexpage_url','/'),
         );
-        return IPF_Shortcuts::RenderToResponse('admin/items.html', $context, $request);
+        return IPF_Shortcuts::RenderToResponse($this->_getListTemplate(), $context, $request);
     }
-    
+
     protected function _ListFilterQuery($request){
         foreach($this->filters as $f){
             $f->FilterQuery($request,$this->q);
