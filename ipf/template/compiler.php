@@ -124,6 +124,37 @@ class IPF_Template_Compiler
         return $result;
     }
 
+    private static function toplevelBlocks($content)
+    {
+        preg_match_all("!{block\s*([^} \r\t\n]*)}|{/block}!", $content, $tags, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+
+        $count = 0;
+        $result = array();
+        foreach ($tags as $tag) {
+            $text = $tag[0][0];
+
+            if (substr($text, 0, 6) === '{block') {
+                if ($count == 0) {
+                    $result[] = array(
+                        'name' => $tag[1][0],
+                        'start' => $tag[1][1] + strlen($tag[1][0]) + 1,
+                    );
+                }
+                $count++;
+            } elseif (substr($text, 0, 7) === '{/block') {
+                $count--;
+                if ($count == 0) {
+                    $result[count($result)-1]['finish'] = $tag[0][1];
+                }
+            }
+        }
+
+        if ($count != 0)
+            throw new IPF_Exception(sprintf(__('Blocks are not nested properly.')));
+
+        return $result;
+    }
+
     function compileBlocks()
     {
         $tplcontent = $this->templateContent;
@@ -133,19 +164,20 @@ class IPF_Template_Compiler
             $this->_extendedTemplate = $_match[1];
         }
         // Get the blocks in the current template
-        $cnt = preg_match_all("!{block\s(\S+?)}(.*?){/block}!s", $tplcontent, $_match);
+        $blocks = self::toplevelBlocks($this->templateContent);
+        $cnt = count($blocks);
         // Compile the blocks
         for ($i=0; $i<$cnt; $i++) {
-            if (!isset($this->_extendBlocks[$_match[1][$i]])
-                or false !== strpos($this->_extendBlocks[$_match[1][$i]], '~~{~~superblock~~}~~')) {
+            $blockName = $blocks[$i]['name'];
+            if (!isset($this->_extendBlocks[$blockName]) or false !== strpos($this->_extendBlocks[$blockName], '~~{~~superblock~~}~~')) {
                 $compiler = clone($this);
-                $compiler->templateContent = $_match[2][$i];
+                $compiler->templateContent = substr($this->templateContent, $blocks[$i]['start'], $blocks[$i]['finish'] - $blocks[$i]['start']);
                 $_tmp = $compiler->compile();
                 $this->updateModifierStack($compiler);
-                if (!isset($this->_extendBlocks[$_match[1][$i]])) {
-                    $this->_extendBlocks[$_match[1][$i]] = $_tmp;
+                if (!isset($this->_extendBlocks[$blockName])) {
+                    $this->_extendBlocks[$blockName] = $_tmp;
                 } else {
-                    $this->_extendBlocks[$_match[1][$i]] = str_replace('~~{~~superblock~~}~~', $_tmp, $this->_extendBlocks[$_match[1][$i]]);
+                    $this->_extendBlocks[$blockName] = str_replace('~~{~~superblock~~}~~', $_tmp, $this->_extendBlocks[$blockName]);
                 }
             }
         }
