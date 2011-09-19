@@ -135,7 +135,7 @@ class IPF_ORM_Relation_Parser
             $this->getRelations();
             return $this->getRelation($alias, false);
         } else {
-            throw new IPF_ORM_Exception('Unknown relation alias ' . $alias);
+            throw new IPF_ORM_Exception('Unknown relation alias "' . $alias . '".');
         }
     }
 
