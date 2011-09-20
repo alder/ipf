@@ -292,7 +292,11 @@ class IPF_Template_Compiler
             $res = 'elseif('.$this->_parseFinal($args, $this->_allowedInExpr).'):';
             break;
         case 'foreach':
-            $res = 'foreach ('.$this->_parseFinal($args, array(T_AS, T_DOUBLE_ARROW, T_STRING, T_OBJECT_OPERATOR), array(';','!')).'): ';
+            $res =
+                '$t->_vars[\'foreach_counter0\'] = 0;' .
+                '$t->_vars[\'foreach_counter\'] = 1;' .
+                '$t->_vars[\'foreach_first\'] = true;' .
+                'foreach ('.$this->_parseFinal($args, array(T_AS, T_DOUBLE_ARROW, T_STRING, T_OBJECT_OPERATOR), array(';','!')).'): ';
             array_push($this->_blockStack, 'foreach');
             break;
         case 'while':
@@ -300,6 +304,16 @@ class IPF_Template_Compiler
             array_push($this->_blockStack, 'while');
             break;
         case '/foreach':
+            if(end($this->_blockStack) != 'foreach'){
+                trigger_error(sprintf(__('End tag of a block missing: %s'), end($this->_blockStack)), E_USER_ERROR);
+            }
+            array_pop($this->_blockStack);
+            $res =
+                '$t->_vars[\'foreach_counter0\'] = $t->_vars[\'foreach_counter0\'] + 1;' .
+                '$t->_vars[\'foreach_counter\'] = $t->_vars[\'foreach_counter\'] + 1;' .
+                '$t->_vars[\'foreach_first\'] = false;' .
+                'endforeach; ';
+            break;
         case '/if':
         case '/while':
             $short = substr($name,1);
