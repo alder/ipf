@@ -59,7 +59,7 @@ $(document).ready(function()
             <h3>{$f->title}</h3>
             <ul>
             {foreach $f->choices as $ch}
-                <li{if $ch['selected']} class="selected"{/if}><a href="?{$ch['param']}">{$ch['name']}</a></li>
+                {block filterchoice}<li{if $ch['selected']} class="selected"{/if}><a href="?{$ch['param']}">{$ch['name']}</a></li>{/block}
             {/foreach}
             </ul>
             {/foreach}

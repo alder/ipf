@@ -107,8 +107,10 @@ class ListTreeFilter extends BaseListFilter{
         $choices[] = array(
             'id'=>$id,
             'param'=>'filter_'.$this->name.'='.$id,
+            'original_name'=>$o->name,
             'name'=>$name,
             'selected'=>false,
+            'level'=>$level,
         );
     }
     function SetSelect($request){
