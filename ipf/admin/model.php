@@ -51,7 +51,9 @@ class ListTreeFilter extends BaseListFilter{
             'id'=>null,
             'param'=>'',
             'name'=>'All',
+            'original_name'=>'All',
             'selected'=>false,
+            'level'=>0,
         );
         $levels = array();
 
