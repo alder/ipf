@@ -8,7 +8,7 @@ class IPF_Router
         else
             return new IPF_HTTP_Response_ServerError($e);
     }
-    
+
     public static function dispatch($query='')
     {
         try{
@@ -66,6 +66,8 @@ class IPF_Router
                             return IPF_Router::response500(new IPF_Exception('function '.$suburl['func'].'() must return IPF_HTTP_Response instance'));
                         }
                         return $r;
+                    } catch (IPF_HTTP_Error404 $e) {
+                        return new IPF_HTTP_Response_NotFound();
                     } catch (IPF_Exception $e) {
                         return IPF_Router::response500($e);
                     }
