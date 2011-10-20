@@ -220,7 +220,7 @@ final class IPF_ORM {
         $sql = IPF_ORM_Manager::connection()->export->exportSql($directory);
         $build = '';
         foreach ($sql as $query) {
-            $build .= $query.";\n";
+            $build .= $query.";\n\n";
         }
         return $build;
     }    
