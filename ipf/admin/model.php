@@ -432,7 +432,7 @@ class IPF_Admin_Model{
     public function EditItem($request, $lapp, $lmodel, $o)
     {
         $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
-        
+
         if ($perms === false || !in_array('view', $perms))
             return new IPF_HTTP_Response_NotFound();
 
@@ -440,13 +440,14 @@ class IPF_Admin_Model{
         {
             if (!in_array('change', $perms))
                 return new IPF_HTTP_Response_NotFound();
-        
+
             $this->_beforeEdit($o);
             $data = $request->POST+$request->FILES;
             $form = $this->_getEditForm($o, $data, array('user_fields'=>$this->fields()));
             $this->_setupEditForm($form);
             $this->setInlines($o, $data);
-            if ( ($form->isValid()) && ($this->isValidInlines()) ) {
+            if ( ($form->isValid()) && ($this->isValidInlines()) )
+            {
                 $item = $form->save();
                 $this->saveInlines($item);
                 AdminLog::logAction($request, $item, AdminLog::CHANGE);
@@ -457,14 +458,19 @@ class IPF_Admin_Model{
                 return new IPF_HTTP_Response_Redirect($url);
             }
         }
-        else{
+        else
+        {
             $data = $o->getData();
-            foreach($o->getTable()->getRelations() as $rname=>$rel){
+            foreach ($o->getTable()->getRelations() as $rname=>$rel)
+            {
                 $pk = $rel->getTable()->getIdentifier();
-                if (array_search($rname,$this->fields())){
-                    if ($rel->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
+                $fields = $this->fields();
+                if ($fields && array_search($rname, $fields))
+                {
+                    if ($rel->getType()==IPF_ORM_Relation::MANY_AGGREGATE)
+                    {
                         $data[$rname] = array();
-                        foreach($rel->fetchRelatedFor($o) as $ri)
+                        foreach ($rel->fetchRelatedFor($o) as $ri)
                             $data[$rname][] = $ri->$pk;
                     }
                 }
