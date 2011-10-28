@@ -4,10 +4,9 @@ final class IPF_Shortcuts{
 
     static function GetObjectOr404($object, $id)
     {
-        $item = new $object($id);
-        if ((int)$id > 0 && $item->id == $id) {
-            return $item;
-        }
+        $obj = IPF_ORM::getTable($object)->findOneById($id);
+        if ($obj)
+            return $obj;
         throw new IPF_HTTP_Error404();
     }
 
