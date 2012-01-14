@@ -122,7 +122,11 @@ class IPF_Auth_App extends IPF_Application
     
     static function ArePermissionsEnabled()
     {
-        return IPF_ORM_Query::create()->from('Permission')->count() ? true : false;
+        try {
+            return IPF_ORM_Query::create()->from('Permission')->count() ? true : false;
+        } catch (IPF_ORM_Exception $e) {
+            return true;
+        }
     }
     
     static function checkPermissions($request, $app, $modelName, array $perms)
