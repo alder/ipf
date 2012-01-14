@@ -1,11 +1,15 @@
 <?php
 
+// preload permission model
+require_once(dirname(__FILE__) . '/models/_generated/BasePermission.php');
+require_once(dirname(__FILE__) . '/models/Permission.php');
+
 class IPF_Auth_App extends IPF_Application
 {
     public function __construct()
     {
         parent::__construct(array(
-            'models'=>self::ArePermissionsEnabled(true) ? array('User', 'Role',) : array('User'),
+            'models' => self::ArePermissionsEnabled() ? array('User', 'Role') : array('User'),
         ));
     }
     
@@ -116,15 +120,8 @@ class IPF_Auth_App extends IPF_Application
         }
     }
     
-    static function ArePermissionsEnabled($use_hack=false)
+    static function ArePermissionsEnabled()
     {
-        if ($use_hack)
-        {
-            $path = str_replace('app.php','',__FILE__);
-            require_once($path.'models/_generated/BasePermission.php');
-            require_once($path.'models/Permission.php');
-        }
-        
         return IPF_ORM_Query::create()->from('Permission')->count() ? true : false;
     }
     
