@@ -127,7 +127,7 @@ function IPF_Admin_Views_EditItem($request, $match)
             $o = new $m();
             $item = $o->getTable()->find($id);
             
-            return $ma->EditItem($request, $lapp, $lmodel, &$item);
+            return $ma->EditItem($request, $lapp, $lmodel, $item);
         }
     }
     
@@ -157,8 +157,8 @@ function IPF_Admin_Views_DeleteItem($request, $match)
             $o = new $m();
             $item = $o->getTable()->find($id);
             
-            return $ma->DeleteItem($request, $lapp, $lmodel, &$item);
-        }    
+            return $ma->DeleteItem($request, $lapp, $lmodel, $item);
+        }
     }
     
     return new IPF_HTTP_Response_NotFound();
@@ -409,8 +409,8 @@ function IPF_Admin_Views_FileBrowser($request, $match){
         }
         closedir($dh);
     }
-    usort(&$dirs, 'cmp');
-    usort(&$files, 'cmp');
+    usort($dirs, 'cmp');
+    usort($files, 'cmp');
     
     $dirtree = dir_recursive($upload_path);
 

@@ -11,13 +11,13 @@ class IPF_Form_Field_File extends IPF_Form_Field
 
     function clean($value)
     {
-    	if (@$value['remove']===true){
+        if (@$value['remove']===true){
             IPF::loadFunction($this->remove_function);
             return call_user_func($this->remove_function, $value['data']);
         }
         if (@$value['name']!=@$value['rename']){
             IPF::loadFunction($this->rename_function);
-        	return call_user_func($this->rename_function, &$value);
+            return call_user_func($this->rename_function, $value);
         }
         $value = @$value['data'];
         
@@ -80,9 +80,10 @@ function IPF_Form_Field_removeFile($value, $params=array()){
 }
 
 function IPF_Form_Field_renameFile($value, $params=array()){
-	$upload_path = IPF::getUploadPath($params);
+    $upload_path = IPF::getUploadPath($params);
     $old_name = @$upload_path.DIRECTORY_SEPARATOR.$value['name'];
     $new_name = @$upload_path.DIRECTORY_SEPARATOR.$value['rename'];
     @rename($old_name, $new_name);
     return @$value['rename'];
 }
+
