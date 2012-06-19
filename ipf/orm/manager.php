@@ -157,6 +157,7 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
         $className = $drivers[$driverName];
         $conn = new $className($this, $adapter);
         $conn->setName($name);
+        $conn->setCharset('utf8');
 
         $this->_connections[$name] = $conn;
 
