@@ -201,7 +201,7 @@ function IPF_HTTP_Response_ServerErrorDebug_Pretty($e)
                         $value = 'Instance of '.get_class($v);
                         break;
                     default:
-                        $value = (string)$v;
+                        $value = print_r($v, true);
                 }
                 $out .= '
                 <tr>
