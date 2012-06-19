@@ -139,7 +139,7 @@ class IPF_Form_Model extends IPF_Form
                 $erecords = $e->getInvalidRecords();
                 $errors = $erecords[0]->getErrorStack();
                 foreach($errors as $k=>$v){
-                    print($k);
+                    echo $k, ' ';
                     print_r($v);
                 }
             }
