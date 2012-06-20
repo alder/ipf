@@ -114,6 +114,46 @@ class IPF_Mime
         return $out;
     }
 
+    public static function encodeQ($str)
+    {
+        $str = str_replace('=', '=3D', $str);
+        $str = str_replace(self::$qpKeys, self::$qpReplaceValues, $str);
+        $str = str_replace(array('?', '_'), array('=3F', '=5F'), $str);
+        $str = str_replace(' ', '_', $str);
+
+        $result = array();
+
+        // Split encoded text into separate lines
+        $lineLength = 75 - 12;
+        $pos = 0;
+        $length = strlen($str);
+        while ($pos < $length)
+        {
+            if ($length - $pos > $lineLength)
+            {
+                $ptr = $lineLength;
+
+                // Ensure we are not splitting across an encoded character
+                if (substr($str, $pos + $ptr - 2) == '=')
+                    $ptr -= 2;
+                elseif (substr($str, $pos + $ptr - 1) == '=')
+                    $ptr -= 1;
+
+                // Add string and continue
+                $out = substr($str, $pos, $ptr);
+                $pos += $ptr;
+            }
+            else
+            {
+                $out = substr($str, $pos);
+                $pos = $length;
+            }
+            $result[] = '=?utf-8?Q?' . $out . '?=';
+        }
+
+        return implode("\r\n ", $result);
+    }
+
     public static function encodeBase64($str,
         $lineLength = self::LINELENGTH,
         $lineEnd = self::LINEEND)

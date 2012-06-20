@@ -259,8 +259,11 @@ class IPF_Mail extends IPF_Mime_Message
     public function setSubject($subject)
     {
         if ($this->_subject === null) {
-            $subject = strtr($subject,"\r\n\t",'???');
-            $this->_subject = $this->_encodeHeader($subject);
+            $subject = strtr($subject,"\r\n\t", '???');
+            if (IPF_Mime::isPrintable($subject))
+                $this->_subject = $subject;
+            else
+                $this->_subject = IPF_Mime::encodeQ($subject);
             $this->_storeHeader('Subject', $this->_subject);
         } else {
             throw new IPF_Exception_Mail('Subject set twice');
