@@ -7,4 +7,4 @@ $project_path = dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'
 set_include_path($ipf_path.PATH_SEPARATOR.$project_path);
 require 'ipf.php';
 IPF::boot($ipf_path, $project_path);
-IPF_Project::getInstance()->run();
+return IPF_Project::getInstance()->run();

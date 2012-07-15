@@ -127,11 +127,17 @@ final class IPF_Project{
         
         if (php_sapi_name()=='cli'){
             $this->cli();
-            return;
+            return true;
+        }
+        if (php_sapi_name()=='cli-server'){
+            $path = $_SERVER['DOCUMENT_ROOT'] . $_SERVER["REQUEST_URI"];
+            if (is_file($path))
+                return false;
         }
         $this->loadModels();
         IPF_ORM_Manager::getInstance()->setAttribute(IPF_ORM::ATTR_VALIDATE, IPF_ORM::VALIDATE_ALL);
         $this->router = new IPF_Router();
         $this->router->dispatch(IPF_HTTP_URL::getAction()); 
+        return true;
 	}
 }
