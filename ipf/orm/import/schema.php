@@ -537,8 +537,8 @@ class IPF_ORM_Import_Schema
         $validation = array_flip($validation);
         foreach ($element as $key => $value) {
             if ( ! isset($validation[$value])) {
-                throw new IPF_ORM_Exception(sprintf('Invalid schema element named "' . $value . '" 
-                                at path "' . $path . '"'));
+                throw new IPF_ORM_Exception(sprintf('Invalid schema element named "' . $value .
+                    '" at path "' . $path . '"'));
             }
         }
     }
