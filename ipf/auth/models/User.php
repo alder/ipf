@@ -55,8 +55,8 @@ class IPFAuthAdminUserForm extends IPF_Form_Extra_CheckGroup
         }
         else
         {
-            $this->fields['Permissions']->widget = new IPF_Form_Widget_HiddenInput();
-            $this->fields['Roles']->widget = new IPF_Form_Widget_HiddenInput();
+            unset($this->fields['Permissions']);
+            unset($this->fields['Roles']);
         }
         
         $this->field_groups = array(
