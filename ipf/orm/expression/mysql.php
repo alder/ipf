@@ -61,6 +61,12 @@ class IPF_ORM_Expression_Mysql extends IPF_ORM_Expression_Driver
         return 'MONTH(' .  $column . ')';
     }
 
+    public function monthname($column)
+    {
+        $column = $this->getIdentifier($column);
+        return 'MONTHNAME(' .  $column . ')';
+    }
+
     public function day($column)
     {
         $column = $this->getIdentifier($column);

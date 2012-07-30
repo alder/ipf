@@ -22,14 +22,19 @@ abstract class BaseListFilter{
         return false;
     }
 
-    abstract function FilterQuery($request,$q);
+    abstract function SetSelect($request);
+    abstract function FilterQuery($request, $q);
 }
 
-class ListFilter extends BaseListFilter{
+class ListFilter extends BaseListFilter {
     function __construct($local, $foreign, $choices, $title){
         parent::__construct($title, $choices);
         $this->local = $local;
         $this->foreign = $foreign;
+    }
+
+    function SetSelect($request) {
+        /* nothing to do */
     }
 
     function FilterQuery($request,$q){
@@ -144,6 +149,132 @@ class ListTreeFilter extends BaseListFilter{
                 $q->where($dql);
             }
         }
+    }
+}
+
+class DateHierarchyListFilter extends BaseListFilter {
+    public $model, $name;
+
+    function __construct($title, $modelName, $fieldName) {
+        parent::__construct($title, array());
+        $this->modelName = $modelName;
+        $this->name = $fieldName;
+    }
+
+    private function loadChoices($funcKey, $funcValue, $current) {
+        $vals = IPF_ORM_Query::create()
+            ->select($funcKey . '(' . $this->name . ') as k')
+            ->addSelect($funcValue . '(' . $this->name . ') as v')
+            ->from($this->modelName)
+            ->groupBy('1')
+            ->orderBy('1')
+            ->fetchArray();
+        foreach ($vals as $r) {
+            $v = $r['k'];
+            $this->choices[] = array(
+                'name' => $r['v'],
+                'selected' => $current == $v,
+                'param' => 'filter_' . $this->name . '=' . sprintf($this->getFormat(), $v),
+                );
+        }
+    }
+
+    private function addChoices($q, $format) {
+        $vals = $q
+            ->from($this->modelName)
+            ->groupBy('1')
+            ->orderBy('1')
+            ->fetchArray();
+        foreach ($vals as $r) {
+            $v = $r['k'];
+            $this->choices[] = array(
+                'name' => $r['v'],
+                'selected' => false,
+                'param' => 'filter_' . $this->name . '=' . sprintf($format, $v),
+                );
+        }
+    }
+
+    private $day, $month, $year;
+
+    private function getFormat() {
+        if ($this->day) {
+            return '';
+        } elseif ($this->month) {
+            return sprintf('%04d-%02d-', $this->year, $this->month) . '-%02d';
+        } elseif ($this->year) {
+            return sprintf('%04d-', $this->year) . '%02d-00';
+        } else {
+            return '%04d-00-00';
+        }
+    }
+
+    function SetSelect($request) {
+        $date = @$request->GET['filter_' . $this->name];
+        if (preg_match('/(\d{4})-(\d{2})-(\d{2})/', $date, $matches)) {
+            $this->year = intval($matches[1]);
+            $this->month = intval($matches[2]);
+            $this->monthName = date('F', mktime(0, 0, 0, $this->month, 1));
+            $this->day = intval($matches[3]);
+        }
+
+        $this->choices = array(
+            array(
+                'name' => 'All',
+                'selected' => !$this->year,
+                'param' => ''),
+        );
+
+        if ($this->year) {
+            $this->choices[] = array(
+                'name' => $this->year,
+                'selected' => true,
+                'param' => 'filter_' . $this->name . '=' . $this->year . '-00-00');
+        }
+
+        if ($this->month) {
+            $this->choices[] = array(
+                'name' => $this->monthName,
+                'selected' => true,
+                'param' => 'filter_' . $this->name . '=' . sprintf('%04d-%02d-00', $this->year, $this->month));
+        }
+
+        if ($this->day) {
+            $this->choices[] = array(
+                'name' => $this->day,
+                'selected' => true,
+                'param' => 'filter_' . $this->name . '=' . sprintf('%04d-%02d-%02d', $this->year, $this->month, $this->day));
+        }
+
+        if ($this->day) {
+        } elseif ($this->month) {
+            $q = IPF_ORM_Query::create()
+                ->select('DAY(' . $this->name . ') as k')
+                ->addSelect('DAY(' . $this->name . ') as v')
+                ->addWhere('YEAR(' . $this->name . ') = ?', array($this->year))
+                ->addWhere('MONTH(' . $this->name . ') = ?', array($this->month));
+            $this->addChoices($q, sprintf('%04d-%02d', $this->year, $this->month) . '-%02d');
+        } elseif ($this->year) {
+            $q = IPF_ORM_Query::create()
+                ->select('MONTH(' . $this->name . ') as k')
+                ->addSelect('MONTHNAME(' . $this->name . ') as v')
+                ->addWhere('YEAR(' . $this->name . ') = ?', array($this->year));
+            $this->addChoices($q, sprintf('%04d', $this->year) . '-%02d-00');
+        } else {
+            $q = IPF_ORM_Query::create()
+                ->select('YEAR(' . $this->name . ') as k')
+                ->addSelect('YEAR(' . $this->name . ') as v');
+            $this->addChoices($q, '%04d-00-00');
+        }
+    }
+
+    function FilterQuery($request, $q) {
+        if ($this->day)
+            $q->addWhere('DAY(' . $this->name . ') = ?', array($this->day));
+        if ($this->month)
+            $q->addWhere('MONTH(' . $this->name . ') = ?', array($this->month));
+        if ($this->year)
+            $q->addWhere('YEAR(' . $this->name . ') = ?', array($this->year));
     }
 }
 
@@ -615,10 +746,8 @@ class IPF_Admin_Model{
                 }
                 $this->filters[$f] = new ListFilter($local, $foreign, $choices, 'By '.IPF_Utils::humanTitle($f));
             } else {
-                if ( (get_class($f)=='ListTreeFilter') || is_subclass_of($f, 'ListTreeFilter')){
-                    $f->SetSelect($request);
-                    $this->filters[$f->name] = $f;
-                }
+                $f->SetSelect($request);
+                $this->filters[$f->name] = $f;
             }
         }
     }
