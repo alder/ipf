@@ -239,7 +239,6 @@ class IPF_ORM_DataDict_Mysql extends IPF_ORM_DataDict
             case 'mediumtext':
             case 'longtext':
             case 'text':
-            case 'text':
             case 'varchar':
                 $fixed = false;
             case 'string':
@@ -373,3 +372,4 @@ class IPF_ORM_DataDict_Mysql extends IPF_ORM_DataDict
         return $name . ' ' . $this->getNativeDeclaration($field) . $unsigned . $default . $notnull . $autoinc;
     }
 }
+

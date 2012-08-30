@@ -429,7 +429,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
         return $build;
     }
 
-    private function innerBuildActAs($actAs, $level = 0, $parent = null, array &$emittedActAs)
+    private function innerBuildActAs($actAs, $level, $parent, array &$emittedActAs)
     {
         // rewrite special case of actAs: [Behavior] which gave [0] => Behavior
         if(is_array($actAs) && isset($actAs[0]) && !is_array($actAs[0])) {
