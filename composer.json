@@ -1,0 +1,16 @@
+{
+  "name": "andy128k/ipf",
+  "description": "Web Framework",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alex Litovchenko",
+      "email": "alex.litovchenko@gmail.com"
+    },
+    {
+      "name": "Andrey Kutejko",
+      "email": "andy128k@gmail.com"
+    }
+  ]
+}
+
