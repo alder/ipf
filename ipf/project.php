@@ -130,7 +130,8 @@ final class IPF_Project{
             return true;
         }
         if (php_sapi_name() == 'cli-server') {
-            $path = $_SERVER['DOCUMENT_ROOT'] . $_SERVER["REQUEST_URI"];
+            $parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+            $path = $_SERVER['DOCUMENT_ROOT'] . $parts[0];
             if (is_file($path))
                 return false;
         }
