@@ -371,10 +371,10 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
     {
         $query = '';
         if ( ! empty($definition['onUpdate'])) {
-            $query .= ' ON UPDATE ' . $this->getForeignKeyRefentialAction($definition['onUpdate']);
+            $query .= ' ON UPDATE ' . $this->getForeignKeyReferentialAction($definition['onUpdate']);
         }
         if ( ! empty($definition['onDelete'])) {
-            $query .= ' ON DELETE ' . $this->getForeignKeyRefentialAction($definition['onDelete']);
+            $query .= ' ON DELETE ' . $this->getForeignKeyReferentialAction($definition['onDelete']);
         }
         return $query;
     }
