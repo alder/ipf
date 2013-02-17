@@ -144,8 +144,7 @@ class IPF_ORM_Import_Schema
         $array = $this->buildSchema($schema, $format);
 
         foreach ($array as $name => $definition) {
-            
-            if ( ! empty($models) && !in_array($definition['className'], $models)) {
+            if (!empty($models) && !in_array($definition['className'], $models)) {
                 continue;
             }
             print "    $name\n";
@@ -395,7 +394,7 @@ class IPF_ORM_Import_Schema
         }
 
         foreach ($array as $name => $properties) {
-            if ( ! isset($properties['relations'])) {
+            if (!isset($properties['relations'])) {
                 continue;
             }
             
@@ -405,6 +404,7 @@ class IPF_ORM_Import_Schema
             foreach ($relations as $alias => $relation) {
                 $class = isset($relation['class']) ? $relation['class']:$alias;
                 if (!isset($array[$class])) {
+                    print "Warning: Ignoring relation to unknown model '$class' in model '$className'. \n";
                     continue;
                 }
                 $relation['class'] = $class;
