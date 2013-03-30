@@ -5,12 +5,26 @@ class Session extends BaseSession
     public $data = array();
     public $touched = false;
 
-    function clear(){
+    function clear()
+    {
         $this->data = array();
         $this->touched = true;
     }
 
-    function setData($key, $value=null){
+    function getSessionData()
+    {
+        return unserialize($this->session_data);
+    }
+
+    private function unserializeData()
+    {
+        if (!$this->data)
+            $this->data = $this->getSessionData();
+    }
+
+    function setData($key, $value=null)
+    {
+        $this->unserializeData();
         if (is_null($value)) {
             unset($this->data[$key]);
         } else {
@@ -19,14 +33,12 @@ class Session extends BaseSession
         $this->touched = true;
     }
 
-    function getSessionData(){
-    	return unserialize($this->session_data);
-    }
-    
-    function getData($key=null, $default=''){
-        if (is_null($key)) 
+    function getData($key=null, $default='')
+    {
+        if (is_null($key))
             return parent::getData();
 
+        $this->unserializeData();
         if (isset($this->data[$key])) {
             return $this->data[$key];
         } else {
@@ -49,3 +61,4 @@ class Session extends BaseSession
         $this->expire_data = gmdate('Y-m-d H:i:s', time()+31536000);
     }
 }
+
