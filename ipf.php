@@ -101,7 +101,7 @@ final class IPF{
         if (!isset(IPF::$settings['file_permission']))
             IPF::$settings['file_permission'] = 0666;
 
-        if (!isset(IPF::$settings['time_zome'])){
+        if (!isset(IPF::$settings['time_zone'])){
             IPF::$settings['time_zone'] = 'America/Toronto';
         }
     }
