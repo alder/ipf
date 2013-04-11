@@ -313,6 +313,11 @@ class IPF_Admin_Model{
         return IPF_Utils::humanTitle($this->modelName);
     }
 
+    public function titleList() { return $this->verbose_name().' List'; }
+    public function titleAdd() { return 'Add ' . $this->verbose_name(); }
+    public function titleEdit() { return 'Edit ' . $this->verbose_name(); }
+    public function titleDelete() { return 'Delete ' . $this->verbose_name(); }
+
     public function setUp(){
         $this->model = new $this->modelName;
     }
@@ -517,7 +522,7 @@ class IPF_Admin_Model{
 
         $context = array(
             'mode'=>'add',
-            'page_title'=>'Add '.$this->verbose_name(),
+            'page_title'=>$this->titleAdd(),
             'classname'=>$this->verbose_name(),
             'form'=>$form,
             'inlineInstances'=>$this->inlineInstances,
@@ -547,7 +552,7 @@ class IPF_Admin_Model{
             return new IPF_HTTP_Response_Redirect($url);
         }
         $context = array(
-            'page_title'=>'Delete '.$this->modelName,
+            'page_title'=>$this->titleDelete(),
             'classname'=>$this->verbose_name(),
             'object'=>$o,
             'lapp'=>$lapp,
@@ -613,7 +618,7 @@ class IPF_Admin_Model{
 
         $context = array(
             'mode'=>'change',
-            'page_title'=>'Edit '.$this->verbose_name(),
+            'page_title'=>$this->titleEdit(),
             'classname'=>$this->verbose_name(),
             'object'=>$o,
             'form'=>$form,
@@ -668,11 +673,12 @@ class IPF_Admin_Model{
 
         $context = array(
             'orderable'=>$this->_orderable(),
-            'page_title'=>$this->page_title(),
+            'page_title'=>$this->titleList(),
             'header'=>$this->header,
             'objects'=>$objects,
             'pager'=>$pager,
             'classname'=>$this->verbose_name(),
+            'title_add'=>$this->titleAdd(),
             'perms'=>$perms,
             'filters'=>$this->filters,
             'admin_title' => IPF::get('admin_title'),
@@ -755,8 +761,5 @@ class IPF_Admin_Model{
     protected function _orderable(){
         return method_exists($this, 'list_order');
     }
-
-    function page_title(){
-        return $this->verbose_name().' List';
-    }
 }
+
