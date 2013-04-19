@@ -4,6 +4,7 @@ abstract class IPF_ORM_Template extends IPF_ORM_Record_Abstract
 {
     protected $_invoker;
     protected $_plugin;
+
     public function setTable(IPF_ORM_Table $table)
     {
         $this->_table = $table;
@@ -27,7 +28,6 @@ abstract class IPF_ORM_Template extends IPF_ORM_Record_Abstract
     public function addChild(IPF_ORM_Template $template)
     {
         $this->_plugin->addChild($template);
-        
         return $this;
     }
 
@@ -48,11 +48,10 @@ abstract class IPF_ORM_Template extends IPF_ORM_Record_Abstract
 
     public function setUp()
     {
-
     }
 
     public function setTableDefinition()
     {
-
     }
 }
+

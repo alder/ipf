@@ -1265,7 +1265,8 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         return (string) $this->_oid;
     }
 
-    public function ModelAdmin(){
+    public function ModelAdmin()
+    {
         $cn = get_class($this);
         if (isset(IPF_Admin_Model::$models[$cn]))
             return IPF_Admin_Model::$models[$cn];
@@ -1291,18 +1292,21 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         }
     }
 
-    public function SetCustom($name, $val){
+    public function SetCustom($name, $val)
+    {
         $this->_custom[$name] = $val;
     }
 
-    public function GetCustom($name){
+    public function GetCustom($name)
+    {
         if (isset($this->_custom[$name]))
             return $this->_custom[$name];
         return null;
     }
 
-    public function _reorder($ids, $ord_field, $drop_id, $prev_ids, $ord=1){
-        foreach($ids as $id){
+    public function _reorder($ids, $ord_field, $drop_id, $prev_ids, $ord=1)
+    {
+        foreach($ids as $id) {
             $item = $this->getTable()->find($id);
             $item[$ord_field] = $ord;
             $item->save();
@@ -1310,3 +1314,4 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         }
     }
 }
+

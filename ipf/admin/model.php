@@ -387,11 +387,15 @@ class IPF_Admin_Model{
         return $this->header;
     }
 
-    public function ListItemsQuery(){
-        if (method_exists($this->model,'ordering'))
+    public function ListItemsQuery()
+    {
+        if (method_exists($this->model,'ordering')) {
             $ord = $this->model->ordering();
-        else
+        } elseif ($this->model->getTable()->hasTemplate('IPF_ORM_Template_Orderable')) {
+            $ord = $this->model->getTable()->getTemplate('IPF_ORM_Template_Orderable')->getColumnName();
+        } else {
             $ord = '1 desc';
+        }
         $this->q = IPF_ORM_Query::create()->from($this->modelName)->orderby($ord);
     }
 
@@ -758,8 +762,19 @@ class IPF_Admin_Model{
         }
     }
 
-    protected function _orderable(){
-        return method_exists($this, 'list_order');
+    public function _orderable()
+    {
+        return $this->_orderableColumn() !== null;
+    }
+
+    public function _orderableColumn()
+    {
+        if (method_exists($this, 'list_order'))
+            return $this->list_order();
+        elseif ($this->model->getTable()->hasTemplate('IPF_ORM_Template_Orderable'))
+            return $this->model->getTable()->getTemplate('IPF_ORM_Template_Orderable')->getColumnName();
+        else
+            return null;
     }
 }
 

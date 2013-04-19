@@ -185,9 +185,8 @@ function IPF_Admin_Views_Reorder($request, $match)
         $user_perms = IPF_Auth_App::checkPermissions($request, $app, $m, array('view', 'change'));
         $ma = ($user_perms['view'] && $user_perms['change']) ? IPF_Admin_Model::getModelAdmin($m) : null;
         
-        if ($ma !==null && method_exists($ma, 'list_order'))
-        {
-            $ord_field = $ma->list_order();
+        if ($ma !==null && $ma->_orderable()) {
+            $ord_field = $ma->_orderableColumn();
 
             $ids      = explode(',',(string)$request->POST['ids']);
             $prev_ids = explode(',',(string)$request->POST['prev_ids']);
