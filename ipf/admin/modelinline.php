@@ -123,8 +123,9 @@ abstract class IPF_Admin_ModelInline{
         }
     }
 
-    function save($parent_obj){
-        if ($this->parentModel->exists()){
+    function save($parent_obj)
+    {
+        if ($this->parentModel->exists()) {
             $objects = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
                 ->orderby('id')
@@ -136,13 +137,13 @@ abstract class IPF_Admin_ModelInline{
                         continue;
 
                     @list($x1,$x2,$id,$x3) = @explode('_',$form->prefix);
-                    if ($id==$obj->id){
-                        if ($form->cleaned_data[0]==true)
+                    if ($id == $obj->id) {
+                        if ($form->cleaned_data[0]==true) {
                             $obj->delete();
-                        else{
+                        } else {
                             unset($form->cleaned_data[0]);
-                            foreach($form->fields as $fname=>$f){
-                                if (is_a($f,'IPF_Form_Field_File')){
+                            foreach($form->fields as $fname=>$f) {
+                                if (is_a($f,'IPF_Form_Field_File')) {
                                     if($form->cleaned_data[$fname]===null)
                                         continue;
                                     if($form->cleaned_data[$fname]=='')
@@ -160,8 +161,8 @@ abstract class IPF_Admin_ModelInline{
         }
 
         $fk_local = $this->getFkLocal();
-        foreach($this->formset as $form){
-            if ($form->isValid()){
+        foreach ($this->formset as $form) {
+            if ($form->isValid()) {
                 if ($form->isAdd){
                     unset($form->cleaned_data[0]);
                     $form->cleaned_data[$fk_local] = $parent_obj->id;

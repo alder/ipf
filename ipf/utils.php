@@ -1,8 +1,9 @@
 <?php
 
-class IPF_Utils {
-
-    public static function isValidName( $s, $max_length=50 ){
+class IPF_Utils
+{
+    public static function isValidName($s, $max_length=50)
+    {
         if (!is_string($s))
             return false;
         if ( (strlen($s)==0) || (strlen($s)>$max_length) )
@@ -14,7 +15,8 @@ class IPF_Utils {
         return true;
     }
 
-    public static function isEmail($value){
+    public static function isEmail($value)
+    {
         $qtext = '[^\\x0d\\x22\\x5c\\x80-\\xff]';
         $dtext = '[^\\x0d\\x5b-\\x5d\\x80-\\xff]';
         $atom = '[^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+';
@@ -48,25 +50,25 @@ class IPF_Utils {
         $name = mb_strtolower($name, 'UTF-8');
         $name = mb_ereg_replace("/\015\012|\015|\012|\s|[^A-Za-z0-9\.\-\_]/", '_', $name);
 
-        while(file_exists($path.$name)){
+        while (file_exists($path . $name)) {
             $pathinfo = pathinfo($name);
             $filename = $pathinfo['filename'];
             $split = explode('_', $filename);
 
             $n = count($split);
-            if ($n<2){
+            if ($n < 2) {
                 $filename .= '_2';
-            }
-            else{
+            } else {
                 $x = $split[$n-1];
-                if (is_numeric($x)){
+                if (is_numeric($x)) {
                     $split[$n-1] = ((int)$x)+1;
-                }
-                else
+                } else {
                     $split[] = '2';
+                }
                 $filename = '';
-                foreach($split as $sp){
-                    if ($filename!='') $filename.='_';
+                foreach ($split as $sp) {
+                    if ($filename != '')
+                        $filename .= '_';
                     $filename .= $sp;
                 }
             }
@@ -83,18 +85,20 @@ class IPF_Utils {
         return (preg_match('!^(http|https|ftp|gopher)\://('.$ip.'|'.$dom.')!i', $url)) ? true : false;
     }
 
-    static function humanTitle($s){
+    static function humanTitle($s)
+    {
         $s = ucfirst(str_replace('_',' ',str_replace('_id','',$s)));
-    	$ns = '';
-    	for ($i=0; $i<strlen($s); $i++){
-    		if ( ($i>0) && (ucfirst($s[$i-1])!=$s[$i-1]) && (ucfirst($s[$i])==$s[$i]) )
-    			$ns .= ' ';
-    		if ($s[$i]=='_')
-    			$ns .= ' ';
-    		else
-    			$ns .= $s[$i];
-    	}
-    	return $ns;
+        $ns = '';
+        for ($i = 0; $i < strlen($s); ++$i) {
+            if ( ($i>0) && (ucfirst($s[$i-1])!=$s[$i-1]) && (ucfirst($s[$i])==$s[$i]) )
+                $ns .= ' ';
+
+            if ($s[$i] == '_')
+                $ns .= ' ';
+            else
+                $ns .= $s[$i];
+        }
+        return $ns;
     }
 
     static function randomString($len=35)
@@ -103,7 +107,7 @@ class IPF_Utils {
         $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $lchars = strlen($chars);
         $i = 0;
-        while ($i<$len) {
+        while ($i < $len) {
             $string .= substr($chars, mt_rand(0, $lchars-1), 1);
             $i++;
         }
@@ -112,7 +116,7 @@ class IPF_Utils {
 
     static function dateCompare($date1, $date2=null)
     {
-        if (strlen($date1) == 10){
+        if (strlen($date1) == 10) {
             $date1 .= ' 23:59:59';
         }
         if (is_null($date2)) {
@@ -127,9 +131,10 @@ class IPF_Utils {
         return $date2 - $date1;
     }
 
-    static function appLabelByModel($model){
-        foreach (IPF_Project::getInstance()->appList() as $app){
-            foreach($app->modelList() as $m){
+    static function appLabelByModel($model)
+    {
+        foreach (IPF_Project::getInstance()->appList() as $app) {
+            foreach($app->modelList() as $m) {
                 if ($model==$m)
                     return strtolower($app->getLabel());
             }
@@ -137,20 +142,22 @@ class IPF_Utils {
         return '';
     }
 
-    public static function makeDirectories($path, $mode = 0777){
-        if ( ! $path) {
+    public static function makeDirectories($path, $mode=0777)
+    {
+        if (!$path)
             return false;
-        }
-        if (is_dir($path) || is_file($path)) {
+
+        if (is_dir($path) || is_file($path))
             return true;
-        }
+
         return mkdir(trim($path), $mode, true);
     }
 
-    public static function removeDirectories($folderPath){
-        if (is_dir($folderPath)){
-            foreach (scandir($folderPath) as $value){
-                if ($value != '.' && $value != '..'){
+    public static function removeDirectories($folderPath)
+    {
+        if (is_dir($folderPath)) {
+            foreach (scandir($folderPath) as $value) {
+                if ($value != '.' && $value != '..') {
                     $value = $folderPath . "/" . $value;
                     if (is_dir($value)) {
                         self::removeDirectories($value);
@@ -165,7 +172,8 @@ class IPF_Utils {
         }
     }
 
-    public static function copyDirectory($source, $dest){
+    public static function copyDirectory($source, $dest)
+    {
         // Simple copy for a file
         if (is_file($source)) {
             return copy($source, $dest);
@@ -176,7 +184,7 @@ class IPF_Utils {
         }
         // Loop through the folder
         $dir = dir($source);
-        while (false !== $entry = $dir->read()){
+        while (false !== $entry = $dir->read()) {
             // Skip pointers
             if ($entry == '.' || $entry == '..') {
                 continue;
@@ -229,12 +237,14 @@ class IPF_Utils {
         return $s;
     }
 
-    public static function timestamp(){
-		list($f,$i) = explode(' ',microtime());
-		return $i.substr((string)$f,2,6);
+    public static function timestamp()
+    {
+        list($f,$i) = explode(' ',microtime());
+        return $i.substr((string)$f,2,6);
     }
 
-    static function TrimP($html){
+    static function TrimP($html)
+    {
         $strL = "<p>";  $lenL = 3;
         $strR = "</p>"; $lenR = 4;
         if (0 == strcasecmp(substr($html, 0, $lenL), $strL)
@@ -244,17 +254,16 @@ class IPF_Utils {
         return $html;
     }
 
-    static function moneyFormat($val){
+    static function moneyFormat($val)
+    {
         return number_format((float)$val,2);
     }
     
-    static function toSlug($slug){
-        if ($slug){ 
+    static function toSlug($slug)
+    {
+        if ($slug)
             return strtolower(preg_replace('/[^A-Z^a-z^0-9^\/\_]+/', '-', $slug));
-        }
         return $slug;
     }
-    
-
 }
 

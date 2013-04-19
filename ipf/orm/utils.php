@@ -57,6 +57,7 @@ class IPF_ORM_Utils {
             'file',
             'image',
             'html',
+            'uploadTo',
         );
     }
 

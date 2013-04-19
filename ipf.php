@@ -1,28 +1,22 @@
 <?php
 
-// Lazy ClassLoader
-function __autoload( $class_name ){
-    $s = '';
-    $a =  explode( '_', $class_name );
-    foreach( $a as &$folder ){
-        if ( $s!='' )
-            $s .= '/';
-        $s .= strtolower( $folder );
-    }
-    require_once($s.'.php');
+function __autoload($class_name)
+{
+    require_once strtolower(str_replace('_', '/', $class_name)) . '.php';
 }
 
-final class IPF{
-
+final class IPF
+{
     private static $settings = array();
 
-    private static function applySettings($settings){
-        foreach($settings as $key=>$val){
+    private static function applySettings($settings)
+    {
+        foreach($settings as $key=>$val)
             IPF::$settings[strtolower($key)] = $val;
-        }
     }
 
-    private static function loadSettings(){
+    private static function loadSettings()
+    {
         $settings_file = IPF::$settings['project_path'].DIRECTORY_SEPARATOR.'settings.php';
         IPF::$settings['settings_file'] = $settings_file;
 
@@ -110,28 +104,28 @@ final class IPF{
     {
         IPF::$settings['ipf_path']=$ipf_path;
         IPF::$settings['project_path']=$project_path;
-        try{
+        try {
             IPF::loadSettings();
-			date_default_timezone_set(IPF::$settings['time_zone']);            
-        }catch(IPF_Exception_Settings $e){
+            date_default_timezone_set(IPF::$settings['time_zone']);            
+        } catch(IPF_Exception_Settings $e) {
             die('Setting Error: '.$e->getMessage()."\n");
         }
     }
 
-	private function __construct(){}
-	private function __clone(){}
+    private function __construct() {}
+    private function __clone() {}
 
-	public static function get($name,$default=null){
-	    if (isset(IPF::$settings[$name]))
-	        return IPF::$settings[$name];
-	    return $default;
-	}
+    public static function get($name, $default=null)
+    {
+        if (isset(IPF::$settings[$name]))
+            return IPF::$settings[$name];
+        return $default;
+    }
 
     public static function loadFunction($function)
     {
-        if (function_exists($function)) {
+        if (function_exists($function))
             return;
-        }
         $elts = explode('_', $function);
         array_pop($elts);
         $file = strtolower(implode(DIRECTORY_SEPARATOR, $elts)).'.php';
@@ -147,20 +141,14 @@ final class IPF{
         return new $model();
     }
 
-    public static function getUploadPath($params=array()){
-        $upload_path = IPF::get('upload_path', '/tmp');
-        if (isset($params['upload_path'])) {
-            $upload_path = $params['upload_path'];
-        }
-        return $upload_path;
+    public static function getUploadPath()
+    {
+        return IPF::get('upload_path', '/tmp');
     }
 
-    public static function getUploadUrl($params=array()){
-        $upload_url = IPF::get('upload_url', '/media/upload');
-        if (isset($params['upload_url'])) {
-            $upload_url = $params['upload_url'];
-        }
-        return $upload_url;
+    public static function getUploadUrl()
+    {
+        return IPF::get('upload_url', '/media/upload');
     }
 }
 
@@ -169,5 +157,4 @@ function __($str)
     $t = trim($str);
     return $t;
 }
-
 

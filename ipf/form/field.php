@@ -42,7 +42,7 @@ class IPF_Form_Field
         $this->widget = $widget;
     }
 
-    function clean($value)
+    public function clean($value)
     {
         if ($this->required and in_array($value, $this->empty_values)) {
             throw new IPF_Exception_Form(__('This field is required.'));

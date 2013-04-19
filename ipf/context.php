@@ -22,7 +22,7 @@ function IPF_Context_Version($request)
 
 function IPF_Context_Upload($request)
 {
-    return array('UPLOAD_URL' => IPF::get('upload_url'));
+    return array('UPLOAD_URL' => IPF::getUploadUrl());
 }
 
 function IPF_Context_Current($request)

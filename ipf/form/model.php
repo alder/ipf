@@ -19,59 +19,60 @@ class IPF_Form_Model extends IPF_Form
         $db_columns = $this->model->getTable()->getColumns();
         $db_relations = $this->model->getTable()->getRelations();
 
-        if ($user_fields===null){
-
+        if ($user_fields === null) {
             if (isset($extra['exclude']))
                 $exclude = $extra['exclude'];
             else
                 $exclude = array();
 
-            foreach($db_columns as $name=>$col){
+            foreach($db_columns as $name=>$col) {
                 if (array_search($name,$exclude)!==false)
                     continue;
                 $this->addDBField($name,$col);
             }
-            foreach($db_relations as $name => $relation){
+            foreach($db_relations as $name => $relation) {
                 if (array_search($name,$exclude)!==false)
                     continue;
                 $this->addDBRelation($name,$relation,$col);
-		    }
-        }
-        else{
-            foreach($user_fields as $uname){
+            }
+        } else {
+            foreach($user_fields as $uname) {
                 $add_method = 'add__'.$uname.'__field';
-                if (method_exists($this,$add_method)){
+                if (method_exists($this,$add_method)) {
                     $this->$add_method();
                     continue;
                 }
-                if (array_key_exists($uname,$db_columns))
+                if (array_key_exists($uname,$db_columns)) {
                     $this->addDBField($uname,$db_columns[$uname]);
-                elseif (array_key_exists($uname,$db_relations)){
-                	$lfn = $db_relations[$uname]->getLocalFieldName();
-                	if (isset($db_columns[$lfn]))
-                		$col = $db_columns[$lfn];
-                	else
-                		$col = array();
+                } elseif (array_key_exists($uname,$db_relations)) {
+                    $lfn = $db_relations[$uname]->getLocalFieldName();
+                    if (isset($db_columns[$lfn]))
+                        $col = $db_columns[$lfn];
+                    else
+                        $col = array();
                     $this->addDBRelation($uname,$db_relations[$uname],$col);
                 }
             }
         }
     }
 
-    function addDBField($name,$col){
+    function addDBField($name, $col)
+    {
         if ($name==$this->model->getTable()->getIdentifier())
             return;
 
         $defaults = array('blank' => true, 'verbose' => $name, 'help_text' => '', 'editable' => true);
         $type = $col['type'];
 
-        if (isset($col['notblank']))
+        if (isset($col['notblank'])) {
             if ($col['notblank'])
                 $defaults['blank'] = false;
             else
                 $defaults['blank'] = true;
+        }
         if (isset($col['length']))
             $defaults['max_length'] = (int)($col['length']);
+
         if (isset($col['email']))
             $type = 'email';
 
@@ -86,21 +87,21 @@ class IPF_Form_Model extends IPF_Form
 
         $cn = 'IPF_Form_DB_'.$type;
 
-        $db_field = new $cn('', $name);
+        $db_field = new $cn('', $name, $col);
 
-        if (null !== ($form_field=$db_field->formField($defaults))) {
+        $form_field = $db_field->formField($defaults);
+        if ($form_field !== null)
             $this->fields[$name] = $form_field;
-        }
     }
 
-    function addDBRelation($name,$relation,$col){
+    function addDBRelation($name, $relation, $col)
+    {
+        if (isset($col['notblank']))
+            $blank = false;
+        else
+            $blank = true;
 
-    	if (isset($col['notblank']))
-    		$blank = false;
-    	else
-    		$blank = true;
-
-        if ($relation->getType()==IPF_ORM_Relation::ONE_AGGREGATE){
+        if ($relation->getType()==IPF_ORM_Relation::ONE_AGGREGATE) {
             $name .= "_id";
             $db_field = new IPF_Form_DB_Foreignkey('',$name);
             $defaults = array('blank' => $blank, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
@@ -108,7 +109,7 @@ class IPF_Form_Model extends IPF_Form
             $this->fields[$name] = $form_field;
             return;
         }
-        if ($relation->getType()==IPF_ORM_Relation::MANY_AGGREGATE){
+        if ($relation->getType()==IPF_ORM_Relation::MANY_AGGREGATE) {
             $db_field = new IPF_Form_DB_ManyToMany('',$name);
             $defaults = array('blank' => $blank, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
             $form_field = $db_field->formField($defaults);
@@ -117,7 +118,10 @@ class IPF_Form_Model extends IPF_Form
         }
     }
 
-    function fields(){ return $this->user_fields; }
+    function fields()
+    {
+        return $this->user_fields;
+    }
 
     function save($commit=true)
     {
@@ -147,3 +151,4 @@ class IPF_Form_Model extends IPF_Form
         //throw new IPF_Exception_Form(__('Cannot save the model from an invalid form.'));
     }
 }
+
