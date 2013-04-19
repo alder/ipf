@@ -10,8 +10,7 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
 
     public function setUp()
     {
-    }	
-
+    }
 
     public function getTable()
     {
@@ -139,13 +138,13 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
 
     public function bindQueryParts(array $queryParts)
     {
-    	$this->_table->bindQueryParts($queryParts);
+        $this->_table->bindQueryParts($queryParts);
         return $this;
     }
 
     public function loadGenerator(IPF_ORM_Record_Generator $generator)
     {
-    	$generator->initialize($this->_table);
+        $generator->initialize($this->_table);
         $this->_table->addGenerator($generator, get_class($generator));
     }
 
@@ -190,3 +189,4 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         return $this;
     }
 }
+
