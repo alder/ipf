@@ -1,6 +1,7 @@
 <?php
 
-class IPF_ORM_Template_Sluggable extends IPF_ORM_Template{
+class IPF_ORM_Template_Sluggable extends IPF_ORM_Template
+{
     protected $_options = array('name'          =>  'slug',
                                 'type'          =>  'string',
                                 'length'        =>  255,
@@ -32,3 +33,4 @@ class IPF_ORM_Template_Sluggable extends IPF_ORM_Template{
         $this->addListener(new IPF_ORM_Template_Listener_Sluggable($this->_options));
     }
 }
+
