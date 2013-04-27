@@ -142,6 +142,15 @@ class IPF_Utils
         return '';
     }
 
+    public static function insertDirectory($path, $directory)
+    {
+        $parts = pathinfo($path);
+        if ($parts['dirname'] && $parts['dirname'] !== '.')
+            return $parts['dirname'] . DIRECTORY_SEPARATOR . $directory . DIRECTORY_SEPARATOR . $parts['basename'];
+        else
+            return $directory . DIRECTORY_SEPARATOR . $parts['basename'];
+    }
+
     public static function makeDirectories($path, $mode=0777)
     {
         if (!$path)
