@@ -175,8 +175,8 @@ class IPF_Utils
                     }
                 }
             }
-            return rmdir($folderPath);
-        } else {
+            rmdir($folderPath);
+        } else if (is_file($folderPath)) {
             unlink($folderPath);
         }
     }
