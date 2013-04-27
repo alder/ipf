@@ -11,6 +11,9 @@
       "name": "Andrey Kutejko",
       "email": "andy128k@gmail.com"
     }
-  ]
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "3.7.*"
+  }
 }
 
