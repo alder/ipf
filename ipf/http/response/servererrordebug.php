@@ -9,6 +9,81 @@ class IPF_HTTP_Response_ServerErrorDebug extends IPF_HTTP_Response
     }
 }
 
+function debug_print_r($v, $indent=0)
+{
+    $result = array();
+
+    if ($v instanceof IPF_HTTP_Request) {
+        return 'IPF_HTTP_Request';
+    } elseif ($v instanceof IPF_ORM_Query_Abstract) {
+        $result = array(
+            get_class($v),
+            '{',
+            '    sql: ' . $v->getQuery(),
+            '}');
+    } elseif ($v instanceof IPF_ORM_Record_Abstract) {
+        $result[] = get_class($v);
+        $result[] = '{';
+        foreach ($v->getTable()->getColumnNames() as $column) {
+            $result[] = '    ' . $column . ': ' . debug_print_r($v->get($column), $indent+2);
+        }
+        $result[] = '}';
+    } elseif ($v instanceof IPF_ORM_Collection) {
+        $result[] = get_class($v);
+        $result[] = '{';
+        foreach ($v as $key => $value) {
+            $result[] = '    ' . $key . ': ' . debug_print_r($value, $indent+2);
+        }
+        $result[] = '}';
+    } elseif ($v instanceof IPF_Template_Context) {
+        $result[] = get_class($v);
+        $result[] = '{';
+        foreach ($v->_vars as $var => $value) {
+            $result[] = '    ' . $var . ': ' . debug_print_r($value, $indent+2);
+        }
+        $result[] = '}';
+    } elseif ($v instanceof IPF_Template_ContextVars) {
+        $result[] = get_class($v);
+        $result[] = '{';
+        foreach ($v as $var => $value) {
+            $result[] = '    ' . $var . ': ' . debug_print_r($value, $indent+2);
+        }
+        $result[] = '}';
+    } elseif ($v instanceof IPF_ORM_Pager_Layout) {
+        $pager = $v->getPager();
+        $result = array(
+            'IPF_ORM_Pager_Layout',
+            '{',
+            '    page:  ' . $pager->getPage(),
+            '    size:  ' . $pager->getMaxPerPage(),
+            '    query: ' . debug_print_r($pager->getQuery(), $indent+2),
+            '}');
+    } elseif ($v instanceof stdClass) {
+        $result[] = 'stdClass';
+        $result[] = '{';
+        foreach ($v as $k => $v) {
+            $result[] = '    ' . $k . ' => ' . debug_print_r($v, $indent+2);
+        }
+        $result[] = '}';
+    } elseif (is_array($v)) {
+        $result[] = 'Array';
+        $result[] = '{';
+        foreach ($v as $k => $v) {
+            $result[] = '    ' . $k . ' => ' . debug_print_r($v, $indent+2);
+        }
+        $result[] = '}';
+    } elseif (is_bool($v)) {
+        return $v ? 'true' : 'false';
+    } else {
+        $result = explode("\n", print_r($v, true));
+    }
+
+    $i = str_repeat('    ', $indent);
+    foreach ($result as &$line)
+        $line = $i . $line;
+    return ltrim(implode("\n", $result));
+}
+
 function IPF_HTTP_Response_ServerErrorDebug_Pretty($e) 
 {
     $o = create_function('$in','return htmlspecialchars($in);');
@@ -196,19 +271,12 @@ function IPF_HTTP_Response_ServerErrorDebug_Pretty($e)
             <tbody>';
             foreach ($frame['args'] as $k => $v) {
                 $name = isset($params[$k]) ? '$'.$params[$k]->name : '?';
-                switch (gettype($v)){
-                    case "object":
-                        $value = 'Instance of '.get_class($v);
-                        break;
-                    default:
-                        $value = print_r($v, true);
-                }
                 $out .= '
                 <tr>
                   <td>'.$o($k).'</td>
                   <td>'.$o($name).'</td>
                   <td class="code">
-                    <div>'.highlight_string($value, true).'</div>
+                    <div>'.highlight_string(debug_print_r($v), true).'</div>
                   </td>
                 </tr>';
             }
