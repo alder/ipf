@@ -98,7 +98,7 @@ class IPF_Form implements Iterator
     public function clean()
     {
         foreach ($this->fields as $name=>$field) {
-        	$field->LateClean($this->data, $this->cleaned_data);
+            $field->LateClean($this->data, $this->cleaned_data);
         }
         return $this->cleaned_data;
     }
