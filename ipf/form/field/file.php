@@ -30,8 +30,9 @@ class IPF_Form_Field_File extends IPF_Form_Field
 
     protected function renameFile($old_name, $new_name)
     {
-        @rename(getAbsolutePath($old_name), getAbsolutePath($new_name));
-        return getRelativePath($new_name);
+        $upload_root = IPF::getUploadPath() . DIRECTORY_SEPARATOR;
+        @rename($upload_root . $old_name, $upload_root . $new_name);
+        return $new_name;
     }
 
     public function clean($value)
