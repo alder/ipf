@@ -15,7 +15,7 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
             return '';
     }
 
-    protected function currentValue($filename)
+    protected function currentValue($name, $filename)
     {
         if (!$filename)
             return '';
@@ -35,7 +35,7 @@ class IPF_Form_Widget_FileInput extends IPF_Form_Widget_Input
     public function render($name, $value, $extra_attrs=array())
     {
         if (isset($value['data']) && is_string($value['data']) && $value['data'])
-            $sim = $this->currentValue($value['data']);
+            $sim = $this->currentValue($name, $value['data']);
         else
             $sim = '';
 
