@@ -5,17 +5,6 @@
 {block breadcrumbs}<div class="breadcrumbs"><a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; <a href="{url 'IPF_Admin_Views_ListItems', array($lapp, $lmodel)}">{$classname}</a> &raquo; {$page_title}</div>{/block}
 
 {block content}
-
-<script type="text/javascript">
-{literal}
-$(document).ready(function(){
-    $("#id_ipf_referrer").val(document.referrer);
-    var del_href = $("#id_a_delete").attr("href");
-    $("#id_a_delete").attr("href", del_href+'?ipf_referrer='+document.referrer);
-});
-{/literal}
-</script>
-
 <div id="content" class="colM">
     <h1>{$page_title}</h1>
     <div id="content-main">
@@ -37,7 +26,10 @@ $(document).ready(function(){
                 <div class="tabular inline-related">
                     <fieldset class="module">
                     <h2>{$inline->getLegend()}</h2>
-                    <table>
+                    <table{if $inline->_orderable()}
+                        class="orderable-inlne"
+                        data-url="{url 'IPF_Admin_Views_ListItems', array($inline->getApplication()->getSlug(), strtolower($inline->getModelName()))}"
+                    {/if}>
                         {foreach $inline.formset as $formset}
                         {if $formset.isFirst}
                         <thead>
@@ -49,7 +41,7 @@ $(document).ready(function(){
                         </thead>
                         <tbody>
                         {/if}
-                        <tr>
+                        <tr{if !$formset.isAdd} data-id="{$formset.model.pk()}"{else} class="nodrag nodrop"{/if}>
                             {foreach $formset.fields as $fieldname=>$field}
                             <td{if $field.widget.is_hidden} style="display:none;"{/if}>{$formset.field($fieldname).fieldErrors()}{$formset.field($fieldname)|safe}</td>
                             {/foreach}
@@ -73,6 +65,32 @@ $(document).ready(function(){
     </div>
     <br class="clear" />
 </div>
+{/block}
 
+{block scripts}
+<script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.tablednd.js"></script>
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
+    $("#id_ipf_referrer").val(document.referrer);
+    var del_href = $("#id_a_delete").attr("href");
+    $("#id_a_delete").attr("href", del_href+'?ipf_referrer='+document.referrer);
+
+    $('.orderable-inlne').each(function(){
+        var $table = $(this);
+        $table.tableDnD({
+            onDragClass: "ItemsDragClass",
+            onDrop: function(table, row) {
+                var ids = [];
+                $table.find('tr[data-id]').each(function(){
+                    ids.push($(this).data('id'));
+                });
+                $.post($table.data('url') + 'reorder/', { 'ids[]': ids }, function(data){});
+            }
+        });
+    });
+});
+{/literal}
+</script>
 {/block}
 

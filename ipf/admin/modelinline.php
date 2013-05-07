@@ -19,6 +19,11 @@ abstract class IPF_Admin_ModelInline{
 
     abstract function getModelName();
 
+    public function getApplication()
+    {
+        return IPF_Utils::appByModel($this->getModelName());
+    }
+
     function getAddNum(){ return 4; }
 
     function getLegend(){
@@ -60,14 +65,28 @@ abstract class IPF_Admin_ModelInline{
 
         $this->formset = array();
 
+        $o = $this->_orderableColumn();
+
+        $form_extra = array(
+            'exclude' => array(
+                $this->getFkName(),
+                $this->getFkLocal(),
+            ),
+        );
+        if ($o)
+            $form_extra['exclude'][] = $o;
+
         $first = true;
 
         if ($this->parentModel->exists()){
-            $objects = IPF_ORM_Query::create()
+            $query = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
-                ->orderby($this->orderby)
-                ->where($this->getFkLocal().'='.$this->parentModel->id)
-                ->execute();
+                ->where($this->getFkLocal().'='.$this->parentModel->id);
+
+            if ($o)
+                $objects = $query->orderby($o)->execute();
+            else
+                $objects = $query->orderby($this->orderby)->execute();
 
             foreach ($objects as $obj){
                 $prefix = 'edit_'.get_class($this->model).'_'.$obj->id.'_';
@@ -85,9 +104,7 @@ abstract class IPF_Admin_ModelInline{
                     }
                 }
 
-                $form = $this->_getForm($obj, $d,
-                    array('exclude'=>array($this->getFkName(),$this->getFkLocal()))
-                );
+                $form = $this->_getForm($obj, $d, $form_extra);
 
 
                 $form->prefix = $prefix;
@@ -108,7 +125,7 @@ abstract class IPF_Admin_ModelInline{
 
         $n_addnum = $this->getAddNum();
         for($i=0; $i<$n_addnum; $i++ ){
-            $form = $this->_getForm($this->model->copy(), null, array('exclude'=>array($this->getFkName(),$this->getFkLocal())));
+            $form = $this->_getForm($this->model->copy(), null, $form_extra);
             $form->fields = array_merge(array(new IPF_Form_Field_Boolean(array('label'=>'Del','name'=>'delete_', 'widget_attrs'=>array('disabled'=>'disabled')))),$form->fields);
             $form->prefix = 'add_'.get_class($this->model).'_'.$i.'_';
             $form->data = $data;
@@ -171,4 +188,18 @@ abstract class IPF_Admin_ModelInline{
             }
         }
     }
+
+    public function _orderable()
+    {
+        return $this->_orderableColumn() !== null;
+    }
+
+    public function _orderableColumn()
+    {
+        if ($this->model->getTable()->hasTemplate('IPF_ORM_Template_Orderable'))
+            return $this->model->getTable()->getTemplate('IPF_ORM_Template_Orderable')->getColumnName();
+        else
+            return null;
+    }
 }
+

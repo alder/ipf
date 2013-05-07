@@ -131,15 +131,22 @@ class IPF_Utils
         return $date2 - $date1;
     }
 
+    static function appByModel($model)
+    {
+        foreach (IPF_Project::getInstance()->appList() as $app)
+            foreach ($app->modelList() as $m)
+                if ($model == $m)
+                    return $app;
+        return null;
+    }
+
     static function appLabelByModel($model)
     {
-        foreach (IPF_Project::getInstance()->appList() as $app) {
-            foreach($app->modelList() as $m) {
-                if ($model==$m)
-                    return strtolower($app->getLabel());
-            }
-        }
-        return '';
+        $app = self::appByModel($model);
+        if ($app)
+            return strtolower($app->getLabel());
+        else
+            return '';
     }
 
     public static function insertDirectory($path, $directory)

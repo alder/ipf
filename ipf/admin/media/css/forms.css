@@ -69,3 +69,6 @@ fieldset.monospace textarea { font-family:"Bitstream Vera Sans Mono",Monaco,"Cou
 .flatpages-flatpage #id_content { height:40.2em; }
 .module table .vPositiveSmallIntegerField { width:2.2em; }
 
+/* INLINE REORDER */
+.ItemsDragClass{background-color:#E3F3FE;}
+

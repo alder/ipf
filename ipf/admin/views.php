@@ -169,7 +169,7 @@ function IPF_Admin_Views_Reorder($request, $match)
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
-    if ($request->method != 'POST' || !isset($request->POST['ids']) || !isset($request->POST['prev_ids']) || !isset($request->POST['drop_id']))
+    if ($request->method != 'POST' || !isset($request->POST['ids']) || !is_array($request->POST['ids']))
         return new IPF_HTTP_Response_NotFound();
 
     $lapp = $match[1];
@@ -188,13 +188,30 @@ function IPF_Admin_Views_Reorder($request, $match)
         if ($ma !==null && $ma->_orderable()) {
             $ord_field = $ma->_orderableColumn();
 
-            $ids      = explode(',',(string)$request->POST['ids']);
-            $prev_ids = explode(',',(string)$request->POST['prev_ids']);
-            $drop_id  = $request->POST['drop_id'];
+            $ids = $request->POST['ids'];
 
-            $o = new $m();
-            $o->_reorder($ids, $ord_field, $drop_id, $prev_ids);
-            
+            $table = IPF_ORM::getTable($m);
+            $conn = $table->getConnection();
+
+            $idColumn = $table->getIdentifier();
+            if (is_array($idColumn))
+                $idColumn = $idColumn[0];
+
+            $questions = str_repeat('?,', count($ids)-1) . '?';
+            $query = 'SELECT ' . $conn->quoteIdentifier($ord_field) .
+                ' FROM ' . $conn->quoteIdentifier($table->getTableName()) .
+                ' WHERE ' . $conn->quoteIdentifier($idColumn) . ' IN (' . $questions . ')' .
+                ' ORDER BY ' . $conn->quoteIdentifier($ord_field);
+            $ords = $conn->fetchColumn($query, $ids);
+
+            $i = 0;
+            foreach ($ids as $id) {
+                $item = $table->find($id);
+                $item[$ord_field] = $ords[$i];
+                $item->save();
+                $i++;
+            }
+
             return new IPF_HTTP_Response_Json("Ok");
          }
     }

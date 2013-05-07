@@ -6,29 +6,6 @@
 {block breadcrumbs}<div class="breadcrumbs"><a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; {$classname}</div>{/block}
 
 {block content}
-
-{if $orderable}
-<script language="javascript" type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.tablednd.js"></script>
-<script type="text/javascript">
-var reorder_url = "reorder/";
-var prev_ids;
-{literal}
-$(document).ready(function()
-{
-    $('#items-grid').tableDnD({
-        onDragClass: "ItemsDragClass",
-        onDragStart: function(table, row) {
-            prev_ids = $.tableDnD.serialize();
-        },
-        onDrop: function(table, row) {
-            $.post(reorder_url, {'ids': $.tableDnD.serialize(), 'prev_ids': prev_ids, 'drop_id':row.id}, function(data){});
-        }
-    });
-});
-{/literal}
-</script>
-{/if}
-
 <div id="content" class="flex">
     <h1>{$page_title}</h1>
     <div id="content-main">
@@ -92,10 +69,27 @@ $(document).ready(function()
     </div>
     <br class="clear" />
 </div>
+{/block}
 
-
-
-
-
+{block scripts}
+{if $orderable}
+<script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.tablednd.js"></script>
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
+    $('#items-grid').tableDnD({
+        onDragClass: "ItemsDragClass",
+        onDrop: function(table, row) {
+            var ids = [];
+            $('#items-grid .trsort').each(function(){
+                ids.push(this.id);
+            });
+            $.post('reorder/', { 'ids[]': ids }, function(data){});
+        }
+    });
+});
+{/literal}
+</script>
+{/if}
 {/block}
 
