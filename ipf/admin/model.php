@@ -278,21 +278,23 @@ class DateHierarchyListFilter extends BaseListFilter {
     }
 }
 
-class IPF_Admin_Model{
+class IPF_Admin_Model
+{
     static $models = array();
 
-    public static function register($classModel, $classAdmin){
+    public static function register($classModel, $classAdmin)
+    {
         IPF_Admin_Model::$models[$classModel] = new $classAdmin($classModel);
     }
 
-    public static function isModelRegister($classModel){
-        if (array_key_exists($classModel, IPF_Admin_Model::$models))
-            return true;
-        return false;
+    public static function isModelRegister($classModel)
+    {
+        return array_key_exists($classModel, IPF_Admin_Model::$models);
     }
 
-    public static function getModelAdmin($classModel){
-        if (array_key_exists($classModel, IPF_Admin_Model::$models)){
+    public static function getModelAdmin($classModel)
+    {
+        if (array_key_exists($classModel, IPF_Admin_Model::$models)) {
             $ma = IPF_Admin_Model::$models[$classModel];
             $ma->setUp();
             return $ma;
@@ -305,11 +307,13 @@ class IPF_Admin_Model{
     var $inlineInstances = array();
     var $perPage = 50;
 
-    public function __construct($modelName){
+    public function __construct($modelName)
+    {
         $this->modelName = $modelName;
     }
 
-    public function verbose_name(){
+    public function verbose_name()
+    {
         return IPF_Utils::humanTitle($this->modelName);
     }
 
@@ -318,70 +322,83 @@ class IPF_Admin_Model{
     public function titleEdit() { return 'Edit ' . $this->verbose_name(); }
     public function titleDelete() { return 'Delete ' . $this->verbose_name(); }
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->model = new $this->modelName;
     }
 
-    public function getPerms($request){
+    public function getPerms($request)
+    {
         return array('view', 'add', 'change', 'delete');
     }
 
-    protected function setInlines($model, $data=null){
+    protected function setInlines($model, $data=null)
+    {
         $il = $this->inlines();
-        if (is_array($il)){
-            foreach($il as $inlineName=>$inlineClassName){
+        if (is_array($il)) {
+            foreach($il as $inlineName=>$inlineClassName) {
                 $this->inlineInstances[] = new $inlineClassName($model,$data);
             }
         }
     }
 
-    protected function saveInlines($obj){
-        foreach($this->inlineInstances as $inlineInstance){
+    protected function saveInlines($obj)
+    {
+        foreach($this->inlineInstances as $inlineInstance) {
             $inlineInstance->save($obj);
         }
     }
 
-    protected function _listFilters(){
+    protected function _listFilters()
+    {
         return array();
     }
 
-    protected function _setupEditForm($form){
+    protected function _setupEditForm($form)
+    {
         $this->_setupForm($form);
     }
 
-    protected function _setupAddForm($form){
+    protected function _setupAddForm($form)
+    {
         $this->_setupForm($form);
     }
 
-    protected function _setupForm($form){
-        
+    protected function _setupForm($form)
+    {
     }
 
-    public function fields(){return null;}
+    public function fields()
+    {
+        return null;
+    }
 
-    public function inlines(){return null;}
+    public function inlines()
+    {
+        return null;
+    }
 
-    public function isValidInlines(){
-        foreach($this->inlineInstances as &$il){
-            if ($il->isValid()===false){
+    public function isValidInlines()
+    {
+        foreach ($this->inlineInstances as &$il)
+            if ($il->isValid() === false)
                 return false;
-            }
-        }
         return true;
     }
 
-    public function ListItemsHeader(){
+    public function ListItemsHeader()
+    {
         $this->header = array();
         if (method_exists($this,'list_display'))
             $this->names = $this->list_display();
         else
             $this->names = $this->model->getTable()->getColumnNames();
 
-        foreach ($this->names as $name){
+        foreach ($this->names as $name) {
             $this->header[$name] = new IPF_Template_ContextVars(array(
-                'title'=>IPF_Utils::humanTitle($name),
-                'name'=>$name,
-                'sortable'=>null,
+                'title' => IPF_Utils::humanTitle($name),
+                'name' => $name,
+                'sortable' => null,
             ));
         }
         return $this->header;
@@ -399,14 +416,15 @@ class IPF_Admin_Model{
         $this->q = IPF_ORM_Query::create()->from($this->modelName)->orderby($ord);
     }
 
-    public function ListRow($o){
+    public function ListRow($o)
+    {
         $row = array();
 
-        foreach($this->header as &$h){
+        foreach ($this->header as &$h) {
             $listMethod = 'column_'.$h['name'];
-            if (method_exists($this,$listMethod))
+            if (method_exists($this,$listMethod)) {
                 $str = $this->$listMethod($o);
-            else{
+            } else {
                 $t = $o->getTable()->getTypeOf($h['name']);
                 $str = $o->$h['name'];
                 if ($t=='boolean'){
@@ -422,73 +440,86 @@ class IPF_Admin_Model{
         return $row;
     }
 
-    protected function linksRow(&$row, $o){
-        if (method_exists($this,'list_display_links')){
+    protected function linksRow(&$row, $o)
+    {
+        if (method_exists($this, 'list_display_links')) {
             $links_display = $this->list_display_links();
-        }else{
+        } else {
             $links_display = null;
             $i = 1;
         }
-        foreach($row as $name=>&$v){
-            if ($links_display){
-                if (array_search($name, $links_display)!==false)
+        foreach ($row as $name => &$v) {
+            if ($links_display) {
+                if (array_search($name, $links_display) !== false)
                     $v = '<a href="'.$this->UrlForResult($o).'">'.$v.'</a>';
-            }else{
-                if ($i==1)
+            } else {
+                if ($i == 1)
                     $v = '<a href="'.$this->UrlForResult($o).'">'.$v.'</a>';
                 $i++;
             }
         }
     }
 
-    protected function UrlForResult($o){
+    protected function UrlForResult($o)
+    {
         return  $o->__get($this->model->getTable()->getIdentifier()).'/';
     }
 
-    protected function _getForm($model_obj, $data, $extra){
+    protected function _getForm($model_obj, $data, $extra)
+    {
         return IPF_Shortcuts::GetFormForModel($model_obj,$data,$extra);
     }
 
-    protected function _getEditForm($model_obj, $data, $extra){
+    protected function _getEditForm($model_obj, $data, $extra)
+    {
         return $this->_getForm($model_obj, $data, $extra);
     }
 
-    protected function _getAddForm($model_obj, $data, $extra){
+    protected function _getAddForm($model_obj, $data, $extra)
+    {
         return $this->_getForm($model_obj, $data, $extra);
     }
 
-    protected function _getListTemplate(){
+    protected function _getListTemplate()
+    {
         return 'admin/items.html';
     }
 
-    protected function _getAddTemplate(){
+    protected function _getAddTemplate()
+    {
         return 'admin/change.html';
     }
 
-    protected function _getChangeTemplate(){
+    protected function _getChangeTemplate()
+    {
         return 'admin/change.html';
     }
 
-    protected function _beforeEdit($o){
+    protected function _beforeEdit($o)
+    {
         $this->_beforeChange($o);
     }
 
-    protected function _beforeAdd($o){
+    protected function _beforeAdd($o)
+    {
         $this->_beforeChange($o);
     }
 
     protected function _beforeChange($o){
     }
 
-    protected function _afterEdit($o){
+    protected function _afterEdit($o)
+    {
         $this->_afterChange($o);
     }
 
-    protected function _afterAdd($o){
+    protected function _afterAdd($o)
+    {
         $this->_afterChange($o);
     }
 
-    protected function _afterChange($o){
+    protected function _afterChange($o)
+    {
     }
 
     // Views Function
@@ -695,19 +726,22 @@ class IPF_Admin_Model{
         return IPF_Shortcuts::RenderToResponse($this->_getListTemplate(), $context, $request);
     }
 
-    protected function _ListFilterQuery($request){
+    protected function _ListFilterQuery($request)
+    {
         foreach($this->filters as $f){
             $f->FilterQuery($request,$this->q);
         }
     }
 
-    protected function _isSearch(){
+    protected function _isSearch()
+    {
         if (method_exists($this,'_searchFields'))
             return true;
         return false;
     }
 
-    protected function _ListSearchQuery($request){
+    protected function _ListSearchQuery($request)
+    {
         $this->search_value = null;
         if (!$this->_isSearch())
             return;
@@ -727,7 +761,8 @@ class IPF_Admin_Model{
         return false;
     }
 
-    protected function _GetFilters($request){
+    protected function _GetFilters($request)
+    {
         $this->filters = array();
         $rels = $this->model->getTable()->getRelations();
         foreach($this->_listFilters() as $f){

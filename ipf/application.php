@@ -77,3 +77,4 @@ abstract class IPF_Application{
         IPF_ORM::loadModels($this->path.'models');
     }
 }
+

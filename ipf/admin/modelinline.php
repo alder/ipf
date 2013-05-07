@@ -1,8 +1,7 @@
 <?php
 
-
-abstract class IPF_Admin_ModelInline{
-
+abstract class IPF_Admin_ModelInline
+{
     var $model = null;
     var $parentModel = null;
     var $formset = null;
@@ -41,8 +40,9 @@ abstract class IPF_Admin_ModelInline{
         return true;
     }
 
-    protected function _getForm($model_obj, $data, $extra){
-        return IPF_Shortcuts::GetFormForModel($model_obj,$data,$extra);
+    protected function _getForm($model_obj, $data, $extra)
+    {
+        return IPF_Shortcuts::GetFormForModel($model_obj, $data, $extra);
     }
 
     function getFkName(){
@@ -61,8 +61,8 @@ abstract class IPF_Admin_ModelInline{
         throw new IPF_Exception(__('Cannot get fkLocal for '.$this->getModelName()));
     }
 
-    function createFormSet($data){
-
+    function createFormSet($data)
+    {
         $this->formset = array();
 
         $o = $this->_orderableColumn();
@@ -148,8 +148,8 @@ abstract class IPF_Admin_ModelInline{
                 ->orderby('id')
                 ->where($this->getFkLocal().'='.$this->parentModel->id)
                 ->execute();
-            foreach ($objects as $obj){
-                foreach($this->formset as $form){
+            foreach ($objects as $obj) {
+                foreach ($this->formset as $form) {
                     if ($form->isAdd)
                         continue;
 

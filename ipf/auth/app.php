@@ -13,30 +13,33 @@ class IPF_Auth_App extends IPF_Application
         ));
     }
     
-    static function login($request, $user){
+    static function login($request, $user)
+    {
         $request->user = $user;
         $request->session->clear();
         $request->session->setData('login_time', gmdate('Y-m-d H:i:s'));
         $user->save();
     }
 
-    public function getTitle(){
+    public function getTitle()
+    {
         return 'User Accounts';
     }
 
-    static function logout($request){
+    static function logout($request)
+    {
         $request->user = new User();
         $request->session->clear();
         $request->session->setData('logout_time', gmdate('Y-m-d H:i:s'));
     }
-    
+
     static function createPermissionsFromModels(array $pathesToModels)
     {
         $baseAdmin  = new IPF_Admin_Model();
         $basePerms  = $baseAdmin->getPerms();
         $permsTable = IPF_ORM::getTable('Permission');
         $appList    = IPF_Project::getInstance()->appList();
-        
+
         $permissions = array();
 
         foreach ($pathesToModels as $path)
@@ -44,7 +47,7 @@ class IPF_Auth_App extends IPF_Application
             foreach (IPF_ORM::filterInvalidModels(IPF_ORM::loadModels($path)) as $modelName)
             {
                 $adminModel = IPF_Admin_Model::getModelAdmin($modelName);
-                
+
                 if ($adminModel)
                 {
                     $perms = method_exists($adminModel, 'getPerms') ? $adminModel->getPerms(null) : $basePerms;
@@ -60,22 +63,22 @@ class IPF_Auth_App extends IPF_Application
                 }
             }
         }
-        
+
         print "COLLECTED PERMS:\n----\n".implode("\n", $permissions)."\n----\n";
 
         if (count($permissions))
         {
             $existingPerms = array();
-                   
+
             foreach ($permsTable->findAll() as $model)
                 $existingPerms[] = $model->name;
-                
+
             print "EXISTING PERMS:\n----\n".implode("\n",$existingPerms)."\n----\n";
 
             if (count($existingPerms))
             {
                 $toDel = array_diff($existingPerms, $permissions);
-                
+
                 print "2DEL:\n----\n".implode("\n",$toDel)."\n----\n";
 
                 if (count($toDel))
@@ -102,9 +105,9 @@ class IPF_Auth_App extends IPF_Application
 
                 $toAdd = $permissions;
             }
-            
+
             print "2ADD:\n----\n".implode("\n",$toAdd)."\n----\n";
-            
+
             foreach ($toAdd as $name)
             {
                 $model = new Permission();
@@ -115,11 +118,11 @@ class IPF_Auth_App extends IPF_Application
         else
         {
             print "REMOVE ALL\n";
-        
+
             $permsTable->createQuery()->delete()->execute();   // no women, no cry...
         }
     }
-    
+
     static function ArePermissionsEnabled()
     {
         try {
@@ -128,27 +131,27 @@ class IPF_Auth_App extends IPF_Application
             return true;
         }
     }
-    
+
     static function checkPermissions($request, $app, $modelName, array $perms)
     {
         $count = count($perms);
-        
+
         if (!$count)
             return array();
-  
+
         $permissions = array_combine($perms, array_fill(0, $count, false));
-  
+
         if ($request->user->isAnonymous() || !($request->user->is_staff || $request->user->is_superuser))
             return $permissions;
-            
+
         if ($request->user->is_superuser || !self::ArePermissionsEnabled())
             return array_combine($perms, array_fill(0, $count, true));
-            
+
         $user_permissions = array();
-        
+
         foreach ($request->user->Permissions as $up)
             $user_permissions[] = $up->name;
-            
+
         foreach ($request->user->Roles as $role)
         {
             foreach ($role->Permissions as $rp)
@@ -157,12 +160,12 @@ class IPF_Auth_App extends IPF_Application
                     $user_permissions[] = $rp->name;
             }
         }
-        
+
         if (!count($user_permissions))
             return $permissions;
-            
+
         $prefix = get_class($app).'|'.$modelName.'|';
-            
+
         foreach ($permissions as $permName=>&$permValue)
         {
             $permissionValue = $prefix.$permName;

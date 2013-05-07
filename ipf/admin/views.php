@@ -176,9 +176,8 @@ function IPF_Admin_Views_Reorder($request, $match)
     $lmodel = $match[2];
     
     $am = IPF_Admin_App::GetAppModelFromSlugs($lapp, $lmodel);
-    
-    if ($am !== null)
-    {    
+
+    if ($am !== null) {
         $app = $am['app'];
         $m   = $am['modelname'];
 
