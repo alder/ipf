@@ -187,7 +187,7 @@ class IPF_ORM_Collection extends IPF_ORM_Access implements Countable, IteratorAg
             if ($key === null) {
                 $this->data[] = $record;
             } else {
-                $this->data[$key] = $record;      	
+                $this->data[$key] = $record;
             }
 
             if (isset($this->keyColumn)) {
