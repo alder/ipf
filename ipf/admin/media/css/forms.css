@@ -3,7 +3,9 @@
 
 /* FORM ROWS */
 .form-row { overflow:hidden; padding:8px 12px; font-size:11px; border-bottom:1px solid #eee; }
-.form-row img, .form-row input { vertical-align:middle; }
+.form-row img { vertical-align:middle; }
+.form-row input { vertical-align:middle; width: 300px; }
+.form-row textarea { width: 300px; height: 180px; }
 form .form-row p { padding-left:0; font-size:11px; }
 
 /* FORM GROUP TITLE */
