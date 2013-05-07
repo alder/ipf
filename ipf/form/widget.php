@@ -17,6 +17,11 @@ class IPF_Form_Widget
         throw new IPF_Exception('Not Implemented.');
     }
 
+    public function extra_js()
+    {
+        return array();
+    }
+
     protected function buildAttrs($attrs, $extra_attrs=array())
     {
         return array_merge($this->attrs, $attrs, $extra_attrs);
@@ -52,3 +57,4 @@ function IPF_Form_Widget_Attrs($attrs)
     }
     return ' '.implode(' ', $_tmp);
 }
+

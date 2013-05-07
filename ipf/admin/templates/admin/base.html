@@ -11,16 +11,6 @@
 </head>
 
 <body class="{block bodyclass}{/block}">
-{block commonjs}
-{if isset($form) && method_exists($form, 'render_commonjs')}
-{$form.render_commonjs()|safe}
-{else}
-<script language="javascript" type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery-ui.custom.js"></script>
-<script language="javascript" type="text/javascript" src="{$ADMIN_MEDIA_URL}js/admin.js"></script>
-{/if}
-{/block}
-
 <div id="container">
     <div id="header">
         <div id="branding">
@@ -32,6 +22,15 @@
     {block content}{/block}
     <div id="footer"></div>
 </div>
+{block commonjs}
+  {if isset($form) && method_exists($form, 'render_commonjs')}
+    {$form.render_commonjs()|safe}
+  {else}
+    <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.js"></script>
+    <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery-ui.custom.js"></script>
+    <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/admin.js"></script>
+  {/if}
+{/block}
 {block scripts}{/block}
 </body>
 </html>

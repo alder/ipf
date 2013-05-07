@@ -26,10 +26,7 @@
                 <div class="tabular inline-related">
                     <fieldset class="module">
                     <h2>{$inline->getLegend()}</h2>
-                    <table{if $inline->_orderable()}
-                        class="orderable-inlne"
-                        data-url="{url 'IPF_Admin_Views_ListItems', array($inline->getApplication()->getSlug(), strtolower($inline->getModelName()))}"
-                    {/if}>
+                    <table{if $inline->_orderable()} class="orderable-inlne" data-url="{url 'IPF_Admin_Views_ListItems', array($inline->getApplication()->getSlug(), strtolower($inline->getModelName()))}"{/if}>
                         {foreach $inline.formset as $formset}
                         {if $formset.isFirst}
                         <thead>

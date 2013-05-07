@@ -18,7 +18,6 @@ class IPF_Form implements Iterator
 
     protected $is_valid = null;
 
-
     function __construct($data=null, $extra=array(), $label_suffix=null)
     {
         if ($data !== null) {
@@ -44,16 +43,16 @@ class IPF_Form implements Iterator
         return $field_name;
     }
 
-    function hasFileField(){
-        foreach($this->fields as $field){
-            if (is_a($field,'IPF_Form_Field_File')){
+    function hasFileField()
+    {
+        foreach ($this->fields as $field)
+            if (is_a($field,'IPF_Form_Field_File'))
                 return true;
-            }
-        }
         return false;
     }
 
-    function isValid(){
+    function isValid()
+    {
         if ($this->is_valid !== null) {
             return $this->is_valid;
         }
@@ -160,18 +159,17 @@ class IPF_Form implements Iterator
             }
         }
         
-        if (!count($groups))
-        {
-            $groups = array(array('fields'=>$this->fields));
+        if (count($groups)) {
+            $render_group_title = $group_title ? true : false;
+        } else {
+            $groups = array(array('fields' => $this->fields));
             $render_group_title = false;
         }
-        else $render_group_title = $group_title ? true : false;
-        
-        foreach ($groups as $group)
-        {
+
+        foreach ($groups as $group) {
             if ($render_group_title && array_key_exists('label', $group))
                 $output[] = sprintf($group_title, $group['label']);
-            
+
             foreach ($group['fields'] as $name=>$field) {
                 $bf = new IPF_Form_BoundField($this, $field, $name);
                 $bf_errors = $bf->errors;
@@ -237,7 +235,14 @@ class IPF_Form implements Iterator
                 $output[] = $_tmp;
             }
         }
-        return new IPF_Template_SafeString($this->before_render.implode("\n", $output).$this->after_render, true);
+
+        $extra_js = array();
+        foreach ($groups as $group)
+            foreach ($group['fields'] as $name => $field)
+                $extra_js = array_merge($extra_js, $field->widget->extra_js());
+        $output[] = implode("\n", array_unique($extra_js));
+
+        return new IPF_Template_SafeString($this->before_render . implode("\n", $output) . $this->after_render, true);
     }
 
     public function render_p()
@@ -252,19 +257,23 @@ class IPF_Form implements Iterator
 
     public function render_table()
     {
-        return $this->htmlOutput('<tr><th>%2$s</th><td>%1$s%3$s%4$s</td></tr>',
-                                 '<tr><td colspan="2">%s</td></tr>',
-                                 '</td></tr>', '<br /><span class="helptext">%s</span>', false);
+        return $this->htmlOutput(
+            '<tr><th>%2$s</th><td>%1$s%3$s%4$s</td></tr>',
+            '<tr><td colspan="2">%s</td></tr>',
+            '</td></tr>',
+            '<br /><span class="helptext">%s</span>',
+            false);
     }
 
     public function render_admin()
     {
         return $this->htmlOutput(
-			'<div class="form-row"><div>%2$s %1$s%3$s%4$s</div></div>',
+            '<div class="form-row"><div>%2$s %1$s%3$s%4$s</div></div>',
             '<div>%s</div>',
-            '</div>', '<p class="help">%s</p>', true,
-            '<div class="form-group-title">%s</div>'
-        );
+            '</div>',
+            '<p class="help">%s</p>',
+            true,
+            '<div class="form-group-title">%s</div>');
     }
 
     function __get($prop)
@@ -280,33 +289,32 @@ class IPF_Form implements Iterator
         return new IPF_Form_BoundField($this, $this->fields[$key], $key);
     }
 
- 	public function current()
+    public function current()
     {
         $field = current($this->fields);
         $name = key($this->fields);
         return new IPF_Form_BoundField($this, $field, $name);
     }
 
- 	public function key()
+    public function key()
     {
         return key($this->fields);
     }
 
- 	public function next()
+    public function next()
     {
         next($this->fields);
     }
 
- 	public function rewind()
+    public function rewind()
     {
         reset($this->fields);
     }
 
- 	public function valid()
+    public function valid()
     {
         return (false !== current($this->fields));
     }
-
 }
 
 function IPF_Form_htmlspecialcharsArray(&$item, $key)
@@ -316,8 +324,8 @@ function IPF_Form_htmlspecialcharsArray(&$item, $key)
 
 function IPF_Form_renderErrorsAsHTML($errors)
 {
-	if (count($errors)==0)
-		return '';
+    if (count($errors)==0)
+        return '';
     $tmp = array();
     foreach ($errors as $err) {
         $tmp[] = '<li>'.$err.'</li>';
