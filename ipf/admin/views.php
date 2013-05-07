@@ -259,7 +259,8 @@ function IPF_Admin_Views_ChangePassword($request, $match)
                 'page_title'=>'Change Password: '.$user->username,
                 'classname'=>'User',
                 'object'=>$user,
-                'form'=>$form,
+                'form' => $form,
+                'form_html' => IPF_Admin_App::renderForm($form),
                 'lapp'=>$lapp,
                 'lmodel'=>$lmodel,
                 'admin_title' => IPF::get('admin_title'),
@@ -273,7 +274,8 @@ function IPF_Admin_Views_ChangePassword($request, $match)
     return new IPF_HTTP_Response_NotFound();
 }
 
-function IPF_Admin_Views_Login($request, $match){
+function IPF_Admin_Views_Login($request, $match)
+{
     $success_url = '';
     if (!empty($request->REQUEST['next']))
         $success_url = $request->REQUEST['next'];
@@ -282,7 +284,7 @@ function IPF_Admin_Views_Login($request, $match){
 
     if ($request->method == 'POST') {
         $form = new IPF_Auth_Forms_Login($request->POST);
-        if ($form->isValid()){
+        if ($form->isValid()) {
             $users = new User();
             if (false === ($user = $users->checkCreditentials($form->cleaned_data['username'], $form->cleaned_data['password']))) {
                 $form->message = __('The login or the password is not valid. The login and the password are case sensitive.');
@@ -291,19 +293,21 @@ function IPF_Admin_Views_Login($request, $match){
                 return new IPF_HTTP_Response_Redirect($success_url);
             }
         }
-    }
-    else
+    } else {
         $form = new IPF_Auth_Forms_Login(array('next'=>$success_url));
+    }
     $context = array(
-       'page_title' => IPF::get('admin_title'),
-       'form' => $form,
-       'admin_title' => IPF::get('admin_title'),
-       'indexpage_url'=>IPF::get('indexpage_url','/'),
+        'page_title' => IPF::get('admin_title'),
+        'form' => $form,
+        'form_html' => IPF_Admin_App::renderForm($form),
+        'admin_title' => IPF::get('admin_title'),
+        'indexpage_url'=>IPF::get('indexpage_url','/'),
     );
     return IPF_Shortcuts::RenderToResponse('admin/login.html', $context, $request);
 }
 
-function IPF_Admin_Views_Logout($request, $match){
+function IPF_Admin_Views_Logout($request, $match)
+{
     IPF_Auth_App::logout($request);
     $context = array(
        'page_title' => IPF::get('admin_title'),
@@ -313,14 +317,15 @@ function IPF_Admin_Views_Logout($request, $match){
     return IPF_Shortcuts::RenderToResponse('admin/logout.html', $context, $request);
 }
 
-function cmp($a, $b){
-    if ($a['name'] == $b['name']) {
+function cmp($a, $b)
+{
+    if ($a['name'] == $b['name'])
         return 0;
-    }
     return ($a['name'] < $b['name']) ? -1 : 1;
 }
 
-function dir_recursive($dir, $path=DIRECTORY_SEPARATOR, $level=''){
+function dir_recursive($dir, $path=DIRECTORY_SEPARATOR, $level='')
+{
     $dirtree = array();
     if ($level=='')
         $dirtree[] = array('path'=>'', 'name'=>'Root Folder');

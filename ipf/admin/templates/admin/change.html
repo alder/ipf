@@ -17,7 +17,7 @@
             {/if}
             <fieldset class="module aligned">
               {block form}
-                {$form.render_admin()}
+                {$form_html}
               {/block}
             </fieldset>
             {if $inlineInstances}
@@ -89,5 +89,8 @@ $(document).ready(function(){
 });
 {/literal}
 </script>
+{foreach $extra_js as $js}
+{$js|safe}
+{/foreach}
 {/block}
 

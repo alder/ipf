@@ -45,24 +45,25 @@ class IPFAuthAdminUserForm extends IPF_Form_Extra_CheckGroup
             
             $account = array('username', 'password');
         }
-        
-        if (IPF_Auth_App::ArePermissionsEnabled())
-        {
+
+        $permissions = array('is_active', 'is_staff', 'is_superuser');
+        if (IPF_Auth_App::ArePermissionsEnabled()) {
+            $permissions[] = 'Permissions';
+            $permissions[] = 'Roles';
+
             $this->fields['Roles']->label = 'Groups';
             $this->fields['Roles']->help_text = 'In addition to the permissions manually assigned, this user will also get all permissions granted to each group he/she is in.';
 
             parent::SetupForm($this);            
-        }
-        else
-        {
+        } else {
             unset($this->fields['Permissions']);
             unset($this->fields['Roles']);
         }
-        
+
         $this->field_groups = array(
             array('fields' => $account),
             array('fields' => array('email', 'first_name', 'last_name'), 'label' => 'Personal info'),
-            array('fields' => array('is_active', 'is_staff', 'is_superuser','Permissions','Roles'), 'label' => 'Permissions'),
+            array('fields' => $permissions, 'label' => 'Permissions'),
         );
     }
     

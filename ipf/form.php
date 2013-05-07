@@ -122,41 +122,32 @@ class IPF_Form implements Iterator
         return (isset($this->errors['__all__'])) ? $this->errors['__all__'] : array();
     }
     
-    protected function htmlOutput($normal_row, $error_row, $row_ender,
-                                  $help_text_html, $errors_on_separate_row, $group_title=null)
+    public function htmlOutput($normal_row, $error_row, $row_ender,
+                               $help_text_html, $errors_on_separate_row, $group_title=null,
+                               $extra_js=true)
     {
         $top_errors = (isset($this->errors['__all__'])) ? $this->errors['__all__'] : array();
         array_walk($top_errors, 'IPF_Form_htmlspecialcharsArray');
         $output = array();
         $hidden_fields = array();
-        
-        $groups = array();        
-        
-        if (count($this->field_groups))
-        {
-            foreach ($this->field_groups as $field_group)
-            {
-                if (array_key_exists('fields', $field_group) && is_array($field_group['fields']))
-                {
-                    $_fields = array();
-                
-                    foreach ($field_group['fields'] as $field_name)
-                    {
-                        if (array_key_exists($field_name, $this->fields))
-                            $_fields[$field_name] = $this->fields[$field_name];
-                    }
-                    
-                    if (count($_fields))
-                    {
-                        $_group = array('fields'=>$_fields);
-                        
-                        if (array_key_exists('label', $field_group))
-                            $_group['label'] = $field_group['label'];
-                        
-                        $groups[] = $_group;
-                    }
-                }
-            }
+
+        foreach ($this->field_groups as $field_group) {
+            if (!$field_group['fields'])
+                throw new IPF_Exception('Empty field group.');
+            foreach ($field_group['fields'] as $field_name)
+                if (!array_key_exists($field_name, $this->fields))
+                    throw new IPF_Exception('Unknown field "' . $field_name . '".');
+        }
+
+        $groups = array();
+        foreach ($this->field_groups as $field_group) {
+            $_fields = array();
+            foreach ($field_group['fields'] as $field_name)
+                $_fields[$field_name] = $this->fields[$field_name];
+            $groups[] = array(
+                'fields' => $_fields,
+                'label' => @$field_group['label'],
+            );
         }
         
         if (count($groups)) {
@@ -167,7 +158,7 @@ class IPF_Form implements Iterator
         }
 
         foreach ($groups as $group) {
-            if ($render_group_title && array_key_exists('label', $group))
+            if ($render_group_title && isset($group['label']))
                 $output[] = sprintf($group_title, $group['label']);
 
             foreach ($group['fields'] as $name=>$field) {
@@ -236,13 +227,18 @@ class IPF_Form implements Iterator
             }
         }
 
-        $extra_js = array();
-        foreach ($groups as $group)
-            foreach ($group['fields'] as $name => $field)
-                $extra_js = array_merge($extra_js, $field->widget->extra_js());
-        $output[] = implode("\n", array_unique($extra_js));
+        if ($extra_js)
+            $output = array_merge($output, $this->extra_js());
 
         return new IPF_Template_SafeString($this->before_render . implode("\n", $output) . $this->after_render, true);
+    }
+
+    public function extra_js()
+    {
+        $extra_js = array();
+        foreach ($this->fields as $name => $field)
+            $extra_js = array_merge($extra_js, $field->widget->extra_js());
+        return array_unique($extra_js);
     }
 
     public function render_p()
