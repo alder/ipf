@@ -47,6 +47,7 @@ User:
         type: INNODB
         collate: utf8_unicode_ci
         charset: utf8
+---
 Role:
     tableName: auth_role
     columns:
@@ -63,8 +64,7 @@ Role:
         type: INNODB
         collate: utf8_unicode_ci
         charset: utf8
-
-
+---
 Permission:
     tableName: auth_permission
     columns:
@@ -75,7 +75,7 @@ Permission:
         type: INNODB
         collate: utf8_unicode_ci
         charset: utf8
-
+---
 RolePermission:
     tableName: auth_role_permission
     columns:
@@ -96,7 +96,7 @@ RolePermission:
         type: INNODB
         collate: utf8_unicode_ci
         charset: utf8
-
+---
 UserRole:
     tableName: auth_user_role
     columns:
@@ -117,7 +117,7 @@ UserRole:
         type: INNODB
         collate: utf8_unicode_ci
         charset: utf8
-
+---
 UserPermission:
     tableName: auth_user_permission
     columns:
@@ -138,3 +138,5 @@ UserPermission:
         type: INNODB
         collate: utf8_unicode_ci
         charset: utf8
+---
+

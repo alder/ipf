@@ -27,6 +27,9 @@ form ul.radiolist label { float:none; display:inline; }
 form ul.inline { margin-left:0; padding:0; }
 form ul.inline li { float:left; padding-right:7px; }
 
+.checkgroup_master li {list-style: none outside none}
+.checkgroup_master li label {width:auto;float:none}
+
 /* ALIGNED FIELDSETS */
 .aligned label { display:block; padding:0 1em 3px 0; float:left; width:8em; }
 .aligned label.inline { display:inline; float:none; }

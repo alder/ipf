@@ -7,3 +7,4 @@ class Permission extends BasePermission
         return IPF_Auth_App::GetHumanNameOfPermission($this->name);
     }
 }
+

@@ -1,13 +1,13 @@
 <?php
 
-class IPFAuthAdminUserForm extends IPF_Form_Extra_CheckGroup
+class IPFAuthAdminUserForm extends IPF_Form_Model
 {
     function initFields($extra=array())
     {
         parent::initFields($extra);
-        
+
         $this->fields['email']->label = 'E-mail';
-        
+
         $this->fields['is_active']->label    = 'Active';
         $this->fields['is_staff']->label     = 'Staff status';
         $this->fields['is_superuser']->label = 'Superuser status';
@@ -15,20 +15,19 @@ class IPFAuthAdminUserForm extends IPF_Form_Extra_CheckGroup
         $this->fields['is_active']->help_text    = 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.';
         $this->fields['is_staff']->help_text     = 'Designates whether the user can log into this admin site.';
         $this->fields['is_superuser']->help_text = 'Designates that this user has all permissions without explicitly assigning them.';
-        
+
         $this->fields['username']->help_text = 'Required. 32 characters or less. Alphanumeric characters only (letters, digits and underscores).';        
-        
-        if (!$this->model->id)
-        {
+
+        if (!$this->model->id) {
             unset($this->fields['password']);
-            
+
             $this->fields['password1'] = new IPF_Form_Field_Varchar(array(
                 'label' => 'Password',
                 'required' => true,
                 'max_length' => 32,
                 'widget' => 'IPF_Form_Widget_PasswordInput'
             ));
-            
+
             $this->fields['password2'] = new IPF_Form_Field_Varchar(array(
                 'label' => 'Password (again)',
                 'required' => true,
@@ -36,13 +35,11 @@ class IPFAuthAdminUserForm extends IPF_Form_Extra_CheckGroup
                 'widget' => 'IPF_Form_Widget_PasswordInput',
                 'help_text' => 'Enter the same password as above, for verification.'
             ));
-            
+
             $account = array('username', 'password1', 'password2');
-        }
-        else
-        {
+        } else {
             $this->fields['password']->help_text = "Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change password form</a>."; 
-            
+
             $account = array('username', 'password');
         }
 
@@ -50,14 +47,6 @@ class IPFAuthAdminUserForm extends IPF_Form_Extra_CheckGroup
         if (IPF_Auth_App::ArePermissionsEnabled()) {
             $permissions[] = 'Permissions';
             $permissions[] = 'Roles';
-
-            $this->fields['Roles']->label = 'Groups';
-            $this->fields['Roles']->help_text = 'In addition to the permissions manually assigned, this user will also get all permissions granted to each group he/she is in.';
-
-            parent::SetupForm($this);            
-        } else {
-            unset($this->fields['Permissions']);
-            unset($this->fields['Roles']);
         }
 
         $this->field_groups = array(
@@ -66,24 +55,79 @@ class IPFAuthAdminUserForm extends IPF_Form_Extra_CheckGroup
             array('fields' => $permissions, 'label' => 'Permissions'),
         );
     }
-    
+
+    public function add__Permissions__field()
+    {
+        if (!IPF_Auth_App::ArePermissionsEnabled())
+            return;
+
+        $choices = array();
+        foreach (IPF_ORM::getTable('Permission')->findAll() as $o)
+            $choices[$o->__toString()] = $o->id;
+        ksort($choices);
+
+        $field = new IPF_Form_Field_ModelMultipleChoice(array(
+            'required' => false,
+            'label' => 'Permissions',
+            'help_text' => '',
+            'type' => 'manytomany',
+            'editable' => true,
+            'model' => 'Permission',
+            'widget' => 'IPF_Form_Widget_SelectMultipleInputCheckbox',
+            'choices' => $choices,
+            'widget_attrs' => array('class' => 'checkgroup'),
+        ));
+
+        $this->fields['Permissions'] = $field;
+    }
+
+    public function add__Roles__field()
+    {
+        if (!IPF_Auth_App::ArePermissionsEnabled())
+            return;
+
+        $choices = array();
+        foreach (IPF_ORM::getTable('Role')->findAll() as $o)
+            $choices[$o->__toString()] = $o->id;
+
+        $field = new IPF_Form_Field_ModelMultipleChoice(array(
+            'required' => false,
+            'label' => 'Groups',
+            'help_text' => 'In addition to the permissions manually assigned, this user will also get all permissions granted to each group he/she is in.',
+            'type' => 'manytomany',
+            'editable' => true,
+            'model' => 'Role',
+            'widget' => 'IPF_Form_Widget_SelectMultipleInputCheckbox',
+            'choices' => $choices,
+            'widget_attrs' => array('class' => 'checkgroup'),
+        ));
+
+        $this->fields['Roles'] = $field;
+    }
+
+    public function extra_js()
+    {
+        $extra_js = parent::extra_js();
+        if (IPF_Auth_App::ArePermissionsEnabled())
+            $extra_js[] = '<script type="text/javascript" src="'.IPF::get('admin_media_url').'js/extra/checkall.js"></script>';
+        return array_unique($extra_js);
+    }
+
     function isValid()
     {
         $ok = parent::isValid();
         
-        if ($ok===true && !$this->model->id)
-        {
-            if ($this->cleaned_data['password1'] != $this->cleaned_data['password2'])
-            {
+        if ($ok===true && !$this->model->id) {
+            if ($this->cleaned_data['password1'] != $this->cleaned_data['password2']) {
                 $this->is_valid = false;
                 $this->errors['password2'][] = "The two password fields didn't match.";
-                
+
                 return false;
             }
-            
+
             $this->cleaned_data['password'] = User::SetPassword2($this->cleaned_data['password1']);
         }
-        
+
         return $ok;
     }
 }
@@ -104,7 +148,7 @@ class AdminUser extends IPF_Admin_Model
     
     public function fields()
     {
-        return array(
+        $fields = array(
             'username',
             'password',
             'email',
@@ -113,9 +157,12 @@ class AdminUser extends IPF_Admin_Model
             'is_active',
             'is_staff',
             'is_superuser',
-            'Permissions',
-            'Roles',
         );
+        if (IPF_Auth_App::ArePermissionsEnabled()) {
+            $fields[] = 'Permissions';
+            $fields[] = 'Roles';
+        }
+        return $fields;
     }
 
     function _searchFields()
@@ -129,10 +176,6 @@ class AdminUser extends IPF_Admin_Model
     protected function _getForm($model_obj, $data, $extra)
     {
         $extra['model'] = $model_obj;
-        $extra['checkgroup_fields'] = array(
-            'Permissions' => array('widget'=>'IPF_Auth_Forms_Widget_Permissions'),
-            'Roles' => array(),
-        );
         return new IPFAuthAdminUserForm($data, $extra);
     }
 }
@@ -142,14 +185,16 @@ class User extends BaseUser
     const UNUSABLE_PASSWORD = '!';
     public $session_key = 'IPF_User_auth';
 
-    public function __toString() {
+    public function __toString()
+    {
         $s = $this->username;
         if ($s===null)
             return 'Anonymous';
         return $s;
     }
 
-    public function smartName() {
+    public function smartName()
+    {
         $username = $this->username;
         if ($username===null)
             return __('Anonymous');
@@ -197,20 +242,24 @@ class User extends BaseUser
         return $user;
     }
 
-    function setUnusablePassword(){
+    function setUnusablePassword()
+    {
         $this->password = UNUSABLE_PASSWORD;
     }
 
-    static function SetPassword2($raw_password){
+    static function SetPassword2($raw_password)
+    {
         $salt = IPF_Utils::randomString(5);
         return 'sha1:'.$salt.':'.sha1($salt.$raw_password);
     }
     
-    function setPassword($raw_password){
+    function setPassword($raw_password)
+    {
         $this->password = self::SetPassword2($raw_password);
     }
 
-    function checkPassword($password){
+    function checkPassword($password)
+    {
         if ( ($this->password=='') || ($this->password==User::UNUSABLE_PASSWORD) )
             return false;
         list($algo, $salt, $hash) = explode(':', $this->password);
@@ -222,9 +271,7 @@ class User extends BaseUser
 
     function isAnonymous()
     {
-        if (0===(int)$this->id)
-            return true;
-        return false;
+        return 0 === (int)$this->id;
     }
 
     function checkCreditentials($username, $password)
@@ -240,4 +287,5 @@ class User extends BaseUser
     }
 }
 
-IPF_Admin_Model::register('User','AdminUser');
+IPF_Admin_Model::register('User', 'AdminUser');
+

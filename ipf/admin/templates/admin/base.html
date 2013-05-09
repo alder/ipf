@@ -23,13 +23,9 @@
     <div id="footer"></div>
 </div>
 {block commonjs}
-  {if isset($form) && method_exists($form, 'render_commonjs')}
-    {$form.render_commonjs()|safe}
-  {else}
-    <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.js"></script>
-    <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery-ui.custom.js"></script>
-    <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/admin.js"></script>
-  {/if}
+  <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.js"></script>
+  <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery-ui.custom.js"></script>
+  <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/admin.js"></script>
 {/block}
 {block scripts}{/block}
 </body>

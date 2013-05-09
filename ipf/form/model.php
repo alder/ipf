@@ -25,20 +25,20 @@ class IPF_Form_Model extends IPF_Form
             else
                 $exclude = array();
 
-            foreach($db_columns as $name=>$col) {
-                if (array_search($name,$exclude)!==false)
+            foreach ($db_columns as $name => $col) {
+                if (array_search($name, $exclude) !== false)
                     continue;
-                $this->addDBField($name,$col);
+                $this->addDBField($name, $col);
             }
-            foreach($db_relations as $name => $relation) {
-                if (array_search($name,$exclude)!==false)
+            foreach ($db_relations as $name => $relation) {
+                if (array_search($name, $exclude) !== false)
                     continue;
-                $this->addDBRelation($name,$relation,$col);
+                $this->addDBRelation($name, $relation, $col);
             }
         } else {
-            foreach($user_fields as $uname) {
+            foreach ($user_fields as $uname) {
                 $add_method = 'add__'.$uname.'__field';
-                if (method_exists($this,$add_method)) {
+                if (method_exists($this, $add_method)) {
                     $this->$add_method();
                     continue;
                 }

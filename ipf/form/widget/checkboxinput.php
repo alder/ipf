@@ -6,18 +6,16 @@ class IPF_Form_Widget_CheckboxInput extends IPF_Form_Widget_Input
 
     public function render($name, $value, $extra_attrs=array())
     {
-        if ((bool)$value) {
+        if ($value)
             $extra_attrs['checked'] = 'checked';
-        }
-        $extra_attrs['value'] = '1';
+        if (!array_key_exists('value', $extra_attrs))
+            $extra_attrs['value'] = '1';
         return parent::render($name, '', $extra_attrs);
     }
 
     public function valueFromFormData($name, &$data)
     {
-        if (!isset($data[$name]) or false === $data[$name] or (string)$data[$name] === '0' or (string)$data[$name] === 'off') {
-            return false;
-        }
-        return true;
+        return isset($data[$name]) && false !== $data[$name] && (string)$data[$name] !== '0' && (string)$data[$name] !== 'off';
     }
 }
+

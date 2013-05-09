@@ -19,3 +19,4 @@ class IPF_Form_DB_Manytomany extends IPF_Form_DB
         return parent::formField($def, $form_field);
     }
 }
+
