@@ -261,6 +261,7 @@ function IPF_Admin_Views_ChangePassword($request, $match)
                 'object'=>$user,
                 'form' => $form,
                 'form_html' => IPF_Admin_App::renderForm($form),
+                'extra_js' => array(),
                 'lapp'=>$lapp,
                 'lmodel'=>$lmodel,
                 'admin_title' => IPF::get('admin_title'),
@@ -300,6 +301,7 @@ function IPF_Admin_Views_Login($request, $match)
         'page_title' => IPF::get('admin_title'),
         'form' => $form,
         'form_html' => IPF_Admin_App::renderForm($form),
+        'extra_js' => $form->extra_js(),
         'admin_title' => IPF::get('admin_title'),
         'indexpage_url'=>IPF::get('indexpage_url','/'),
     );
