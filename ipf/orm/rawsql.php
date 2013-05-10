@@ -3,36 +3,41 @@
 class IPF_ORM_RawSql extends IPF_ORM_Query_Abstract
 {
     private $fields = array();
-    
- 	public function parseDqlQueryPart($queryPartName, $queryPart, $append = false)
+
+    public function parseDqlQueryPart($queryPartName, $queryPart, $append=false)
     {
         if ($queryPartName == 'select') {
-     	    $this->_parseSelectFields($queryPart);
-     	    return $this;
-     	}
-     	if ( ! isset($this->parts[$queryPartName])) {
-     	    $this->_sqlParts[$queryPartName] = array();
-     	}
-     	
-     	if ( ! $append) {
-     	    $this->_sqlParts[$queryPartName] = array($queryPart);
-     	} else {
-     	    $this->_sqlParts[$queryPartName][] = $queryPart;
-     	}
-     	return $this;
+            $this->_parseSelectFields($queryPart, $append);
+            return $this;
+        }
+
+        if (!isset($this->parts[$queryPartName])) {
+            $this->_sqlParts[$queryPartName] = array();
+        }
+
+        if (!$append) {
+            $this->_sqlParts[$queryPartName] = array($queryPart);
+        } else {
+            $this->_sqlParts[$queryPartName][] = $queryPart;
+        }
+        return $this;
     }
-    
-    protected function _addDqlQueryPart($queryPartName, $queryPart, $append = false)
+
+    protected function _addDqlQueryPart($queryPartName, $queryPart, $append=false)
     {
-        return $this->parseQueryPart($queryPartName, $queryPart, $append);
+        return $this->parseDqlQueryPart($queryPartName, $queryPart, $append);
     }
-    
-    private function _parseSelectFields($queryPart){
-        preg_match_all('/{([^}{]*)}/U', $queryPart, $m);
-        $this->fields = $m[1];
+
+    private function _parseSelectFields($queryPart, $append=false)
+    {
+        if ($append)
+            $this->fields[] = $queryPart;
+        else
+            $this->fields = array($queryPart);
+
         $this->_sqlParts['select'] = array();
     }
-    
+
     public function parseDqlQuery($query)
     {
         $this->_parseSelectFields($query);
@@ -87,35 +92,35 @@ class IPF_ORM_RawSql extends IPF_ORM_Query_Abstract
         return $this;
     }
 
-    public function getSqlQuery($params = array())
-    {        
+    public function getSqlQuery($params=array())
+    {
         $select = array();
 
         foreach ($this->fields as $field) {
-            $e = explode('.', $field);
-            if ( ! isset($e[1])) {
-                throw new IPF_ORM_Exception('All selected fields in Sql query must be in format tableAlias.fieldName');
-            }
-            // try to auto-add component
-            if ( ! $this->hasSqlTableAlias($e[0])) {
-                try {
-                    $this->addComponent($e[0], ucwords($e[0]));
-                } catch (IPF_ORM_Exception $exception) {
-                    throw new IPF_ORM_Exception('The associated component for table alias ' . $e[0] . ' couldn\'t be found.');
+            if (preg_match('/^{([^}{]+)\.([^}{]+)}$/U', $field, $e)) {
+                // try to auto-add component
+                if (!$this->hasSqlTableAlias($e[1])) {
+                    try {
+                        $this->addComponent($e[1], ucwords($e[1]));
+                    } catch (IPF_ORM_Exception $exception) {
+                        throw new IPF_ORM_Exception('The associated component for table alias ' . $e[1] . ' couldn\'t be found.');
+                    }
                 }
-            }
 
-            $componentAlias = $this->getComponentAlias($e[0]);
-            
-            if ($e[1] == '*') {
-                foreach ($this->_queryComponents[$componentAlias]['table']->getColumnNames() as $name) {
-                    $field = $e[0] . '.' . $name;
+                $componentAlias = $this->getComponentAlias($e[1]);
+                
+                if ($e[2] == '*') {
+                    foreach ($this->_queryComponents[$componentAlias]['table']->getColumnNames() as $name) {
+                        $field = $e[1] . '.' . $name;
 
-                    $select[$componentAlias][$field] = $field . ' AS ' . $e[0] . '__' . $name;
+                        $select[$componentAlias][$field] = $field . ' AS ' . $e[1] . '__' . $name;
+                    }
+                } else {
+                    $field = $e[1] . '.' . $e[2];
+                    $select[$componentAlias][$field] = $field . ' AS ' . $e[1] . '__' . $e[2];
                 }
             } else {
-                $field = $e[0] . '.' . $e[1];
-                $select[$componentAlias][$field] = $field . ' AS ' . $e[0] . '__' . $e[1];
+                $select['__raw__'][] = $field;
             }
         }
 
@@ -188,7 +193,6 @@ class IPF_ORM_RawSql extends IPF_ORM_Query_Abstract
 
         if (isset($this->_queryComponents[$e[0]])) {
             $table = $this->_queryComponents[$e[0]]['table'];
-
             $currPath = $parent = array_shift($e);
         }
 
@@ -207,18 +211,19 @@ class IPF_ORM_RawSql extends IPF_ORM_Query_Abstract
             } else {
                 $componentAlias = $currPath;
             }
-            if ( ! isset($table)) {
+
+            if (!isset($table)) {
                 $conn = IPF_ORM_Manager::getInstance()
                         ->getConnectionForComponent($component);
-                        
+
                 $table = $conn->getTable($component);
                 $this->_queryComponents[$componentAlias] = array('table' => $table);
             } else {
                 $relation = $table->getRelation($component);
 
                 $this->_queryComponents[$componentAlias] = array('table'    => $relation->getTable(),
-                                                          'parent'   => $parent,
-                                                          'relation' => $relation);
+                                                                 'parent'   => $parent,
+                                                                 'relation' => $relation);
             }
             $this->addSqlTableAlias($tableAlias, $componentAlias);
 
@@ -228,3 +233,4 @@ class IPF_ORM_RawSql extends IPF_ORM_Query_Abstract
         return $this;
     }
 }
+

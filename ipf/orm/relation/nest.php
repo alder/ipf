@@ -70,7 +70,8 @@ class IPF_ORM_Relation_Nest extends IPF_ORM_Relation_Association
                 $condition[] = $tableName . '.' . $identifier . ' IN (' . $sub2 . ')';
                 $joinCondition[] = $tableName . '.' . $identifier . ' = ' . $assocTable . '.' . $this->getLocal();
             }
-            $q->select('{'.$tableName.'.*}, {'.$assocTable.'.*}')
+            $q->select('{'.$tableName.'.*}')
+              ->addSelect('{'.$assocTable.'.*}')
               ->from($tableName . ' INNER JOIN ' . $assocTable . ' ON ' . implode(' OR ', $joinCondition))
               ->where(implode(' OR ', $condition));
             $q->addComponent($tableName,  $record->getTable()->getComponentName());
