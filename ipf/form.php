@@ -1,6 +1,6 @@
 <?php
 
-class IPF_Form implements Iterator
+abstract class IPF_Form implements Iterator
 {
     public $fields = array();
     public $field_groups = array();
@@ -30,10 +30,7 @@ class IPF_Form implements Iterator
         $this->f = new IPF_Form_FieldProxy($this);
     }
 
-    function initFields($extra=array())
-    {
-        throw new IPF_Exception('Definition of the fields not implemented.');
-    }
+    abstract protected function initFields($extra=array());
 
     function addPrefix($field_name)
     {
