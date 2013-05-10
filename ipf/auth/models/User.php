@@ -105,14 +105,6 @@ class IPFAuthAdminUserForm extends IPF_Form_Model
         $this->fields['Roles'] = $field;
     }
 
-    public function extra_js()
-    {
-        $extra_js = parent::extra_js();
-        if (IPF_Auth_App::ArePermissionsEnabled())
-            $extra_js[] = '<script type="text/javascript" src="'.IPF::get('admin_media_url').'js/extra/checkall.js"></script>';
-        return array_unique($extra_js);
-    }
-
     function isValid()
     {
         $ok = parent::isValid();
