@@ -35,7 +35,10 @@ class IPF_ORM_Exception_Validator extends IPF_ORM_Exception implements Countable
     {
         $message = "";
         foreach ($this->invalid as $record) {
-           $message .= "Validaton error in class " . get_class($record) . " ";
+            $errors = array();
+            foreach ($record->getErrorStack() as $field => $validators)
+                $errors[] = 'Field "' . $field . '" failed following validators: ' . implode(', ', $validators) . '.';
+            $message .= "Validaton error in class " . get_class($record) . ' (' . implode(' ', $errors) . ') ';
         }
         return $message;
     }
