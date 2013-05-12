@@ -1,6 +1,6 @@
 <?php
 
-class IPF_ORM_Import_Builder extends IPF_ORM_Builder
+class IPF_ORM_Import_Builder
 {
     protected $_path = '';
     protected $_packagesPrefix = 'Package';
@@ -14,6 +14,20 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
     protected $_baseClassName = 'IPF_ORM_Record';
     protected $_generateAccessors = false;
     protected static $_tpl;
+
+    private static function varExport($var)
+    {
+        $export = var_export($var, true);
+        $export = str_replace("\n", '', $export);
+        $export = str_replace('  ', ' ', $export);
+        $export = str_replace('array ( ', 'array(', $export);
+        $export = str_replace('array( ', 'array(', $export);
+        $export = str_replace(',)', ')', $export);
+        $export = str_replace(', )', ')', $export);
+        $export = str_replace('  ', ' ', $export);
+        return $export;
+    }
+
     public function __construct()
     {
         $this->loadTemplate();
@@ -178,7 +192,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
         }
 
         if (isset($definition['inheritance']['subclasses']) && ! empty($definition['inheritance']['subclasses'])) {
-            $ret[$i] = "    ".'$this->setSubClasses('. $this->varExport($definition['inheritance']['subclasses']).');';
+            $ret[$i] = "    ".'$this->setSubClasses('. self::varExport($definition['inheritance']['subclasses']).');';
             $i++;
         }
 
@@ -212,35 +226,35 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
                 $a = array();
 
                 if (isset($relation['refClass'])) {
-                    $a[] = '\'refClass\' => ' . $this->varExport($relation['refClass']);
+                    $a[] = '\'refClass\' => ' . self::varExport($relation['refClass']);
                 }
 
                 if (isset($relation['deferred']) && $relation['deferred']) {
-                    $a[] = '\'default\' => ' . $this->varExport($relation['deferred']);
+                    $a[] = '\'default\' => ' . self::varExport($relation['deferred']);
                 }
 
                 if (isset($relation['local']) && $relation['local']) {
-                    $a[] = '\'local\' => ' . $this->varExport($relation['local']);
+                    $a[] = '\'local\' => ' . self::varExport($relation['local']);
                 }
 
                 if (isset($relation['foreign']) && $relation['foreign']) {
-                    $a[] = '\'foreign\' => ' . $this->varExport($relation['foreign']);
+                    $a[] = '\'foreign\' => ' . self::varExport($relation['foreign']);
                 }
 
                 if (isset($relation['onDelete']) && $relation['onDelete']) {
-                    $a[] = '\'onDelete\' => ' . $this->varExport($relation['onDelete']);
+                    $a[] = '\'onDelete\' => ' . self::varExport($relation['onDelete']);
                 }
 
                 if (isset($relation['onUpdate']) && $relation['onUpdate']) {
-                    $a[] = '\'onUpdate\' => ' . $this->varExport($relation['onUpdate']);
+                    $a[] = '\'onUpdate\' => ' . self::varExport($relation['onUpdate']);
                 }
 
                 if (isset($relation['equal']) && $relation['equal']) {
-                    $a[] = '\'equal\' => ' . $this->varExport($relation['equal']);
+                    $a[] = '\'equal\' => ' . self::varExport($relation['equal']);
                 }
 
                 if (isset($relation['owningSide']) && $relation['owningSide']) {
-                    $a[] = '\'owningSide\' => ' . $this->varExport($relation['owningSide']);
+                    $a[] = '\'owningSide\' => ' . self::varExport($relation['owningSide']);
                 }
 
                 if ( ! empty($a)) {
@@ -340,7 +354,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
             }
 
             if (is_array($options) && !empty($options)) {
-                $build .= ', ' . $this->varExport($options);
+                $build .= ', ' . self::varExport($options);
             }
 
             $build .= ');' . PHP_EOL;
@@ -384,7 +398,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
         foreach ($templates as $name => $options) {
 
             if (is_array($options) && !empty($options)) {
-                $optionsPhp = $this->varExport($options);
+                $optionsPhp = self::varExport($options);
 
                 $build .= "    \$this->loadTemplate('" . $name . "', " . $optionsPhp . ");" . PHP_EOL;
             } else {
@@ -455,7 +469,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
                         }
                     } 
 
-                    $optionPHP = $this->varExport($realOptions);
+                    $optionPHP = self::varExport($realOptions);
                     $build .= $this->emitAssign($level, $template, $optionPHP); 
                     if ($level == 0) {
                         $emittedActAs[] = $this->emitActAs($level, $template);
@@ -525,7 +539,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
     {
         $build = '';
         foreach ($options as $name => $value) {
-            $build .= "    \$this->option('$name', " . $this->varExport($value) . ");" . PHP_EOL;
+            $build .= "    \$this->option('$name', " . self::varExport($value) . ");" . PHP_EOL;
         }
 
         return $build;
@@ -537,7 +551,7 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
 
       foreach ($indexes as $indexName => $definitions) {
           $build .= PHP_EOL . "    \$this->index('" . $indexName . "'";
-          $build .= ', ' . $this->varExport($definitions);
+          $build .= ', ' . self::varExport($definitions);
           $build .= ');';
       }
 
@@ -750,3 +764,4 @@ class IPF_ORM_Import_Builder extends IPF_ORM_Builder
         IPF_ORM::loadModel($definition['className'], $writePath);
     }
 }
+
