@@ -281,5 +281,56 @@ class IPF_Utils
             return strtolower(preg_replace('/[^A-Z^a-z^0-9^\/\_]+/', '-', $slug));
         return $slug;
     }
+
+    /**
+     * Word Limiter
+     *
+     * Limits a string to X number of words.
+     *
+     * @param	string
+     * @param	integer
+     * @param	string	the end character. Usually an ellipsis
+     * @return	string
+     */
+    public static function limitWords($str, $limit=100, $end_char='&#8230;')
+    {
+        if (trim($str) == '')
+            return $str;
+        preg_match('/^\s*+(?:\S++\s*+){1,'.(int) $limit.'}/', $str, $matches);
+        if (strlen($str) == strlen($matches[0]))
+            $end_char = '';
+        return rtrim($matches[0]).$end_char;
+    }
+
+    /**
+     * Character Limiter
+     *
+     * Limits the string based on the character count.  Preserves complete words
+     * so the character count may not be exactly as specified.
+     *
+     * @param	string
+     * @param	integer
+     * @param	string	the end character. Usually an ellipsis
+     * @return	string
+     */
+    function limitCharacters($str, $n=500, $end_char='&#8230;')
+    {
+        if (strlen($str) < $n)
+            return $str;
+
+        $str = preg_replace("/\s+/", ' ', str_replace(array("\r\n", "\r", "\n"), ' ', $str));
+
+        if (strlen($str) <= $n)
+            return $str;
+
+        $out = "";
+        foreach (explode(' ', trim($str)) as $val) {
+            $out .= $val.' ';
+            if (strlen($out) >= $n) {
+                $out = trim($out);
+                return (strlen($out) == strlen($str)) ? $out : $out.$end_char;
+            }
+        }
+    }
 }
 

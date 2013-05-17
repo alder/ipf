@@ -139,6 +139,10 @@ final class IPF
     {
         if (function_exists($function))
             return;
+        if (preg_match('/^(\w+)::\w+$/', $function, $m)) {
+            IPF_Autoload($m[1]);
+            return;
+        }
         $elts = explode('_', $function);
         array_pop($elts);
         $file = strtolower(implode(DIRECTORY_SEPARATOR, $elts)).'.php';
