@@ -43,6 +43,7 @@ class IPF_Template_Compiler
                                  'date' => 'IPF_Template_dateFormat',
                                  'time' => 'IPF_Template_timeFormat',
                                  'floatformat' => 'IPF_Template_floatFormat',
+                                 'limit_words' => 'IPF_Utils::limitWords',
                                  );
 
     public $_usedModifiers = array();
