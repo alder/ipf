@@ -60,6 +60,8 @@ class IPF_Image
         $type = null;
         if ($filename) {
             $type = self::detectType($filename);
+            if (!$type)
+                $type = IMAGETYPE_JPEG;
         } else {
             $filename = $this->path;
             if ($this->type)
