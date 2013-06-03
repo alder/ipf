@@ -84,7 +84,7 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
         }
     }
 
-    public function openConnection($adapter, $name = null, $setCurrent = true)
+    public function openConnection($adapter, $name = null, $setCurrent = true, $persistent = false)
     {
         if (is_object($adapter)) {
             if ( ! ($adapter instanceof PDO) && ! in_array('IPF_ORM_Adapter_Interface', class_implements($adapter))) {
@@ -156,6 +156,8 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
 
         $className = $drivers[$driverName];
         $conn = new $className($this, $adapter);
+        if ($persistent)
+            $conn->setOption(IPF_ORM::ATTR_PERSISTENT, true);
         $conn->setName($name);
         $conn->setCharset('utf8');
 

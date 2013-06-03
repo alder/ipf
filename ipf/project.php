@@ -118,7 +118,8 @@ final class IPF_Project{
         $dsn = IPF::get('dsn');
         if ($dsn=='')
             throw new IPF_Exception_Panic('Specify dsn in config file');
-        $conn = IPF_ORM_Manager::connection($dsn);
+
+        IPF_ORM_Manager::getInstance()->openConnection($dsn, null, true, IPF::get('db_persistent', false));
 
         if (IPF::get('debug')){
             $this->sqlProfiler = new IPF_ORM_Connection_Profiler();
