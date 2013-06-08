@@ -2,18 +2,7 @@
 
 function IPF_Autoload($class_name)
 {
-    $filename = strtolower(str_replace('_', '/', $class_name)) . '.php';
-    if (file_exists($filename)) {
-        require_once $filename;
-        return;
-    }
-    foreach (explode(PATH_SEPARATOR, get_include_path()) as $dir) {
-        $path = $dir . DIRECTORY_SEPARATOR . $filename;
-        if (file_exists($path)) {
-            require_once($path);
-            break;
-        }
-    }
+    require_once strtolower(str_replace('_', '/', $class_name)) . '.php';
 }
 
 spl_autoload_register('IPF_Autoload');
