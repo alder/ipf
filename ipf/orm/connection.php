@@ -200,15 +200,13 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     public function getDbh()
     {
         $this->connect();
-        
         return $this->dbh;
     }
 
     public function connect()
     {
-        if ($this->isConnected) {
+        if ($this->isConnected)
             return false;
-        }
 
         $event = new IPF_ORM_Event($this, IPF_ORM_Event::CONN_CONNECT);
 

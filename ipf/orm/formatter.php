@@ -85,8 +85,6 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
         case 'gzip':
         case 'blob':
         case 'clob':
-            $this->conn->connect();
-
             return $this->conn->getDbh()->quote($input);
         }
     }
@@ -130,3 +128,4 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
                 $table);
     }
 }
+

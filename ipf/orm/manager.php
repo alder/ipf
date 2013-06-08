@@ -17,7 +17,7 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
     public function setDefaultAttributes()
     {
         static $init = false;
-        if ( ! $init) {
+        if (!$init) {
             $init = true;
             $attributes = array(
                         IPF_ORM::ATTR_CACHE                    => null,
@@ -422,3 +422,4 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
         return implode("\n",$r);
     }
 }
+
