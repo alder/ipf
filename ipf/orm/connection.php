@@ -255,13 +255,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         $this->_count++;
     }
 
-    public function supports($feature)
-    {
-        return (isset($this->supported[$feature])
-                  && ($this->supported[$feature] === 'emulated'
-                   || $this->supported[$feature]));
-    }
-
     public function replace(IPF_ORM_Table $table, array $fields, array $keys)
     {
         if (empty($keys)) {

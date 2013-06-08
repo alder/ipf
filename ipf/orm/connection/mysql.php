@@ -6,26 +6,6 @@ class IPF_ORM_Connection_Mysql extends IPF_ORM_Connection
 
     public function __construct(IPF_ORM_Manager $manager, $adapter)
     {
-        $this->supported = array(
-                          'sequences'            => 'emulated',
-                          'indexes'              => true,
-                          'affected_rows'        => true,
-                          'transactions'         => true,
-                          'savepoints'           => false,
-                          'summary_functions'    => true,
-                          'order_by_text'        => true,
-                          'current_id'           => 'emulated',
-                          'limit_queries'        => true,
-                          'LOBs'                 => true,
-                          'replace'              => true,
-                          'sub_selects'          => true,
-                          'auto_increment'       => true,
-                          'primary_key'          => true,
-                          'result_introspection' => true,
-                          'prepared_statements'  => 'emulated',
-                          'identifier_quoting'   => true,
-                          'pattern_escaping'     => true
-                          );
         $this->attributes[IPF_ORM::ATTR_DEFAULT_TABLE_TYPE] = 'INNODB';
 
         $this->properties['string_quoting'] = array('start' => "'",
