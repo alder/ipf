@@ -503,9 +503,8 @@ class IPF_ORM_Import_Builder
 
     public function buildListener($listener)
     {
-        return PHP_EOL."    ".'$this->addListener(new '.$listener.'());';
+        return PHP_EOL.'    $this->getTable()->listeners[\''.$listener.'\'] = new '.$listener.'();';
     }
-
 
     public function buildAttributes(array $attributes)
     {

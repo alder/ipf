@@ -1,6 +1,6 @@
 <?php
 
-class IPF_ORM_Template_Listener_Sluggable extends IPF_ORM_Record_Listener
+class IPF_ORM_Template_Listener_Sluggable
 {
     protected $_options = array();
 

@@ -30,7 +30,7 @@ class IPF_ORM_Template_Sluggable extends IPF_ORM_Template
             $this->index($this->_options['indexName'], array('fields' => $indexFields,
                                                              'type' => 'unique'));
         }
-        $this->addListener(new IPF_ORM_Template_Listener_Sluggable($this->_options));
+        $this->getTable()->listeners['Sluggable_'.print_r($this->_options, true)] = new IPF_ORM_Template_Listener_Sluggable($this->_options);
     }
 }
 

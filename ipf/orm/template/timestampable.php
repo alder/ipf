@@ -28,6 +28,6 @@ class IPF_ORM_Template_Timestampable extends IPF_ORM_Template{
         if( ! $this->_options['updated']['disabled']) {
             $this->hasColumn($this->_options['updated']['name'], $this->_options['updated']['type'], null, $this->_options['updated']['options']);
         }
-        $this->addListener(new IPF_ORM_Template_Listener_Timestampable($this->_options));
+        $this->getTable()->listeners['Timestampable_'.print_r($this->_options, true)] = new IPF_ORM_Template_Listener_Timestampable($this->_options);
     }
 }

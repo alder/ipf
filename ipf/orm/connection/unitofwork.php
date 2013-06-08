@@ -21,7 +21,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
         if ($record->isValid()) {
             $event = new IPF_ORM_Event($record, IPF_ORM_Event::RECORD_SAVE);
             $record->preSave($event);
-            $record->getTable()->getRecordListener()->preSave($event);
+            $record->getTable()->notifyRecordListeners('preSave', $event);
             $state = $record->state();
 
             if ( ! $event->skipOperation) {
@@ -44,7 +44,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
                 $pendingDelete->delete();
             }
 
-            $record->getTable()->getRecordListener()->postSave($event);
+            $record->getTable()->notifyRecordListeners('postSave', $event);
             $record->postSave($event);
         } else {
             $conn->transaction->addInvalid($record);
@@ -81,7 +81,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
 
         $record->preSave($event);
 
-        $record->getTable()->getRecordListener()->preSave($event);
+        $record->getTable()->notifyRecordListeners('preSave', $event);
 
         if ( ! $event->skipOperation) {
             switch ($record->state()) {
@@ -99,7 +99,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
             }
         }
 
-        $record->getTable()->getRecordListener()->postSave($event);
+        $record->getTable()->notifyRecordListeners('postSave', $event);
 
         $record->postSave($event);
     }
@@ -320,7 +320,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
     {
         $event = new IPF_ORM_Event($record, IPF_ORM_Event::RECORD_DELETE);
         $record->preDelete($event);
-        $record->getTable()->getRecordListener()->preDelete($event);
+        $record->getTable()->notifyRecordListeners('preDelete', $event);
 
         return $event->skipOperation;
     }
@@ -329,7 +329,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
     {
         $event = new IPF_ORM_Event($record, IPF_ORM_Event::RECORD_DELETE);
         $record->postDelete($event);
-        $record->getTable()->getRecordListener()->postDelete($event);
+        $record->getTable()->notifyRecordListeners('postDelete', $event);
     }
 
     public function saveAll()
@@ -351,7 +351,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
         $event = new IPF_ORM_Event($record, IPF_ORM_Event::RECORD_UPDATE);
         $record->preUpdate($event);
         $table = $record->getTable();
-        $table->getRecordListener()->preUpdate($event);
+        $table->notifyRecordListeners('preUpdate', $event);
 
         if ( ! $event->skipOperation) {
             $identifier = $record->identifier();
@@ -366,7 +366,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
             $record->assignIdentifier(true);
         }
 
-        $table->getRecordListener()->postUpdate($event);
+        $table->notifyRecordListeners('postUpdate', $event);
 
         $record->postUpdate($event);
 
@@ -379,7 +379,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
         $event = new IPF_ORM_Event($record, IPF_ORM_Event::RECORD_INSERT);
         $record->preInsert($event);
         $table = $record->getTable();
-        $table->getRecordListener()->preInsert($event);
+        $table->notifyRecordListeners('preInsert', $event);
 
         if ( ! $event->skipOperation) {
             if ($table->getOption('joinedParents')) {
@@ -392,7 +392,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
         }
 
         $table->addRecord($record);
-        $table->getRecordListener()->postInsert($event);
+        $table->notifyRecordListeners('postInsert', $event);
         $record->postInsert($event);
 
         return true;

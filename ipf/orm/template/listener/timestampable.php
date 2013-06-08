@@ -1,6 +1,6 @@
 <?php
 
-class IPF_ORM_Template_Listener_Timestampable extends IPF_ORM_Record_Listener
+class IPF_ORM_Template_Listener_Timestampable
 {
     protected $_options = array();
     public function __construct(array $options)

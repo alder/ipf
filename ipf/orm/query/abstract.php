@@ -572,7 +572,7 @@ abstract class IPF_ORM_Query_Abstract
                 $event = new IPF_ORM_Event($record, $callback['const'], $this, $params);
 
                 $record->$callback['callback']($event);
-                $table->getRecordListener()->$callback['callback']($event);
+                $table->notifyRecordListeners($callback['callback'], $event);
             }
         }
 

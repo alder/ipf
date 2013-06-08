@@ -26,8 +26,6 @@ class IPF_ORM_Hydrator extends IPF_ORM_Hydrator_Abstract
         $isSimpleQuery = count($this->_queryComponents) <= 1;
         // Holds the resulting hydrated data structure
         $result = array();
-        // Holds hydration listeners that get called during hydration
-        $listeners = array();
         // Lookup map to quickly discover/lookup existing records in the result
         $identifierMap = array();
         // Holds for each component the last previously seen element in the result set
@@ -48,7 +46,6 @@ class IPF_ORM_Hydrator extends IPF_ORM_Hydrator_Abstract
         // Initialize
         foreach ($this->_queryComponents as $dqlAlias => $data) {
             $componentName = $data['table']->getComponentName();
-            $listeners[$componentName] = $data['table']->getRecordListener();
             $identifierMap[$dqlAlias] = array();
             $prev[$dqlAlias] = null;
             $idTemplate[$dqlAlias] = '';
@@ -71,7 +68,7 @@ class IPF_ORM_Hydrator extends IPF_ORM_Hydrator_Abstract
             // Ticket #1115 (getInvoker() should return the component that has addEventListener)
             $event->setInvoker($table);
             $event->set('data', $rowData[$rootAlias]);
-            $listeners[$componentName]->preHydrate($event);
+            $table->notifyRecordListeners('preHydrate', $event);
 
             $index = false;
 
@@ -79,7 +76,7 @@ class IPF_ORM_Hydrator extends IPF_ORM_Hydrator_Abstract
             if ($isSimpleQuery || ! isset($identifierMap[$rootAlias][$id[$rootAlias]])) {
                 $element = $driver->getElement($rowData[$rootAlias], $componentName);
                 $event->set('data', $element);
-                $listeners[$componentName]->postHydrate($event);
+                $table->notifyRecordListeners('postHydrate', $event);
 
                 // do we need to index by a custom field?
                 if ($field = $this->_getCustomIndexField($rootAlias)) {
@@ -113,7 +110,7 @@ class IPF_ORM_Hydrator extends IPF_ORM_Hydrator_Abstract
                 $table = $map['table'];
                 $componentName = $table->getComponentName();
                 $event->set('data', $data);
-                $listeners[$componentName]->preHydrate($event);
+                $table->notifyRecordListeners('preHydrate', $event);
 
                 $parent = $map['parent'];
                 $relation = $map['relation'];
@@ -137,7 +134,7 @@ class IPF_ORM_Hydrator extends IPF_ORM_Hydrator_Abstract
                         if ( ! $indexExists || ! $indexIsValid) {
                             $element = $driver->getElement($data, $componentName);
                             $event->set('data', $element);
-                            $listeners[$componentName]->postHydrate($event);
+                            $table->notifyRecordListeners('postHydrate', $event);
 
                             if ($field = $this->_getCustomIndexField($dqlAlias)) {
                                 if (isset($prev[$parent][$relationAlias][$element[$field]])) {
@@ -165,7 +162,7 @@ class IPF_ORM_Hydrator extends IPF_ORM_Hydrator_Abstract
 
 						// [FIX] Tickets #1205 and #1237
                         $event->set('data', $element);
-                        $listeners[$componentName]->postHydrate($event);
+                        $table->notifyRecordListeners('postHydrate', $event);
 
                         $prev[$parent][$relationAlias] = $element;
                     }

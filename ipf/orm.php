@@ -131,7 +131,6 @@ final class IPF_ORM {
     const ATTR_CACHE_LIFESPAN           = 151;
     const ATTR_RESULT_CACHE_LIFESPAN    = 151;
     const ATTR_LOAD_REFERENCES          = 153;
-    const ATTR_RECORD_LISTENER          = 154;
     const ATTR_THROW_EXCEPTIONS         = 155;
     const ATTR_DEFAULT_PARAM_NAMESPACE  = 156;
     const ATTR_QUERY_CACHE              = 157;

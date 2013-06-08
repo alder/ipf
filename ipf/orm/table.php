@@ -45,6 +45,8 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     protected $_invokedMethods = array();
     protected $record;
 
+    public $listeners = array();
+
     public function __construct($name, IPF_ORM_Connection $conn, $initDefinition = false)
     {
         $this->_conn = $conn;
@@ -1416,4 +1418,12 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
         throw new IPF_ORM_Exception(sprintf('Unknown method %s::%s', get_class($this), $method));
     }
+
+    public function notifyRecordListeners($method, $event)
+    {
+        foreach ($this->listeners as $listener)
+            if (is_callable(array($listener, $method)))
+                $listener->$method($event);
+    }
 }
+

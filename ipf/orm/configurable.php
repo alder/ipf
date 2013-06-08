@@ -72,7 +72,6 @@ abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
             case IPF_ORM::ATTR_EXPORT:
             case IPF_ORM::ATTR_DECIMAL_PLACES:
             case IPF_ORM::ATTR_LOAD_REFERENCES:
-            case IPF_ORM::ATTR_RECORD_LISTENER:
             case IPF_ORM::ATTR_THROW_EXCEPTIONS:
             case IPF_ORM::ATTR_DEFAULT_PARAM_NAMESPACE:
             case IPF_ORM::ATTR_AUTOLOAD_TABLE_CLASSES:
@@ -181,41 +180,6 @@ abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
             return false;
         }
         return true;
-    }
-
-    public function addRecordListener($listener, $name = null)
-    {
-        if ( ! isset($this->attributes[IPF_ORM::ATTR_RECORD_LISTENER]) ||
-             ! ($this->attributes[IPF_ORM::ATTR_RECORD_LISTENER] instanceof IPF_ORM_Record_Listener_Chain)) {
-
-            $this->attributes[IPF_ORM::ATTR_RECORD_LISTENER] = new IPF_ORM_Record_Listener_Chain();
-        }
-        $this->attributes[IPF_ORM::ATTR_RECORD_LISTENER]->add($listener, $name);
-
-        return $this;
-    }
-
-    public function getRecordListener()
-    {
-        if ( ! isset($this->attributes[IPF_ORM::ATTR_RECORD_LISTENER])) {
-            if (isset($this->parent)) {
-                return $this->parent->getRecordListener();
-            }
-            return null;
-        }
-        return $this->attributes[IPF_ORM::ATTR_RECORD_LISTENER];
-    }
-
-    public function setRecordListener($listener)
-    {
-        if ( ! ($listener instanceof IPF_ORM_Record_Listener_Interface)
-            && ! ($listener instanceof IPF_ORM_Overloadable)
-        ) {
-            throw new IPF_ORM_Exception("Couldn't set eventlistener. Record listeners should implement either IPF_ORM_Record_Listener_Interface or IPF_ORM_Overloadable");
-        }
-        $this->attributes[IPF_ORM::ATTR_RECORD_LISTENER] = $listener;
-
-        return $this;
     }
 
     public function getAttribute($attribute)

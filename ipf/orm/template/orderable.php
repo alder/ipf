@@ -10,15 +10,10 @@ class IPF_ORM_Template_Orderable extends IPF_ORM_Template
             $this->columnName = $options['name'];
     }
 
-    public function getColumnName()
-    {
-        return $this->columnName;
-    }
-
     public function setTableDefinition()
     {
         $this->hasColumn($this->columnName, 'integer', null, '');
-        $this->addListener(new IPF_ORM_Template_Listener_Orderable($this->columnName));
+        $this->getTable()->listeners['Orderable_'.$this->columnName] = new IPF_ORM_Template_Listener_Orderable($this->columnName);
     }
 }
 

@@ -17,23 +17,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         return $this->_table;
     }
 
-    public function addListener($listener, $name = null)
-    {
-        $this->_table->addRecordListener($listener, $name = null);
-        return $this;
-    }
-
-    public function getListener()
-    {
-        return $this->_table->getRecordListener();
-    }
-
-    public function setListener($listener)
-    {
-        $this->_table->setRecordListener($listener);
-        return $this;
-    }
-
     public function index($name, array $definition = array())
     {
         if ( ! $definition) {
