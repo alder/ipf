@@ -12,39 +12,21 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
     private function __construct()
     {
         IPF_ORM_Locator_Injectable::initNullObject(new IPF_ORM_Null);
-    }
 
-    public function setDefaultAttributes()
-    {
-        static $init = false;
-        if (!$init) {
-            $init = true;
-            $attributes = array(
-                        IPF_ORM::ATTR_CACHE                    => null,
-                        IPF_ORM::ATTR_RESULT_CACHE             => null,
-                        IPF_ORM::ATTR_QUERY_CACHE              => null,
-                        IPF_ORM::ATTR_LOAD_REFERENCES          => true,
-                        IPF_ORM::ATTR_IDXNAME_FORMAT           => "%s_idx",
-                        IPF_ORM::ATTR_SEQNAME_FORMAT           => "%s_seq",
-                        IPF_ORM::ATTR_TBLNAME_FORMAT           => "%s",
-                        IPF_ORM::ATTR_QUOTE_IDENTIFIER         => false,
-                        IPF_ORM::ATTR_SEQCOL_NAME              => 'id',
-                        IPF_ORM::ATTR_PORTABILITY              => IPF_ORM::PORTABILITY_ALL,
-                        IPF_ORM::ATTR_EXPORT                   => IPF_ORM::EXPORT_ALL,
-                        IPF_ORM::ATTR_DECIMAL_PLACES           => 2,
-                        IPF_ORM::ATTR_DEFAULT_PARAM_NAMESPACE  => 'ipf',
-                        IPF_ORM::ATTR_AUTOLOAD_TABLE_CLASSES   => false,
-                        IPF_ORM::ATTR_USE_DQL_CALLBACKS        => false,
-                        ); 
-            foreach ($attributes as $attribute => $value) {
-                $old = $this->getAttribute($attribute);
-                if ($old === null) {
-                    $this->setAttribute($attribute,$value);
-                }
-            }
-            return true;
-        }
-        return false;
+        $this->attributes = array(
+            IPF_ORM::ATTR_LOAD_REFERENCES         => true,
+            IPF_ORM::ATTR_IDXNAME_FORMAT          => "%s_idx",
+            IPF_ORM::ATTR_SEQNAME_FORMAT          => "%s_seq",
+            IPF_ORM::ATTR_TBLNAME_FORMAT          => "%s",
+            IPF_ORM::ATTR_QUOTE_IDENTIFIER        => false,
+            IPF_ORM::ATTR_SEQCOL_NAME             => 'id',
+            IPF_ORM::ATTR_PORTABILITY             => IPF_ORM::PORTABILITY_ALL,
+            IPF_ORM::ATTR_EXPORT                  => IPF_ORM::EXPORT_ALL,
+            IPF_ORM::ATTR_DECIMAL_PLACES          => 2,
+            IPF_ORM::ATTR_DEFAULT_PARAM_NAMESPACE => 'ipf',
+            IPF_ORM::ATTR_AUTOLOAD_TABLE_CLASSES  => false,
+            IPF_ORM::ATTR_USE_DQL_CALLBACKS       => false,
+        );
     }
 
     public static function getInstance()
@@ -110,9 +92,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
                 $adapter[$key]  = $value?urldecode($value):null;
             }
         }
-
-        // initialize the default attributes
-        $this->setDefaultAttributes();
 
         if ($name !== null) {
             $name = (string) $name;
