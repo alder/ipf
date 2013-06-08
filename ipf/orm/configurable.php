@@ -45,9 +45,6 @@ abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
         }
 
         switch ($attribute) {
-            case IPF_ORM::ATTR_LISTENER:
-                $this->setEventListener($value);
-                break;
             case IPF_ORM::ATTR_COLL_KEY:
                 if ( ! ($this instanceof IPF_ORM_Table)) {
                     throw new IPF_ORM_Exception("This attribute can only be set at table level.");
@@ -186,11 +183,6 @@ abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
         return true;
     }
 
-    public function setEventListener($listener)
-    {
-        return $this->setListener($listener);
-    }
-
     public function addRecordListener($listener, $name = null)
     {
         if ( ! isset($this->attributes[IPF_ORM::ATTR_RECORD_LISTENER]) ||
@@ -222,41 +214,6 @@ abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
             throw new IPF_ORM_Exception("Couldn't set eventlistener. Record listeners should implement either IPF_ORM_Record_Listener_Interface or IPF_ORM_Overloadable");
         }
         $this->attributes[IPF_ORM::ATTR_RECORD_LISTENER] = $listener;
-
-        return $this;
-    }
-
-    public function addListener($listener, $name = null)
-    {
-        if ( ! isset($this->attributes[IPF_ORM::ATTR_LISTENER]) ||
-             ! ($this->attributes[IPF_ORM::ATTR_LISTENER] instanceof IPF_ORM_EventListener_Chain)) {
-
-            $this->attributes[IPF_ORM::ATTR_LISTENER] = new IPF_ORM_EventListener_Chain();
-        }
-        $this->attributes[IPF_ORM::ATTR_LISTENER]->add($listener, $name);
-
-        return $this;
-    }
-
-    public function getListener()
-    {
-        if ( ! isset($this->attributes[IPF_ORM::ATTR_LISTENER])) {
-            if (isset($this->parent)) {
-                return $this->parent->getListener();
-            }
-            return null;
-        }
-        return $this->attributes[IPF_ORM::ATTR_LISTENER];
-    }
-
-    public function setListener($listener)
-    {
-        if ( ! ($listener instanceof IPF_ORM_EventListener_Interface)
-            && ! ($listener instanceof IPF_ORM_Overloadable)
-        ) {
-            throw new IPF_ORM_Exception("Couldn't set eventlistener. EventListeners should implement either IPF_ORM_EventListener_Interface or IPF_ORM_Overloadable");
-        }
-        $this->attributes[IPF_ORM::ATTR_LISTENER] = $listener;
 
         return $this;
     }

@@ -60,26 +60,24 @@ class IPF_ORM_Transaction extends IPF_ORM_Connection_Module
     public function beginTransaction($savepoint = null)
     {
         $this->conn->connect();
-        $listener = $this->conn->getAttribute(IPF_ORM::ATTR_LISTENER);
-
 
         if ( ! is_null($savepoint)) {
             $this->savePoints[] = $savepoint;
 
             $event = new IPF_ORM_Event($this, IPF_ORM_Event::SAVEPOINT_CREATE);
 
-            $listener->preSavepointCreate($event);
+            $this->conn->notifyDBListeners('preSavepointCreate', $event);
 
             if ( ! $event->skipOperation) {
                 $this->createSavePoint($savepoint);
             }
 
-            $listener->postSavepointCreate($event);
+            $this->conn->notifyDBListeners('postSavepointCreate', $event);
         } else {
             if ($this->_nestingLevel == 0) {
                 $event = new IPF_ORM_Event($this, IPF_ORM_Event::TX_BEGIN);
 
-                $listener->preTransactionBegin($event);
+                $this->conn->notifyDBListeners('preTransactionBegin', $event);
 
                 if ( ! $event->skipOperation) {
                     try {
@@ -88,7 +86,7 @@ class IPF_ORM_Transaction extends IPF_ORM_Connection_Module
                         throw new IPF_ORM_Exception($e->getMessage());
                     }
                 }
-                $listener->postTransactionBegin($event);
+                $this->conn->notifyDBListeners('postTransactionBegin', $event);
             }
         }
 
@@ -105,20 +103,18 @@ class IPF_ORM_Transaction extends IPF_ORM_Connection_Module
         
         $this->conn->connect();
 
-        $listener = $this->conn->getAttribute(IPF_ORM::ATTR_LISTENER);
-
         if ( ! is_null($savepoint)) {
             $this->_nestingLevel -= $this->removeSavePoints($savepoint);
 
             $event = new IPF_ORM_Event($this, IPF_ORM_Event::SAVEPOINT_COMMIT);
 
-            $listener->preSavepointCommit($event);
+            $this->conn->notifyDBListeners('preSavepointCommit', $event);
 
             if ( ! $event->skipOperation) {
                 $this->releaseSavePoint($savepoint);
             }
 
-            $listener->postSavepointCommit($event);
+            $this->conn->notifyDBListeners('postSavepointCommit', $event);
         } else {
                  
             if ($this->_nestingLevel == 1 || $this->_internalNestingLevel == 1) {
@@ -141,11 +137,11 @@ class IPF_ORM_Transaction extends IPF_ORM_Connection_Module
 
                     $event = new IPF_ORM_Event($this, IPF_ORM_Event::TX_COMMIT);
 
-                    $listener->preTransactionCommit($event);
+                    $this->conn->notifyDBListeners('preTransactionCommit', $event);
                     if ( ! $event->skipOperation) {
                         $this->_doCommit();
                     }
-                    $listener->postTransactionCommit($event);
+                    $this->conn->notifyDBListeners('postTransactionCommit', $event);
                 }
             }
             
@@ -174,24 +170,22 @@ class IPF_ORM_Transaction extends IPF_ORM_Connection_Module
             return false;
         }
 
-        $listener = $this->conn->getAttribute(IPF_ORM::ATTR_LISTENER);
-
         if ( ! is_null($savepoint)) {
             $this->_nestingLevel -= $this->removeSavePoints($savepoint);
 
             $event = new IPF_ORM_Event($this, IPF_ORM_Event::SAVEPOINT_ROLLBACK);
 
-            $listener->preSavepointRollback($event);
+            $this->conn->notifyDBListeners('preSavepointRollback', $event);
             
             if ( ! $event->skipOperation) {
                 $this->rollbackSavePoint($savepoint);
             }
 
-            $listener->postSavepointRollback($event);
+            $this->conn->notifyDBListeners('postSavepointRollback', $event);
         } else {
             $event = new IPF_ORM_Event($this, IPF_ORM_Event::TX_ROLLBACK);
     
-            $listener->preTransactionRollback($event);
+            $this->conn->notifyDBListeners('preTransactionRollback', $event);
             
             if ( ! $event->skipOperation) {
                 $this->_nestingLevel = 0;
@@ -203,7 +197,7 @@ class IPF_ORM_Transaction extends IPF_ORM_Connection_Module
                 }
             }
 
-            $listener->postTransactionRollback($event);
+            $this->conn->notifyDBListeners('postTransactionRollback', $event);
         }
 
         return true;

@@ -45,6 +45,8 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
                                         );
     protected $_count = 0;
 
+    public $dbListeners = array();
+
     public function __construct(IPF_ORM_Manager $manager, $adapter, $user = null, $pass = null)
     {
         if (is_object($adapter)) {
@@ -69,11 +71,12 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         }
 
         $this->setParent($manager);
+        $this->dbListeners = $manager->dbListeners;
 
         $this->setAttribute(IPF_ORM::ATTR_CASE, IPF_ORM::CASE_NATURAL);
         $this->setAttribute(IPF_ORM::ATTR_ERRMODE, IPF_ORM::ERRMODE_EXCEPTION);
 
-        $this->getAttribute(IPF_ORM::ATTR_LISTENER)->onOpen($this);
+        $this->notifyDBListeners('onOpen', $this);
     }
 
     public function getOptions()
@@ -213,21 +216,21 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
         $event = new IPF_ORM_Event($this, IPF_ORM_Event::CONN_CONNECT);
 
-        $this->getListener()->preConnect($event);
+        $this->notifyDBListeners('preConnect', $event);
 
         $e     = explode(':', $this->options['dsn']);
         $found = false;
 
         if (extension_loaded('pdo')) {
             if (in_array($e[0], PDO::getAvailableDrivers())) {
-            	try {
+                try {
                     $this->dbh = new PDO($this->options['dsn'], $this->options['username'], 
                                      (!$this->options['password'] ? '':$this->options['password']), $this->options['other']);
 
                     $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            	} catch (PDOException $e) {
-            		throw new IPF_ORM_Exception('PDO Connection Error: ' . $e->getMessage());
-            	}
+                } catch (PDOException $e) {
+                    throw new IPF_ORM_Exception('PDO Connection Error: ' . $e->getMessage());
+                }
                 $found = true;
             }
         }
@@ -247,7 +250,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
         $this->isConnected = true;
 
-        $this->getListener()->postConnect($event);
+        $this->notifyDBListeners('postConnect', $event);
         return true;
     }
     
@@ -387,8 +390,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         foreach ($arr as $k => $v) {
             $arr[$k] = $this->quoteIdentifier($v, $checkOption);
         }
-
-		return $arr;
+        return $arr;
     }
 
     public function convertBooleans($item)
@@ -455,20 +457,21 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
         try {
             $event = new IPF_ORM_Event($this, IPF_ORM_Event::CONN_PREPARE, $statement);
-    
-            $this->getAttribute(IPF_ORM::ATTR_LISTENER)->prePrepare($event);
+
+            $this->notifyDBListeners('prePrepare', $event);
 
             $stmt = false;
-    
+
             if ( ! $event->skipOperation) {
                 $stmt = $this->dbh->prepare($statement);
             }
-    
-            $this->getAttribute(IPF_ORM::ATTR_LISTENER)->postPrepare($event);
-            
+
+            $this->notifyDBListeners('postPrepare', $event);
+
             return new IPF_ORM_Connection_Statement($this, $stmt);
-        } catch(IPF_ORM_Exception_Adapter $e) {
-        } catch(PDOException $e) { }
+        } catch (IPF_ORM_Exception_Adapter $e) {
+        } catch (PDOException $e) {
+        }
 
         $this->rethrowException($e, $this);
     }
@@ -510,18 +513,19 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
             } else {
                 $event = new IPF_ORM_Event($this, IPF_ORM_Event::CONN_QUERY, $query, $params);
 
-                $this->getAttribute(IPF_ORM::ATTR_LISTENER)->preQuery($event);
+                $this->notifyDBListeners('preQuery', $event);
 
                 if ( ! $event->skipOperation) {
                     $stmt = $this->dbh->query($query);
                     $this->_count++;
                 }
-                $this->getAttribute(IPF_ORM::ATTR_LISTENER)->postQuery($event);
+                $this->notifyDBListeners('postQuery', $event);
 
                 return $stmt;
             }
         } catch (IPF_ORM_Exception_Adapter $e) {
-        } catch (PDOException $e) { }
+        } catch (PDOException $e) {
+        }
 
         $this->rethrowException($e, $this);
     }
@@ -539,13 +543,13 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
             } else {
                 $event = new IPF_ORM_Event($this, IPF_ORM_Event::CONN_EXEC, $query, $params);
 
-                $this->getAttribute(IPF_ORM::ATTR_LISTENER)->preExec($event);
+                $this->notifyDBListeners('preExec', $event);
                 if ( ! $event->skipOperation) {
                     $count = $this->dbh->exec($query);
 
                     $this->_count++;
                 }
-                $this->getAttribute(IPF_ORM::ATTR_LISTENER)->postExec($event);
+                $this->notifyDBListeners('postExec', $event);
 
                 return $count;
             }
@@ -559,7 +563,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     {
         $event = new IPF_ORM_Event($this, IPF_ORM_Event::CONN_ERROR);
 
-        $this->getListener()->preError($event);
+        $this->notifyDBListeners('preError', $event);
         
         $name = 'IPF_ORM_Exception_' . $this->driverName;
 
@@ -573,7 +577,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
             throw $exc;
         }
         
-        $this->getListener()->postError($event);
+        $this->notifyDBListeners('postError', $event);
     }
 
     public function hasTable($name)
@@ -661,14 +665,14 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     {
         $event = new IPF_ORM_Event($this, IPF_ORM_Event::CONN_CLOSE);
 
-        $this->getAttribute(IPF_ORM::ATTR_LISTENER)->preClose($event);
+        $this->notifyDBListeners('preClose', $event);
 
         $this->clear();
         
         unset($this->dbh);
         $this->isConnected = false;
 
-        $this->getAttribute(IPF_ORM::ATTR_LISTENER)->postClose($event);
+        $this->notifyDBListeners('postClose', $event);
     }
 
     public function getTransactionLevel()
@@ -817,7 +821,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         if ($info['unix_socket']) {
             $pdoDsn = $info['scheme'] . ':unix_socket=' . $info['unix_socket'];
         } else {
- 	        $pdoDsn = $info['scheme'] . ':host=' . $info['host'];
+            $pdoDsn = $info['scheme'] . ':host=' . $info['host'];
         }
 
         if (isset($this->export->tmpConnectionDatabase) && $this->export->tmpConnectionDatabase) {
@@ -845,4 +849,12 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     {
         return IPF_ORM_Utils::getConnectionAsString($this);
     }
+
+    public function notifyDBListeners($method, $event)
+    {
+        foreach ($this->dbListeners as $listener)
+            if (method_exists($listener, $method))
+                $listener->$method($event);
+    }
 }
+

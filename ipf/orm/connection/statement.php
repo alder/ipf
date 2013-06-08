@@ -78,7 +78,7 @@ class IPF_ORM_Connection_Statement implements IPF_ORM_Adapter_Statement_Interfac
     {
         try {
             $event = new IPF_ORM_Event($this, IPF_ORM_Event::STMT_EXECUTE, $this->getQuery(), $params);
-            $this->_conn->getListener()->preStmtExecute($event);
+            $this->_conn->notifyDBListeners('preStmtExecute', $event);
 
             $result = true;
             if ( ! $event->skipOperation) {
@@ -86,7 +86,7 @@ class IPF_ORM_Connection_Statement implements IPF_ORM_Adapter_Statement_Interfac
                 $this->_conn->incrementQueryCount();
             }
 
-            $this->_conn->getListener()->postStmtExecute($event);
+            $this->_conn->notifyDBListeners('postStmtExecute', $event);
 
             return $result;
         } catch (PDOException $e) {
@@ -108,13 +108,13 @@ class IPF_ORM_Connection_Statement implements IPF_ORM_Adapter_Statement_Interfac
         $event->cursorOrientation = $cursorOrientation;
         $event->cursorOffset = $cursorOffset;
 
-        $data = $this->_conn->getListener()->preFetch($event);
+        $data = $this->_conn->notifyDBListeners('preFetch', $event);
 
         if ( ! $event->skipOperation) {
             $data = $this->_stmt->fetch($fetchMode, $cursorOrientation, $cursorOffset);
         }
 
-        $this->_conn->getListener()->postFetch($event);
+        $this->_conn->notifyDBListeners('postFetch', $event);
 
         return $data;
     }
@@ -126,7 +126,7 @@ class IPF_ORM_Connection_Statement implements IPF_ORM_Adapter_Statement_Interfac
         $event->fetchMode = $fetchMode;
         $event->columnIndex = $columnIndex;
 
-        $this->_conn->getListener()->preFetchAll($event);
+        $this->_conn->notifyDBListeners('preFetchAll', $event);
 
         if ( ! $event->skipOperation) {
             if ($columnIndex !== null) {
@@ -138,7 +138,7 @@ class IPF_ORM_Connection_Statement implements IPF_ORM_Adapter_Statement_Interfac
             $event->data = $data;
         }
 
-        $this->_conn->getListener()->postFetchAll($event);
+        $this->_conn->notifyDBListeners('postFetchAll', $event);
 
         return $data;
     }
@@ -183,3 +183,4 @@ class IPF_ORM_Connection_Statement implements IPF_ORM_Adapter_Statement_Interfac
         return $this->_stmt->setFetchMode($mode, $arg1, $arg2);
     }
 }
+

@@ -7,6 +7,7 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
     protected $_index         = 0;
     protected $_currIndex     = 0;
     protected $_queryRegistry;
+    public $dbListeners = array();
 
     private function __construct()
     {
@@ -23,7 +24,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
                         IPF_ORM::ATTR_RESULT_CACHE             => null,
                         IPF_ORM::ATTR_QUERY_CACHE              => null,
                         IPF_ORM::ATTR_LOAD_REFERENCES          => true,
-                        IPF_ORM::ATTR_LISTENER                 => new IPF_ORM_EventListener(),
                         IPF_ORM::ATTR_RECORD_LISTENER          => new IPF_ORM_Record_Listener(),
                         IPF_ORM::ATTR_THROW_EXCEPTIONS         => true,
                         IPF_ORM::ATTR_QUERY_LIMIT              => IPF_ORM::LIMIT_RECORDS,
