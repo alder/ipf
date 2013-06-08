@@ -137,7 +137,6 @@ final class IPF_Project{
                 return false;
         }
         $this->loadModels();
-        IPF_ORM_Manager::getInstance()->setAttribute(IPF_ORM::ATTR_VALIDATE, IPF_ORM::VALIDATE_ALL);
         $this->router = new IPF_Router();
         $this->router->dispatch(IPF_HTTP_URL::getAction()); 
         return true;

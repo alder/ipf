@@ -1026,24 +1026,20 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
         $dataType = $this->getTypeOf($fieldName);
 
-        // Validate field type, if type validation is enabled
-        if ($this->getAttribute(IPF_ORM::ATTR_VALIDATE) & IPF_ORM::VALIDATE_TYPES) {
-            if ( ! IPF_ORM_Validator::isValidType($value, $dataType)) {
-                $errorStack->add($fieldName, 'type');
-            }
-            if ($dataType == 'enum') {
-                $enumIndex = $this->enumIndex($fieldName, $value);
-                if ($enumIndex === false) {
-                    $errorStack->add($fieldName, 'enum');
-                }
+        // Validate field type
+        if ( ! IPF_ORM_Validator::isValidType($value, $dataType)) {
+            $errorStack->add($fieldName, 'type');
+        }
+        if ($dataType == 'enum') {
+            $enumIndex = $this->enumIndex($fieldName, $value);
+            if ($enumIndex === false) {
+                $errorStack->add($fieldName, 'enum');
             }
         }
 
-        // Validate field length, if length validation is enabled
-        if ($this->getAttribute(IPF_ORM::ATTR_VALIDATE) & IPF_ORM::VALIDATE_LENGTHS) {
-            if ( ! IPF_ORM_Validator::validateLength($value, $dataType, $this->getFieldLength($fieldName))) {
-                $errorStack->add($fieldName, 'length');
-            }
+        // Validate field length
+        if ( ! IPF_ORM_Validator::validateLength($value, $dataType, $this->getFieldLength($fieldName))) {
+            $errorStack->add($fieldName, 'length');
         }
 
         // Run all custom validators

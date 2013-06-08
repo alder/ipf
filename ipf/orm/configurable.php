@@ -65,7 +65,6 @@ abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
                     }
                 }
                 break;
-            case IPF_ORM::ATTR_VALIDATE:
             case IPF_ORM::ATTR_QUERY_LIMIT:
             case IPF_ORM::ATTR_QUOTE_IDENTIFIER:
             case IPF_ORM::ATTR_PORTABILITY:

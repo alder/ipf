@@ -112,7 +112,6 @@ final class IPF_ORM {
     const ATTR_DECIMAL_PLACES       = 141;
 
     const ATTR_PORTABILITY          = 106;
-    const ATTR_VALIDATE             = 107;
     const ATTR_COLL_KEY             = 108;
     const ATTR_QUERY_LIMIT          = 109;
     const ATTR_DEFAULT_TABLE_TYPE   = 112;
@@ -178,11 +177,6 @@ final class IPF_ORM {
     const HYDRATE_ARRAY             = 3;
 
     const HYDRATE_NONE              = 4;
-    const VALIDATE_NONE             = 0;
-    const VALIDATE_LENGTHS          = 1;
-    const VALIDATE_TYPES            = 2;
-    const VALIDATE_CONSTRAINTS      = 4;
-    const VALIDATE_ALL              = 7;
     const IDENTIFIER_AUTOINC        = 1;
     const IDENTIFIER_SEQUENCE       = 2;
     const IDENTIFIER_NATURAL        = 3;

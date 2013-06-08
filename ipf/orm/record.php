@@ -98,9 +98,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
     public function isValid()
     {
-        if ( ! $this->_table->getAttribute(IPF_ORM::ATTR_VALIDATE)) {
-            return true;
-        }
         // Clear the stack from any previous errors.
         $this->getErrorStack()->clear();
 
