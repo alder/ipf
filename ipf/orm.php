@@ -94,7 +94,6 @@ final class IPF_ORM {
     const ATTR_STATEMENT_CLASS      = 13;
     const ATTR_FETCH_TABLE_NAMES    = 14;
     const ATTR_FETCH_CATALOG_NAMES  = 15;
-    const ATTR_DRIVER_NAME          = 16;
     const ATTR_STRINGIFY_FETCHES    = 17;
     const ATTR_MAX_COLUMN_LEN       = 18;
 

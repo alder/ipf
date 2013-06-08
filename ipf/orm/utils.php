@@ -15,7 +15,7 @@ class IPF_ORM_Utils {
                 return "active";
                 break;
         }
-    }	
+    }
 
     public static function getConnectionAsString(IPF_ORM_Connection $connection)
     {
@@ -24,7 +24,7 @@ class IPF_ORM_Utils {
         $r[] = 'State               : ' . IPF_ORM_Utils::getConnectionStateAsString($connection->transaction->getState());
         $r[] = 'Open Transactions   : ' . $connection->transaction->getTransactionLevel();
         $r[] = 'Table in memory     : ' . $connection->count();
-        $r[] = 'Driver name         : ' . $connection->getAttribute(IPF_ORM::ATTR_DRIVER_NAME);
+        $r[] = 'Driver name         : ' . $connection->getDriverName();
         $r[] = "</pre>";
         return implode("\n",$r)."<br>";
     }

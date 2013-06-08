@@ -56,8 +56,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
             $this->dbh = $adapter;
             $this->isConnected = true;
         } else if (is_array($adapter)) {
-            $this->pendingAttributes[IPF_ORM::ATTR_DRIVER_NAME] = $adapter['scheme'];
-
             $this->options['dsn']      = $adapter['dsn'];
             $this->options['username'] = $adapter['user'];
             $this->options['password'] = $adapter['pass'];
@@ -239,10 +237,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
         // attach the pending attributes to adapter
         foreach($this->pendingAttributes as $attr => $value) {
-            // some drivers don't support setting this so we just skip it
-            if ($attr == IPF_ORM::ATTR_DRIVER_NAME) {
-                continue;
-            }
             $this->dbh->setAttribute($attr, $value);
         }
 
@@ -255,10 +249,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     public function incrementQueryCount() 
     {
         $this->_count++;
-    }
-
-    public function driverName($name)
-    {
     }
 
     public function supports($feature)

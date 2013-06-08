@@ -869,10 +869,10 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
         // initialize the base of the subquery
         $subquery = 'SELECT DISTINCT ' . $this->_conn->quoteIdentifier($primaryKey);
 
-        $driverName = $this->_conn->getAttribute(IPF_ORM::ATTR_DRIVER_NAME);
+        $driverName = $this->_conn->getDriverName();
 
         // pgsql needs the order by fields to be preserved in select clause
-        if ($driverName == 'pgsql') {
+        if ($driverName == 'Pgsql') {
             foreach ($this->_sqlParts['orderby'] as $part) {
                 $part = trim($part);
                 $e = $this->_tokenizer->bracketExplode($part, ' ');
@@ -894,7 +894,7 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
             }
         }
 
-        if ($driverName == 'mysql' || $driverName == 'pgsql') {
+        if ($driverName == 'Mysql' || $driverName == 'Pgsql') {
             foreach ($this->_expressionMap as $dqlAlias => $expr) {
                 if (isset($expr[1])) {
                     $subquery .= ', ' . $expr[0] . ' AS ' . $this->_aggregateAliasMap[$dqlAlias];
@@ -972,7 +972,7 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
             }
         }
 
-        if ($driverName == 'mysql' || $driverName == 'pgsql') {
+        if ($driverName == 'Mysql' || $driverName == 'Pgsql') {
             foreach ($parts as $k => $part) {
                 if (strpos($part, "'") !== false) {
                     continue;

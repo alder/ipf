@@ -85,9 +85,9 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
                 throw new IPF_ORM_Exception("First argument should be an instance of PDO");
             $driverName = $adapter->getAttribute(PDO::ATTR_DRIVER_NAME);
         } else if (is_array($adapter)) {
-            if ( ! isset($adapter[0])) {
+            if (!isset($adapter[0]))
                 throw new IPF_ORM_Exception('Empty data source name given.');
-            }
+
             $e = explode(':', $adapter[0]);
 
             if ($e[0] == 'uri') {

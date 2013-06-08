@@ -8,7 +8,6 @@ class IPF_ORM_Adapter
     const ATTR_CONNECTION_STATUS = 7;
     const ATTR_CURSOR = 10;
     const ATTR_CURSOR_NAME = 9;
-    const ATTR_DRIVER_NAME = 16;
     const ATTR_ERRMODE = 3;
     const ATTR_FETCH_CATALOG_NAMES = 15;
     const ATTR_FETCH_TABLE_NAMES = 14;
