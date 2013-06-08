@@ -71,7 +71,6 @@ abstract class IPF_ORM_Query_Abstract
                             );
     protected $_enumParams = array();
 
-    protected $_isLimitSubqueryUsed = false;
     protected $_pendingSetParams = array();
     protected $_components;
     protected $_preQueried = false;
@@ -227,11 +226,6 @@ abstract class IPF_ORM_Query_Abstract
     public function getView()
     {
         return $this->_view;
-    }
-
-    public function isLimitSubqueryUsed()
-    {
-        return $this->_isLimitSubqueryUsed;
     }
 
     public function convertEnums($params)
@@ -460,11 +454,6 @@ abstract class IPF_ORM_Query_Abstract
             $params = $this->convertEnums($params);
         } else {
             $query = $this->_view->getSelectSql();
-        }
-
-        if ($this->isLimitSubqueryUsed() &&
-                $this->_conn->getAttribute(IPF_ORM::ATTR_DRIVER_NAME) !== 'mysql') {
-            $params = array_merge($params, $params);
         }
 
         if ($this->_type !== self::SELECT) {

@@ -50,13 +50,11 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     public function __construct(IPF_ORM_Manager $manager, $adapter, $user = null, $pass = null)
     {
         if (is_object($adapter)) {
-            if ( ! ($adapter instanceof PDO) && ! in_array('IPF_ORM_Adapter_Interface', class_implements($adapter))) {
-                throw new IPF_ORM_Exception('First argument should be an instance of PDO or implement IPF_ORM_Adapter_Interface');
+            if (!($adapter instanceof PDO)) {
+                throw new IPF_ORM_Exception('First argument should be an instance of PDO');
             }
             $this->dbh = $adapter;
-
             $this->isConnected = true;
-
         } else if (is_array($adapter)) {
             $this->pendingAttributes[IPF_ORM::ATTR_DRIVER_NAME] = $adapter['scheme'];
 

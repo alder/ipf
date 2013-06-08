@@ -80,7 +80,6 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
         $this->_expressionMap = array();
         $this->_subqueryAliases = array();
         $this->_needsSubquery = false;
-        $this->_isLimitSubqueryUsed = false;
     }
 
     public function createSubquery()
@@ -769,7 +768,6 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
 
         if ( ! empty($this->_sqlParts['limit']) && $this->_needsSubquery &&
                 $table->getAttribute(IPF_ORM::ATTR_QUERY_LIMIT) == IPF_ORM::LIMIT_RECORDS) {
-            $this->_isLimitSubqueryUsed = true;
             $needsSubQuery = true;
         }
 

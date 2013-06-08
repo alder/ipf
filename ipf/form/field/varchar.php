@@ -1,11 +1,13 @@
 <?php
 
-class IPF_Form_Field_Varchar extends IPF_Form_Field{
+class IPF_Form_Field_Varchar extends IPF_Form_Field
+{
     public $widget = 'IPF_Form_Widget_TextInput';
     public $max_length = null;
     public $min_length = null;
 
-    public function clean($value){
+    public function clean($value)
+    {
         parent::clean($value);
         if (in_array($value, $this->empty_values)) {
             $value = '';
@@ -20,14 +22,16 @@ class IPF_Form_Field_Varchar extends IPF_Form_Field{
         return $value;
     }
 
-    public function widgetAttrs($widget){
+    public function widgetAttrs($widget)
+    {
         if ($this->max_length !== null and in_array(get_class($widget), array('IPF_Form_Widget_TextInput', 'IPF_Form_Widget_PasswordInput'))) {
             return array('maxlength'=>$this->max_length);
         }
         return array();
     }
     
-    protected function getWidget(){
+    protected function getWidget()
+    {
         if ($this->max_length>255)
             return 'IPF_Form_Widget_TextAreaInput';
         return $this->widget;

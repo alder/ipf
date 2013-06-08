@@ -60,9 +60,9 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
 
     public function getQueryRegistry()
     {
-      	if ( ! isset($this->_queryRegistry)) {
-      	   $this->_queryRegistry = new IPF_ORM_Query_Registry;
-      	}
+        if ( ! isset($this->_queryRegistry)) {
+            $this->_queryRegistry = new IPF_ORM_Query_Registry;
+        }
         return $this->_queryRegistry;
     }
 
@@ -73,23 +73,17 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
         return $this;
     }
 
-    public static function connection($adapter = null, $name = null)
+    public static function connection()
     {
-        if ($adapter == null) {
-            return IPF_ORM_Manager::getInstance()->getCurrentConnection();
-        } else {
-            return IPF_ORM_Manager::getInstance()->openConnection($adapter, $name);
-        }
+        return IPF_ORM_Manager::getInstance()->getCurrentConnection();
     }
 
     public function openConnection($adapter, $name = null, $setCurrent = true, $persistent = false)
     {
         if (is_object($adapter)) {
-            if ( ! ($adapter instanceof PDO) && ! in_array('IPF_ORM_Adapter_Interface', class_implements($adapter))) {
-                throw new IPF_ORM_Exception("First argument should be an instance of PDO or implement IPF_ORM_Adapter_Interface");
-            }
-
-            $driverName = $adapter->getAttribute(IPF_ORM::ATTR_DRIVER_NAME);
+            if (!($adapter instanceof PDO))
+                throw new IPF_ORM_Exception("First argument should be an instance of PDO");
+            $driverName = $adapter->getAttribute(PDO::ATTR_DRIVER_NAME);
         } else if (is_array($adapter)) {
             if ( ! isset($adapter[0])) {
                 throw new IPF_ORM_Exception('Empty data source name given.');

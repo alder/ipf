@@ -2,7 +2,8 @@
 
 class IPF_Router
 {
-    public static function response500($e){
+    public static function response500($e)
+    {
         if (IPF::get('debug'))
             return new IPF_HTTP_Response_ServerErrorDebug($e);
         else
@@ -12,7 +13,7 @@ class IPF_Router
     public static function dispatch($query='')
     {
         try{
-     		$query = preg_replace('#^(/)+#', '/', '/'.$query);
+            $query = preg_replace('#^(/)+#', '/', '/'.$query);
             $req = new IPF_HTTP_Request($query);
             $middleware = array();
             foreach (IPF::get('middlewares', array()) as $mw) {
