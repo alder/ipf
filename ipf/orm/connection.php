@@ -548,22 +548,15 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     public function rethrowException(Exception $e, $invoker)
     {
         $event = new IPF_ORM_Event($this, IPF_ORM_Event::CONN_ERROR);
+        $this->notifyDBListeners('onError', $event);
 
-        $this->notifyDBListeners('preError', $event);
-        
         $name = 'IPF_ORM_Exception_' . $this->driverName;
-
         $exc  = new $name($e->getMessage(), (int) $e->getCode());
-        if ( ! is_array($e->errorInfo)) {
+        if (!is_array($e->errorInfo)) {
             $e->errorInfo = array(null, null, null, null);
         }
         $exc->processErrorInfo($e->errorInfo);
-
-         if ($this->getAttribute(IPF_ORM::ATTR_THROW_EXCEPTIONS)) {
-            throw $exc;
-        }
-        
-        $this->notifyDBListeners('postError', $event);
+        throw $exc;
     }
 
     public function hasTable($name)
