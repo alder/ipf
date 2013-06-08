@@ -426,7 +426,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
 
         if (empty($seq) && count($identifier) == 1 && $identifier[0] == $table->getIdentifier() &&
             $table->getIdentifierType() != IPF_ORM::IDENTIFIER_NATURAL) {
-            if (strtolower($this->conn->getDriverName()) == 'pgsql') {
+            if (strtolower($this->conn->getDriverName()) == 'Pgsql') {
                 $seq = $table->getTableName() . '_' . $identifier[0];
             }
 

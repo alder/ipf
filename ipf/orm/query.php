@@ -811,12 +811,12 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
                 // what about composite keys?
                 $idColumnName = $table->getColumnName($table->getIdentifier());
                 switch (strtolower($this->_conn->getDriverName())) {
-                    case 'mysql':
+                    case 'Mysql':
                         // mysql doesn't support LIMIT in subqueries
                         $list = $this->_conn->execute($subquery, $params)->fetchAll(IPF_ORM::FETCH_COLUMN);
                         $subquery = implode(', ', array_map(array($this->_conn, 'quote'), $list));
                         break;
-                    case 'pgsql':
+                    case 'Pgsql':
                         // pgsql needs special nested LIMIT subquery
                         $subquery = 'SELECT ipf_orm_subquery_alias.' . $idColumnName . ' FROM (' . $subquery . ') AS ipf_orm_subquery_alias';
                         break;
