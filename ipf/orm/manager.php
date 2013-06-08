@@ -128,7 +128,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
         if ($persistent)
             $conn->setOption(IPF_ORM::ATTR_PERSISTENT, true);
         $conn->setName($name);
-        $conn->setCharset('utf8');
 
         $this->_connections[$name] = $conn;
 

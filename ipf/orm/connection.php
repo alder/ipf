@@ -240,10 +240,16 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
         $this->isConnected = true;
 
+        $this->onConnect();
+
         $this->notifyDBListeners('postConnect', $event);
         return true;
     }
-    
+
+    protected function onConnect()
+    {
+    }
+
     public function incrementQueryCount() 
     {
         $this->_count++;
@@ -353,10 +359,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
                 . ' VALUES (' . implode(', ', $a) . ')';
 
         return $this->exec($query, array_values($fields));
-    }
-
-    public function setCharset($charset)
-    {
     }
 
     public function quoteIdentifier($str, $checkOption = true)

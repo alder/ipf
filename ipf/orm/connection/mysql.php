@@ -48,22 +48,15 @@ class IPF_ORM_Connection_Mysql extends IPF_ORM_Connection
         parent::__construct($manager, $adapter);
     }
 
-    public function connect()
+    protected function onConnect()
     {
-        $connected = parent::connect();
         $this->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-        return $connected;
+        $this->exec('SET NAMES \'utf8\'');
     }
-    
+
     public function getDatabaseName()
     {
         return $this->fetchOne('SELECT DATABASE()');
-    }
-
-    public function setCharset($charset)
-    {
-        $query = 'SET NAMES ' . $this->quote($charset);
-        $this->exec($query);
     }
 
     public function replace(IPF_ORM_Table $table, array $fields, array $keys)
