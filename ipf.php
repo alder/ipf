@@ -31,11 +31,14 @@ final class IPF
         if (file_exists($settings_local_file))
             IPF::applySettings(require $settings_local_file);
 
-        if (!isset(IPF::$settings['dsn']))
-            throw new IPF_Exception_Settings('Please specify DSN in settings file');
-        else
-            if (!is_string(IPF::$settings['dsn']))
-                throw new IPF_Exception_Settings('DSN must be string');
+        if (!isset(IPF::$settings['dsn']) && !isset(IPF::$settings['database']))
+            throw new IPF_Exception_Settings('Please specify database parameters or DSN in settings file');
+
+        if (isset(IPF::$settings['database']) && !is_array(IPF::$settings['database']))
+            throw new IPF_Exception_Settings('Database must be array with keys: driver, host, port (optional), database, username, password, options (optional)');
+
+        if (isset(IPF::$settings['dsn']) && !is_string(IPF::$settings['dsn']))
+            throw new IPF_Exception_Settings('DSN must be string');
 
         if (!isset(IPF::$settings['tmp']))
             IPF::$settings['tmp'] = '/tmp';

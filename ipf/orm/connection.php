@@ -57,12 +57,13 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
             $this->isConnected = true;
         } else if (is_array($adapter)) {
             $this->options['dsn']      = $adapter['dsn'];
-            $this->options['username'] = $adapter['user'];
-            $this->options['password'] = $adapter['pass'];
-            
-            $this->options['other'] = array();  
-            if (isset($adapter['other'])) {
-                $this->options['other'] = array(IPF_ORM::ATTR_PERSISTENT => $adapter['persistent']);
+            $this->options['username'] = $adapter['username'];
+            $this->options['password'] = $adapter['password'];
+
+            $this->options['other']    = array();
+            if (isset($adapter['options'])) {
+                if (in_array('persistent', $adapter['options']))
+                    $this->options['other'][PDO::ATTR_PERSISTENT] = true;
             }
         }
 

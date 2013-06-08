@@ -115,16 +115,12 @@ final class IPF_Project{
     }
 
     public function run() {
-        $dsn = IPF::get('dsn');
-        if ($dsn=='')
-            throw new IPF_Exception_Panic('Specify dsn in config file');
-
         if (IPF::get('debug')) {
             $this->sqlProfiler = new IPF_ORM_Connection_Profiler();
             IPF_ORM_Manager::getInstance()->dbListeners[] = $this->sqlProfiler;
         }
 
-        IPF_ORM_Manager::getInstance()->openConnection($dsn, null, true, IPF::get('db_persistent', false));
+        IPF_ORM_Manager::getInstance()->openConnection(IPF::get('database', IPF::get('dsn')));
 
         if (php_sapi_name() == 'cli'){
             $this->cli();

@@ -58,39 +58,31 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
         return IPF_ORM_Manager::getInstance()->getCurrentConnection();
     }
 
-    public function openConnection($adapter, $name = null, $setCurrent = true, $persistent = false)
+    public function openConnection($adapter, $name = null, $setCurrent = true)
     {
         if (is_object($adapter)) {
             if (!($adapter instanceof PDO))
                 throw new IPF_ORM_Exception("First argument should be an instance of PDO");
             $driverName = $adapter->getAttribute(PDO::ATTR_DRIVER_NAME);
         } else if (is_array($adapter)) {
-            if (!isset($adapter[0]))
+            if (!count($adapter))
                 throw new IPF_ORM_Exception('Empty data source name given.');
 
-            $e = explode(':', $adapter[0]);
-
-            if ($e[0] == 'uri') {
-                $e[0] = 'odbc';
+            if (array_key_exists('database', $adapter)) {
+                $adapter['dsn'] = $this->makeDsnForPDO($adapter['driver'], $adapter['host'], @$adapter['port'], $adapter['database']);
+            } else {
+                $adapter = array(
+                    'dsn'       => urldecode($adapter[0]),
+                    'username'  => (isset($adapter[1])) ? urldecode($adapter[1]) : null,
+                    'password'  => (isset($adapter[2])) ? urldecode($adapter[2]) : null,
+                );
             }
 
-            $parts['dsn']    = $adapter[0];
-            $parts['scheme'] = $e[0];
-            $parts['user']   = (isset($adapter[1])) ? $adapter[1] : null;
-            $parts['pass']   = (isset($adapter[2])) ? $adapter[2] : null;
-            $driverName = $e[0];
-            $adapter = $parts;
+            $e = explode(':', $adapter['dsn']);
+            $driverName = $e[0] !== 'uri' ? $e[0] : 'odbc';
         } else {
-            $parts = $this->parseDsn($adapter);
-            $driverName = $parts['scheme'];
-            $adapter = $parts;
-        }
-
-        // Decode adapter information
-        if (is_array($adapter)) {
-            foreach ($adapter as $key => $value) {
-                $adapter[$key]  = $value?urldecode($value):null;
-            }
+            $adapter = $this->parseDsn($adapter);
+            $driverName = $adapter['scheme'];
         }
 
         if ($name !== null) {
@@ -125,8 +117,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
 
         $className = $drivers[$driverName];
         $conn = new $className($this, $adapter);
-        if ($persistent)
-            $conn->setOption(IPF_ORM::ATTR_PERSISTENT, true);
         $conn->setName($name);
 
         $this->_connections[$name] = $conn;
@@ -203,7 +193,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
             case 'sqlite3':
                 if (isset($parts['host']) && $parts['host'] == ':memory') {
                     $parts['database'] = ':memory:';
-                    $parts['dsn']      = 'sqlite::memory:';
                 } else {
                     //fix windows dsn we have to add host: to path and set host to null
                     if (isset($parts['host'])) {
@@ -211,8 +200,9 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
                         $parts['host'] = null;
                     }
                     $parts['database'] = $parts['path'];
-                    $parts['dsn'] = $parts['scheme'] . ':' . $parts['path'];
                 }
+
+                $parts['dsn'] = $this->makeDsnForPDO($parts['scheme'], $parts['host'], @$parts['port'], $parts['database']);
 
                 break;
 
@@ -228,9 +218,7 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
                     throw new IPF_ORM_Exception('No hostname set in data source name');
                 }
 
-                $parts['dsn'] = $parts['scheme'] . ':host='
-                              . $parts['host'] . (isset($parts['port']) ? ':' . $parts['port']:null) . ';dbname='
-                              . $parts['database'];
+                $parts['dsn'] = $this->makeDsnForPDO($parts['scheme'], $parts['host'], @$parts['port'], $parts['database']);
 
                 break;
 
@@ -253,9 +241,7 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
                     throw new IPF_ORM_Exception('No hostname set in data source name');
                 }
 
-                $parts['dsn'] = $parts['scheme'] . ':host='
-                              . $parts['host'] . (isset($parts['port']) ? ';port=' . $parts['port']:null) . ';dbname='
-                              . $parts['database'];
+                $parts['dsn'] = $this->makeDsnForPDO($parts['scheme'], $parts['host'], @$parts['port'], $parts['database']);
 
                 break;
             default:
@@ -263,6 +249,38 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
         }
 
         return $parts;
+    }
+
+    public function makeDsnForPDO($driver, $host, $port, $database)
+    {
+        switch ($driver) {
+            case 'sqlite':
+            case 'sqlite2':
+            case 'sqlite3':
+                if ($host == ':memory') {
+                    return 'sqlite::memory:';
+                } else {
+                    return $driver . ':' . $database;
+                }
+
+            case 'mssql':
+            case 'dblib':
+                return $driver . ':host=' . $host . ($port ? ':' . $port : '') . ';dbname=' . $database;
+
+            case 'mysql':
+            case 'informix':
+            case 'oci8':
+            case 'oci':
+            case 'firebird':
+            case 'pgsql':
+            case 'odbc':
+            case 'mock':
+            case 'oracle':
+                return $driver . ':host=' . $host . ($port ? ';port=' . $port : '') . ';dbname=' . $database;
+
+            default:
+                throw new IPF_ORM_Exception('Unknown driver '.$driver);
+        }
     }
 
     public function getConnection($name)
