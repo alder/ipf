@@ -6,7 +6,6 @@ class IPF_ORM_Connection_Mysql extends IPF_ORM_Connection
 
     public function __construct(IPF_ORM_Manager $manager, $adapter)
     {
-        $this->setAttribute(IPF_ORM::ATTR_DEFAULT_TABLE_TYPE, 'INNODB');
         $this->supported = array(
                           'sequences'            => 'emulated',
                           'indexes'              => true,
@@ -27,6 +26,7 @@ class IPF_ORM_Connection_Mysql extends IPF_ORM_Connection
                           'identifier_quoting'   => true,
                           'pattern_escaping'     => true
                           );
+        $this->attributes[IPF_ORM::ATTR_DEFAULT_TABLE_TYPE] = 'INNODB';
 
         $this->properties['string_quoting'] = array('start' => "'",
                                                     'end' => "'",
