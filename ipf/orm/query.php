@@ -766,8 +766,7 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
         $table = $map['table'];
         $rootAlias = key($this->_queryComponents);
 
-        if ( ! empty($this->_sqlParts['limit']) && $this->_needsSubquery &&
-                $table->getAttribute(IPF_ORM::ATTR_QUERY_LIMIT) == IPF_ORM::LIMIT_RECORDS) {
+        if (!empty($this->_sqlParts['limit']) && $this->_needsSubquery) {
             $needsSubQuery = true;
         }
 

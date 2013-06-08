@@ -111,7 +111,6 @@ final class IPF_ORM {
 
     const ATTR_PORTABILITY          = 106;
     const ATTR_COLL_KEY             = 108;
-    const ATTR_QUERY_LIMIT          = 109;
     const ATTR_DEFAULT_TABLE_TYPE   = 112;
     const ATTR_DEF_TEXT_LENGTH      = 113;
     const ATTR_DEF_VARCHAR_LENGTH   = 114;
@@ -139,11 +138,6 @@ final class IPF_ORM {
     const ATTR_RECURSIVE_MERGE_FIXTURES = 162;
     const ATTR_SINGULARIZE_IMPORT       = 163;
     const ATTR_USE_DQL_CALLBACKS        = 164;
-
-    const LIMIT_ROWS       = 1;
-    const QUERY_LIMIT_ROWS = 1;
-    const LIMIT_RECORDS       = 2;
-    const QUERY_LIMIT_RECORDS = 2;
 
     const FETCH_IMMEDIATE       = 0;
     const FETCH_BATCH           = 1;

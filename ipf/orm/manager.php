@@ -25,7 +25,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
                         IPF_ORM::ATTR_QUERY_CACHE              => null,
                         IPF_ORM::ATTR_LOAD_REFERENCES          => true,
                         IPF_ORM::ATTR_THROW_EXCEPTIONS         => true,
-                        IPF_ORM::ATTR_QUERY_LIMIT              => IPF_ORM::LIMIT_RECORDS,
                         IPF_ORM::ATTR_IDXNAME_FORMAT           => "%s_idx",
                         IPF_ORM::ATTR_SEQNAME_FORMAT           => "%s_seq",
                         IPF_ORM::ATTR_TBLNAME_FORMAT           => "%s",
