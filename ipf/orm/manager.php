@@ -82,6 +82,8 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
             $driverName = $e[0] !== 'uri' ? $e[0] : 'odbc';
         } else {
             $adapter = $this->parseDsn($adapter);
+            $adapter['username'] = $adapter['user'];
+            $adapter['password'] = $adapter['pass'];
             $driverName = $adapter['scheme'];
         }
 
