@@ -10,6 +10,11 @@ class IPF_ORM_Template_Orderable extends IPF_ORM_Template
             $this->columnName = $options['name'];
     }
 
+    public function getColumnName()
+    {
+        return $this->columnName;
+    }
+
     public function setTableDefinition()
     {
         $this->hasColumn($this->columnName, 'integer', null, '');
