@@ -853,7 +853,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     public function notifyDBListeners($method, $event)
     {
         foreach ($this->dbListeners as $listener)
-            if (method_exists($listener, $method))
+            if (is_callable(array($listener, $method)))
                 $listener->$method($event);
     }
 }
