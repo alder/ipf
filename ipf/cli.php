@@ -5,7 +5,7 @@ class IPF_Cli{
     protected $commands;
 
     public function __construct(){
-        $this->commands = array('help','sql','buildmodels','buildcontribmodels','syncdb', 'createsuperuser', 'syncperms');
+        $this->commands = array('help','sql','buildmodels','buildcontribmodels','syncdb', 'createsuperuser', 'syncperms', 'fixtures');
     }
     
     protected function usage(&$args){
@@ -58,7 +58,7 @@ class IPF_Cli{
         $username = '';  while ($username==''){  print "  Username: "; $username = trim(fgets(STDIN)); };
         $password = '';  while ($password==''){  print "  Password: "; $password = trim(fgets(STDIN)); };
         $email = '';  while ($email==''){  print "  e-mail: "; $email = trim(fgets(STDIN)); };
-        
+
         $su = new User();
         $su->username = $username;
         $su->email = $email;
@@ -70,27 +70,32 @@ class IPF_Cli{
         print "Done\n";
     }
 
-    public function run(){
-        
+    protected function fixtures(&$args)
+    {
+        print "Load project fixtures to database\n";
+        IPF_Project::getInstance()->loadFixtures();
+    }
+
+    public function run()
+    {
         print "IPF command line tool. Version: ".IPF_Version::$name."\n";
         print "Project config: ".IPF::get('settings_file')."\n";
-        
+
         $opt  = new IPF_Getopt();
         //$z = $opt->getopt2($opt->readPHPArgv(), array('s',)); //, array('s',));
         $args = $opt->readPHPArgv();
-        if (count($args)==1)
-        {
+        if (count($args) == 1) {
             $this->usage($args);
             return;
         }
             
-        if (in_array($args[1],$this->commands))
-        {
+        if (in_array($args[1], $this->commands)) {
             eval('$this->'.$args[1].'($args);');
             return;
         }
-        
+
         print "Unknown command: '".$args[1]."'\n";
         $this->usage($args);
     }
 }
+

@@ -101,6 +101,45 @@ final class IPF_Project{
         return $sql;
     }
 
+    public function loadFixtures()
+    {
+        $ficturesPath = IPF::get('project_path').DIRECTORY_SEPARATOR.'fixtures.php';
+        if (!is_file($ficturesPath)) {
+            echo "No fixtures found\n";
+            return;
+        }
+
+        $this->loadModels();
+
+        $fixtures = require $ficturesPath;
+
+        foreach ($fixtures as $fixture) {
+            $modelClass = $fixture['model'];
+            $key = $fixture['key'];
+            $records = $fixture['records'];
+            echo "Loading $modelClass ";
+            foreach ($records as $record) {
+                $model = IPF_ORM::getTable($modelClass)
+                    ->createQuery()
+                    ->where($key . ' = ?', array($record[$key]))
+                    ->limit(1)
+                    ->execute();
+
+                if ($model)
+                    $model = $model[0];
+                else
+                    $model = new $modelClass;
+
+                foreach ($record as $k => $v)
+                    $model->$k = $v;
+
+                $model->save();
+                echo '.';
+            }
+            echo "\n";
+        }
+    }
+
     public function loadModels(){
         foreach( $this->apps as $appname=>&$app){
             if (substr($appname,0,4)=='IPF_')
