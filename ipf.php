@@ -176,6 +176,9 @@ final class IPF
 function __($str)
 {
     $t = trim($str);
+    $tr = IPF::get('translations');
+    if ($tr && array_key_exists($t, $tr))
+        $t = $tr[$t];
     return $t;
 }
 
