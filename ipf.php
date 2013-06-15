@@ -11,7 +11,7 @@ final class IPF
 {
     private static $settings = array();
 
-    private static function applySettings($settings)
+    private static function applySettings(&$settings)
     {
         foreach($settings as $key=>$val)
             IPF::$settings[strtolower($key)] = $val;
@@ -105,16 +105,28 @@ final class IPF
         }
     }
 
+    private static function requestedFileExists()
+    {
+        $parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+        $path = $_SERVER['DOCUMENT_ROOT'] . urldecode($parts[0]);
+        return is_file($path);
+    }
+
     public static function boot($ipf_path, $project_path)
     {
-        IPF::$settings['ipf_path']=$ipf_path;
-        IPF::$settings['project_path']=$project_path;
+        if (php_sapi_name() === 'cli-server' && IPF::requestedFileExists())
+            return false;
+
+        IPF::$settings['ipf_path'] = $ipf_path;
+        IPF::$settings['project_path'] = $project_path;
+
         try {
             IPF::loadSettings();
-            date_default_timezone_set(IPF::$settings['time_zone']);            
+            date_default_timezone_set(IPF::$settings['time_zone']);
         } catch(IPF_Exception_Settings $e) {
             die('Setting Error: '.$e->getMessage()."\n");
         }
+        return true;
     }
 
     private function __construct() {}

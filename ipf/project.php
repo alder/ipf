@@ -153,19 +153,7 @@ final class IPF_Project{
         $cli->run();
     }
 
-    private function requestedFileExists()
-    {
-        $parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-        $path = $_SERVER['DOCUMENT_ROOT'] . urldecode($parts[0]);
-        return is_file($path);
-    }
-
     public function run() {
-        $sapiName = php_sapi_name();
-
-        if ($sapiName === 'cli-server' && $this->requestedFileExists())
-            return false;
-
         if (IPF::get('debug')) {
             $this->sqlProfiler = new IPF_ORM_Connection_Profiler();
             IPF_ORM_Manager::getInstance()->dbListeners[] = $this->sqlProfiler;
@@ -173,7 +161,7 @@ final class IPF_Project{
 
         IPF_ORM_Manager::getInstance()->openConnection(IPF::get('database', IPF::get('dsn')));
 
-        if ($sapiName === 'cli') {
+        if (php_sapi_name() === 'cli') {
             $this->cli();
         } else {
             $this->loadModels();
