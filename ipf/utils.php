@@ -4,15 +4,7 @@ class IPF_Utils
 {
     public static function isValidName($s, $max_length=50)
     {
-        if (!is_string($s))
-            return false;
-        if ( (strlen($s)==0) || (strlen($s)>$max_length) )
-            return false;
-        if ( is_numeric($s[0]))
-            return false;
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $s ))
-            return false;
-        return true;
+        return is_string($s) && preg_match('/^[a-zA-Z_][a-zA-Z0-9_]{0,'.($max_length-1).'}$/', $s) === 1;
     }
 
     public static function isEmail($value)
