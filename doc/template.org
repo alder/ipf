@@ -9,7 +9,7 @@
 ** Tags
 
 *** print
-    Syntax: ={<expr>[modifiers]}=
+    Syntax: ={<expr>[modifiers]?}=
 
     Outputs expression.
 
@@ -74,7 +74,7 @@
 ** Predefined custom tags
 
 *** url
-    Syntax: ={url '<view-name>'[, array(<arg>, ...)]}=
+    Syntax: ={url '<view-name>'[, array([<arg>]*)]?}=
 
     Examples: ={url 'Content_View_Index'}=, ={url 'Catalog_View_Products', array($product->slug)}=, ={url 'News_View_Item', array($item->date, $item->slug)}=
 
@@ -88,9 +88,9 @@
 ** Modifiers
 
    Modifier is a transformation applied to a printed value.
-   Some modifiers have one or more parameters.
+   Some modifiers have one or more parameters. All parameters have default values and can be omitted.
 
-   ={<expr> [|<modifier>[:<params>]]*}=
+   ={<expr> [|<modifier>[:<params>]?]*}=
 
    Where =<params>= is a comma-separated list of parameters.
 
