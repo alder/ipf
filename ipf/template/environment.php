@@ -11,6 +11,20 @@ class IPF_Template_Environment
         $this->cache = $cache;
     }
 
+    public function loadTemplateFile($filename)
+    {
+        // FIXME: Very small security check, could be better.
+        if (strpos($filename, '..') !== false) {
+            throw new IPF_Exception(sprintf(__('Template file contains invalid characters: %s'), $filename));
+        }
+        foreach ($this->folders as $folder) {
+            if (file_exists($folder.'/'.$filename)) {
+                return file_get_contents($folder.'/'.$filename);
+            }
+        }
+        throw new IPF_Exception(sprintf(__('Template file not found: %s'), $filename));
+    }
+
     public function getCompiledTemplateName($template)
     {
         $_tmp = var_export($this->folders, true);

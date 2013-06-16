@@ -22,7 +22,7 @@ class IPF_Template
 
     public function compile()
     {
-        $compiler = new IPF_Template_Compiler($this->tpl, $this->environment->folders);
+        $compiler = new IPF_Template_Compiler($this->tpl, $this->environment);
         return $compiler->getCompiledTemplate();
     }
 

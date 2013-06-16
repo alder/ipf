@@ -62,7 +62,7 @@ class IPF_Template_Compiler
 
     protected $_currentTag;
 
-    public $templateFolders = array();
+    private $environment;
 
     public $templateContent = '';
 
@@ -70,7 +70,7 @@ class IPF_Template_Compiler
 
     public $_extendedTemplate = '';
 
-    function __construct($template_file, $folders=array(), $load=true)
+    function __construct($template_file, $environment, $load=true)
     {
         $allowedtags = IPF::get('template_tags', array());
         $this->_allowedTags = array_merge($allowedtags, $this->_allowedTags);
@@ -85,9 +85,9 @@ class IPF_Template_Compiler
         $this->_allowedInExpr = array_merge($this->_vartype, $this->_op);
         $this->_allowedAssign = array_merge($this->_vartype, $this->_assignOp,
                                             $this->_op);
-        $this->templateFolders = $folders;
+        $this->environment = $environment;
         if ($load) {
-            $this->loadTemplateFile($template_file);
+            $this->templateContent = $this->environment->loadTemplateFile($template_file);
         }
     }
 
@@ -185,7 +185,7 @@ class IPF_Template_Compiler
         if (strlen($this->_extendedTemplate) > 0) {
             // The template of interest is now the extended template
             // as we are not in a base template
-            $this->loadTemplateFile($this->_extendedTemplate);
+            $this->templateContent = $this->environment->loadTemplateFile($this->_extendedTemplate);
             $this->_sourceFile = $this->_extendedTemplate;
             $this->compileBlocks(); //It will recurse to the base template.
         } else {
@@ -194,22 +194,6 @@ class IPF_Template_Compiler
                 $this->templateContent = preg_replace("!{block\s(\S+?)}(.*?){/block}!s", "{block $1}", $tplcontent, -1);
             }
         }
-    }
-
-    function loadTemplateFile($file)
-    {
-        // FIXME: Very small security check, could be better.
-        if (strpos($file, '..') !== false) {
-            throw new IPF_Exception(sprintf(__('Template file contains invalid characters: %s'), $file));
-        }
-        foreach ($this->templateFolders as $folder) {
-            if (file_exists($folder.'/'.$file)) {
-                $this->templateContent = file_get_contents($folder.'/'.$file);
-                return;
-            }
-        }
-        // File not found in all the folders.
-        throw new IPF_Exception(sprintf(__('Template file not found: %s'), $file));
     }
 
     function _callback($matches)
@@ -404,7 +388,7 @@ class IPF_Template_Compiler
         case 'include':
             // XXX fixme: Will need some security check, when online editing.
             $argfct = preg_replace('!^[\'"](.*)[\'"]$!', '$1', $args);
-            $_comp = new IPF_Template_Compiler($argfct, $this->templateFolders);
+            $_comp = new IPF_Template_Compiler($argfct, $this->environment);
             $res = $_comp->compile();
             $this->updateModifierStack($_comp);
             break;
