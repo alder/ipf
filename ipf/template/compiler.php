@@ -424,35 +424,17 @@ class IPF_Template_Compiler
         return $res;
     }
 
-    function _parseFinal($string, $allowed=array(),
-                         $exceptchar=array(';'), $getAsArray=false)
+    private function _parseFinal($string, $allowed=array(), $exceptchar=array(';'))
     {
         $tokens = token_get_all('<?php '.$string.'?>');
         $result = '';
-        $first = true;
         $inDot = false;
-        $firstok = array_shift($tokens);
-        $afterAs = false;
-        $f_key = '';
-        $f_val = '';
-        $results = array();
-
-        // il y a un bug, parfois le premier token n'est pas T_OPEN_TAG...
-        if ($firstok == '<' && $tokens[0] == '?' && is_array($tokens[1])
-            && $tokens[1][0] == T_STRING && $tokens[1][1] == 'php') {
-            array_shift($tokens);
-            array_shift($tokens);
-        }
         foreach ($tokens as $tok) {
             if (is_array($tok)) {
                 list($type, $str) = $tok;
-                $first = false;
-                if($type == T_CLOSE_TAG){
+                if ($type == T_OPEN_TAG || $type == T_CLOSE_TAG)
                     continue;
-                }
-                if ($type == T_AS) {
-                    $afterAs = true;
-                }
+
                 if ($type == T_STRING && $inDot) {
                     $result .= $str;
                 } elseif ($type == T_VARIABLE) {
@@ -475,23 +457,12 @@ class IPF_Template_Compiler
                     $result.=$tok;
                 } elseif ($tok ==']') {
                     $result.=$tok;
-                } elseif ($getAsArray && $tok == ',') {
-                    $results[]=$result;
-                    $result='';
                 } else {
                     $result .= $tok;
                 }
-                $first = false;
             }
         }
-        if (!$getAsArray) {
-            return $result;
-        } else {
-            if ($result != '') {
-                $results[] = $result;
-            }
-            return $results;
-        }
+        return $result;
     }
 
     protected function updateModifierStack($compiler)
