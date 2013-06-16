@@ -2,28 +2,31 @@
 
 class IPF_Template_Compiler
 {
-    protected $_literals;
-    protected $_vartype = array(T_CHARACTER, T_CONSTANT_ENCAPSED_STRING,
-                                T_DNUMBER, T_ENCAPSED_AND_WHITESPACE,
-                                T_LNUMBER, T_OBJECT_OPERATOR, T_STRING,
-                                T_WHITESPACE, T_ARRAY);
+    private static $allowedInVar = null,
+                   $allowedInExpr = null,
+                   $allowedAssign = null,
+                   $allowedForeach = null;
 
-    protected $_assignOp = array(T_AND_EQUAL, T_DIV_EQUAL, T_MINUS_EQUAL,
-                                 T_MOD_EQUAL, T_MUL_EQUAL, T_OR_EQUAL,
-                                 T_PLUS_EQUAL, T_PLUS_EQUAL, T_SL_EQUAL,
-                                 T_SR_EQUAL, T_XOR_EQUAL);
+    public static function init()
+    {
+        $vartype = array(T_CHARACTER, T_CONSTANT_ENCAPSED_STRING, T_DNUMBER,
+            T_ENCAPSED_AND_WHITESPACE, T_LNUMBER, T_OBJECT_OPERATOR, T_STRING,
+            T_WHITESPACE, T_ARRAY);
 
-    protected  $_op = array(T_BOOLEAN_AND, T_BOOLEAN_OR, T_EMPTY, T_INC,
-                            T_ISSET, T_IS_EQUAL, T_IS_GREATER_OR_EQUAL,
-                            T_IS_IDENTICAL, T_IS_NOT_EQUAL, T_IS_NOT_IDENTICAL,
-                            T_IS_SMALLER_OR_EQUAL, T_LOGICAL_AND, T_LOGICAL_OR,
-                            T_LOGICAL_XOR, T_SR, T_SL, T_DOUBLE_ARROW);
+        $assignOp = array(T_AND_EQUAL, T_DIV_EQUAL, T_MINUS_EQUAL, T_MOD_EQUAL,
+            T_MUL_EQUAL, T_OR_EQUAL, T_PLUS_EQUAL, T_PLUS_EQUAL, T_SL_EQUAL,
+            T_SR_EQUAL, T_XOR_EQUAL);
 
-    protected $_allowedInVar;
+        $op = array(T_BOOLEAN_AND, T_BOOLEAN_OR, T_EMPTY, T_INC, T_ISSET,
+            T_IS_EQUAL, T_IS_GREATER_OR_EQUAL, T_IS_IDENTICAL, T_IS_NOT_EQUAL,
+            T_IS_NOT_IDENTICAL, T_IS_SMALLER_OR_EQUAL, T_LOGICAL_AND,
+            T_LOGICAL_OR, T_LOGICAL_XOR, T_SR, T_SL, T_DOUBLE_ARROW);
 
-    protected $_allowedInExpr;
-
-    protected $_allowedAssign;
+        self::$allowedInVar   = array_merge($vartype, $op);
+        self::$allowedInExpr  = array_merge($vartype, $op);
+        self::$allowedAssign  = array_merge($vartype, $op, $assignOp);
+        self::$allowedForeach = array(T_AS, T_DOUBLE_ARROW, T_STRING, T_OBJECT_OPERATOR);
+    }
 
     protected $_modifier = array('upper' => 'strtoupper',
                                  'lower' => 'strtolower',
@@ -45,6 +48,8 @@ class IPF_Template_Compiler
                                  'floatformat' => 'IPF_Template_floatFormat',
                                  'limit_words' => 'IPF_Utils::limitWords',
                                  );
+
+    protected $_literals;
 
     public $_usedModifiers = array();
 
@@ -74,16 +79,12 @@ class IPF_Template_Compiler
         foreach ($this->_allowedTags as $name=>$model) {
             $this->_extraTags[$name] = new $model();
         }
-        $this->_allowedInVar = array_merge($this->_vartype, $this->_op);
-        $this->_allowedInExpr = array_merge($this->_vartype, $this->_op);
-        $this->_allowedAssign = array_merge($this->_vartype, $this->_assignOp,
-                                            $this->_op);
 
         $this->templateContent = $templateContent;
         $this->environment = $environment;
     }
 
-    function compile()
+    private function compile()
     {
         $this->compileBlocks();
         $tplcontent = $this->templateContent;
@@ -102,7 +103,7 @@ class IPF_Template_Compiler
         return $result;
     }
 
-    function getCompiledTemplate()
+    public function getCompiledTemplate()
     {
         $result = $this->compile();
         if (count($this->_usedModifiers)) {
@@ -224,7 +225,7 @@ class IPF_Template_Compiler
     private function _parseVariable($expr)
     {
         $tok = explode('|', $expr);
-        $res = $this->_parseFinal(array_shift($tok), $this->_allowedInVar);
+        $res = $this->_parseFinal(array_shift($tok), self::$allowedInVar);
         foreach ($tok as $modifier) {
             if (!preg_match('/^(\w+)(?:\:(.*))?$/', $modifier, $m)) {
                 trigger_error(sprintf(__('Invalid modifier syntax: (%s) %s'), $expr, $modifier), E_USER_ERROR);
@@ -250,7 +251,7 @@ class IPF_Template_Compiler
     {
         switch ($name) {
         case 'if':
-            $res = 'if ('.$this->_parseFinal($args, $this->_allowedInExpr).'): ';
+            $res = 'if ('.$this->_parseFinal($args, self::$allowedInExpr).'): ';
             $this->_blockStack[] = 'if';
             break;
         case 'else':
@@ -263,18 +264,18 @@ class IPF_Template_Compiler
             if (end($this->_blockStack) != 'if') {
                 trigger_error(sprintf(__('End tag of a block missing: %s'), end($this->_blockStack)), E_USER_ERROR);
             }
-            $res = 'elseif('.$this->_parseFinal($args, $this->_allowedInExpr).'):';
+            $res = 'elseif('.$this->_parseFinal($args, self::$allowedInExpr).'):';
             break;
         case 'foreach':
             $res =
                 '$t->_vars[\'foreach_counter0\'] = 0;' .
                 '$t->_vars[\'foreach_counter\'] = 1;' .
                 '$t->_vars[\'foreach_first\'] = true;' .
-                'foreach ('.$this->_parseFinal($args, array(T_AS, T_DOUBLE_ARROW, T_STRING, T_OBJECT_OPERATOR), array(';','!')).'): ';
+                'foreach ('.$this->_parseFinal($args, self::$allowedForeach, array(';','!')).'): ';
             $this->_blockStack[] = 'foreach';
             break;
         case 'while':
-            $res = 'while('.$this->_parseFinal($args, $this->_allowedInExpr).'):';
+            $res = 'while('.$this->_parseFinal($args, self::$allowedInExpr).'):';
             $this->_blockStack[] = 'while';
             break;
         case '/foreach':
@@ -298,7 +299,7 @@ class IPF_Template_Compiler
             $res = 'end'.$short.'; ';
             break;
         case 'assign':
-            $res = $this->_parseFinal($args, $this->_allowedAssign).'; ';
+            $res = $this->_parseFinal($args, self::$allowedAssign).'; ';
             break;
         case 'literal':
             if (count($this->_literals)) {
@@ -320,7 +321,7 @@ class IPF_Template_Compiler
             $res = '?>~~{~~superblock~~}~~<?php ';
             break;
         case 'trans':
-            $argfct = $this->_parseFinal($args, $this->_allowedAssign);
+            $argfct = $this->_parseFinal($args, self::$allowedAssign);
             $res = 'echo(__('.$argfct.'));';
             break;
         case 'blocktrans':
@@ -329,9 +330,8 @@ class IPF_Template_Compiler
             $this->_transStack = array();
             if ($args) {
                 $this->_transPlural = true;
-                $_args = $this->_parseFinal($args, $this->_allowedAssign,
-                                             array(';', '[', ']'), true);
-                $res .= '$_b_t_c='.trim(array_shift($_args)).'; ';
+                $_args = $this->_parseFinal($args, self::$allowedAssign, array(';', '[', ']'));
+                $res .= '$_b_t_c='.trim($_args).'; ';
             }
             $res .= 'ob_start(); ';
             break;
@@ -395,7 +395,7 @@ class IPF_Template_Compiler
             if (!isset($this->_allowedTags[$name])) {
                 trigger_error(sprintf(__('The function tag "%s" is not allowed.'), $name), E_USER_ERROR);
             }
-            $argfct = $this->_parseFinal($args, $this->_allowedAssign);
+            $argfct = $this->_parseFinal($args, self::$allowedAssign);
             // $argfct is a string that can be copy/pasted in the PHP code
             // but we need the array of args.
             $res = '';
@@ -423,7 +423,7 @@ class IPF_Template_Compiler
         return $res;
     }
 
-    private function _parseFinal($string, $allowed=array(), $exceptchar=array(';'))
+    private function _parseFinal($string, &$allowed, $exceptchar=array(';'))
     {
         $tokens = token_get_all('<?php '.$string.'?>');
         $result = '';
@@ -473,4 +473,6 @@ class IPF_Template_Compiler
         }
     }
 }
+
+IPF_Template_Compiler::init();
 
