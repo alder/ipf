@@ -187,7 +187,7 @@ class IPF_Template_Compiler
         }
     }
 
-    function _callback($matches)
+    private function _callback($matches)
     {
         list(,$tag, $firstcar) = $matches;
         if (!preg_match('/^\$|[\'"]|[a-zA-Z\/]$/', $firstcar)) {
@@ -221,7 +221,7 @@ class IPF_Template_Compiler
         }
     }
 
-    function _parseVariable($expr)
+    private function _parseVariable($expr)
     {
         $tok = explode('|', $expr);
         $res = $this->_parseFinal(array_shift($tok), $this->_allowedInVar);
@@ -231,10 +231,9 @@ class IPF_Template_Compiler
                 return '';
             }
             $targs = array($res);
-            if(isset($m[2])){
+            if (isset($m[2])) {
                 $res = $this->_modifier[$m[1]].'('.$res.','.$m[2].')';
-            }
-            else if (isset($this->_modifier[$m[1]])) {
+            } elseif (isset($this->_modifier[$m[1]])) {
                 $res = $this->_modifier[$m[1]].'('.$res.')';
             } else {
                 trigger_error(sprintf(__('Unknown modifier: (%s) %s'), $expr, $m[1]), E_USER_ERROR);
@@ -247,7 +246,7 @@ class IPF_Template_Compiler
         return $res;
     }
 
-    function _parseFunction($name, $args)
+    private function _parseFunction($name, $args)
     {
         switch ($name) {
         case 'if':
@@ -302,9 +301,9 @@ class IPF_Template_Compiler
             $res = $this->_parseFinal($args, $this->_allowedAssign).'; ';
             break;
         case 'literal':
-            if(count($this->_literals)){
+            if (count($this->_literals)) {
                 $res = '?>'.array_shift($this->_literals).'<?php ';
-            }else{
+            } else {
                 trigger_error(__('End tag of a block missing: literal'), E_USER_ERROR);
             }
             break;
@@ -312,10 +311,10 @@ class IPF_Template_Compiler
             trigger_error(__('Start tag of a block missing: literal'), E_USER_ERROR);
             break;
         case 'block':
-        	if (isset($this->_extendBlocks[$args]))
-            	$res = '?>'.$this->_extendBlocks[$args].'<?php ';
+            if (isset($this->_extendBlocks[$args]))
+                $res = '?>'.$this->_extendBlocks[$args].'<?php ';
             else
-            	$res = '';
+                $res = '';
             break;
         case 'superblock':
             $res = '?>~~{~~superblock~~}~~<?php ';
