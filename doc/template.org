@@ -1,48 +1,48 @@
-* Template
+#+TITLE: Template
 
-** Tags
+* Tags
 
-*** {<expr>[modifiers]}
+** {<expr>[modifiers]}
     Outputs expression.
 
-*** {if <condition>} | {elseif <condition>} | {else} | {/if}
+** {if <condition>} | {elseif <condition>} | {else} | {/if}
     
-*** {while <condition>} | {/while}
+** {while <condition>} | {/while}
 
-*** {foreach <collection> as [<key> =>] <value>} | {/foreach}
+** {foreach <collection> as [<key> =>] <value>} | {/foreach}
     Iterate over collection.
     Following variables are defined inside a loop:
     + =foreach_counter0= -- zero based iteration counter
     + =foreach_counter1= -- unit based iteration counter
     + =foreach_first= -- is true on first iteration and false on the rest ones.
 
-*** {assign <var> <eq-op> <expr>}
+** {assign <var> <eq-op> <expr>}
     Example: ~{assing $v += 1}~
 
-*** {literal} | {/literal}
+** {literal} | {/literal}
     Literally output enclosed text. Mostly used to wrap inlined JavaScript.
 
-*** {include "<filename>"}
+** {include "<filename>"}
     Include another template. Example: ={include "pagination.html"}=
 
-*** {block <name>} | {superblock} | {/block}
+** {block <name>} | {superblock} | {/block}
 
-*** {ldelim} | {rdelim}
+** {ldelim} | {rdelim}
     Output '{' and '}'.
 
-** Unknown Tags
+* Unknown Tags
 
-*** {trans} | {plural} | {blocktrans} | {/blocktrans}
+** {trans} | {plural} | {blocktrans} | {/blocktrans}
 
-** Predefined custom tags
+* Predefined custom tags
 
-*** {url '<view-name>'[, array(<arg>, ...)]}
+** {url '<view-name>'[, array(<arg>, ...)]}
     Reverse url
 
-*** {sql}
+** {sql}
     Prints SQL statistics.
 
-** Modifiers
+* Modifiers
 
    Modifier is a transformation applied to a printed value.
    Some modifiers have one or more parameters.
@@ -53,7 +53,7 @@
 
    Examples: ={$content|safe}=, ={$content|strip_tags|limit_words:10}=
 
-*** Predefined modifiers
+** Predefined modifiers
 
     + =upper=
     + =lower=
@@ -79,7 +79,7 @@
     + =debug= -- print_r
     + =fulldebug= -- var_export
 
-** Configuration
+* Configuration
 
    + =template_tags= -- additional template tags
    + =template_modifiers= -- additional template modifiers

@@ -1,10 +1,10 @@
-* IPF Framework
+#+TITLE: IPF Framework
 
-** Documentation
+* Documentation
 
-   [[file:doc/template.org][Templates]]
+  [[file:doc/template.org][Templates]]
 
-** Run tests
+* Run tests
 
-   =./vendor/bin/phpunit --bootstrap t/project/htdocs/index.php t=
+  =./vendor/bin/phpunit --bootstrap t/project/htdocs/index.php t=
 
