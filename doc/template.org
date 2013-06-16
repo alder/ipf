@@ -1,48 +1,88 @@
 * Template
 
+  This document describes template language of IPF framework.
+
+  =[ ]?= -- optional code
+
+  =[ ]*= -- code can be repeated zero or more times.
+
 ** Tags
 
-*** Print
+*** print
     Syntax: ={<expr>[modifiers]}=
+
     Outputs expression.
 
 *** if/elseif/else
-    Syntax: ={if <condition>}= <body> [ ={elseif <condition>}= <body> ]* [ ={else}= <body> ] ={/if}=
+    Syntax: ={if <condition>}= <body> [ ={elseif <condition>}= <body> ]* [ ={else}= <body> ]? ={/if}=
 
 *** while
     Syntax: ={while <condition>}= <body> ={/while}=
 
-*** {foreach <collection> as [<key> =>] <value>} | {/foreach}
+*** foreach
+    Syntax: ~{foreach <collection> as [<key> =>]? <value>}~ <body> ~{/foreach}~
+
     Iterate over collection.
-    Following variables are defined inside a loop:
+
+    Following variables are defined in a loop body:
     + =foreach_counter0= -- zero based iteration counter
     + =foreach_counter1= -- unit based iteration counter
     + =foreach_first= -- is true on first iteration and false on the rest ones.
 
-*** {assign <var> <eq-op> <expr>}
+*** assign
+    Syntax: ={assign <var> <eq-op> <expr>}=
+
     Example: ~{assing $v += 1}~
 
-*** {literal} | {/literal}
+*** literal
+    Syntax: ={literal}= <body> ={/literal}=
+
     Literally output enclosed text. Mostly used to wrap inlined JavaScript.
 
-*** {include "<filename>"}
-    Include another template. Example: ={include "pagination.html"}=
+*** include
+    Syntax: ={include "<filename>"}=
+    
+    Example: ={include "pagination.html"}=
+    
+    Substitutes another template.
+    
+*** block
+    Syntax: ={block <name>}= <body> ={/block}=
 
-*** {block <name>} | {superblock} | {/block}
+    Defines or redefines named block.
 
-*** {ldelim} | {rdelim}
+*** superblock
+    Syntax: ={superblock}=
+
+    Placeholder for content of inherited block.
+
+*** extends
+    Syntax: ={extends "<filename>"}=
+
+    Example: ={extends "base.html"}=
+
+    Declares current template as defived one. Top level blocks are substituted into corresponding blocks of base template.
+
+*** ldelim, rdelim
+    Syntax: ={ldelim}=, ={rdelim}=
+
     Output '{' and '}'.
 
-** Unknown Tags
-
-*** {trans} | {plural} | {blocktrans} | {/blocktrans}
+*** trans, plural, blocktrans
+    No information about these tags
 
 ** Predefined custom tags
 
-*** {url '<view-name>'[, array(<arg>, ...)]}
-    Reverse url
+*** url
+    Syntax: ={url '<view-name>'[, array(<arg>, ...)]}=
 
-*** {sql}
+    Examples: ={url 'Content_View_Index'}=, ={url 'Catalog_View_Products', array($product->slug)}=, ={url 'News_View_Item', array($item->date, $item->slug)}=
+
+    Reverse url for a given view and its parameters.
+
+*** sql
+    Syntax: ={sql}=
+
     Prints SQL statistics.
 
 ** Modifiers
