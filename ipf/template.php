@@ -2,45 +2,37 @@
 
 class IPF_Template
 {
-    public $tpl = '';
-    public $folders = array();
-    public $cache = '';
-    public $compiled_template = '';
-    public $template_content = '';
-    public $context = null;
+    private $tpl;
+    private $environment;
 
-    function __construct($template, $folders=null, $cache=null)
+    function __construct($template, $environment=null)
     {
         $this->tpl = $template;
-        if (is_null($folders)) {
-            $this->folders = IPF::get('template_dirs');
-        } else {
-            $this->folders = $folders;
-        }
-        if (is_null($cache)) {
-            $this->cache = IPF::get('tmp');
-        } else {
-            $this->cache = $cache;
-        }
 
+        if ($environment)
+            $this->environment = $environment;
+        else
+            $this->environment = IPF_Template_Environment::getDefault();
     }
 
-    function render($c=null)
+    public function __toString()
     {
-        $this->compiled_template = $this->getCompiledTemplateName();
-        if (!file_exists($this->compiled_template) or IPF::get('debug')) {
-            $compiler = new IPF_Template_Compiler($this->tpl, $this->folders);
-            $this->template_content = $compiler->getCompiledTemplate();
-            $this->write();
-        }
-        if (is_null($c)) {
-            $c = new IPF_Template_Context();
-        }
-        $this->context = $c;
+        return $this->tpl;
+    }
+
+    public function compile()
+    {
+        $compiler = new IPF_Template_Compiler($this->tpl, $this->environment->folders);
+        return $compiler->getCompiledTemplate();
+    }
+
+    public function render($c=null)
+    {
+        $compiled_template = $this->environment->getCompiledTemplateName($this);
         ob_start();
         $t = $c;
         try {
-            include $this->compiled_template;
+            include $compiled_template;
         } catch (Exception $e) {
             ob_clean();
             throw $e;
@@ -49,31 +41,6 @@ class IPF_Template
         ob_end_clean();
         return $a;
     }
-
-    function getCompiledTemplateName()
-    {
-        $_tmp = var_export($this->folders, true);
-        return $this->cache.'/IPF_Template-'.md5($_tmp.$this->tpl).'.phps';
-    }
-
-    function write()
-    {
-        $fp = @fopen($this->compiled_template, 'a');
-        if ($fp !== false) {
-            flock($fp, LOCK_EX);
-            ftruncate($fp, 0);
-            rewind($fp);
-            fwrite($fp, $this->template_content, strlen($this->template_content));
-            flock($fp, LOCK_UN);
-            fclose($fp);
-            @chmod($this->compiled_template, 0777);
-            return true;
-        } else {
-            throw new IPF_Exception_Template(sprintf(__('Cannot write the compiled template: %s'), $this->compiled_template));
-        }
-        return false;
-    }
-
 }
 
 function IPF_Template_unsafe($string)
@@ -121,3 +88,4 @@ function IPF_Template_safeEcho($mixed, $echo=true)
         }
     }
 }
+
