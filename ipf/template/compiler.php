@@ -251,7 +251,7 @@ class IPF_Template_Compiler
         switch ($name) {
         case 'if':
             $res = 'if ('.$this->_parseFinal($args, $this->_allowedInExpr).'): ';
-            array_push($this->_blockStack, 'if');
+            $this->_blockStack[] = 'if';
             break;
         case 'else':
             if (end($this->_blockStack) != 'if') {
@@ -271,11 +271,11 @@ class IPF_Template_Compiler
                 '$t->_vars[\'foreach_counter\'] = 1;' .
                 '$t->_vars[\'foreach_first\'] = true;' .
                 'foreach ('.$this->_parseFinal($args, array(T_AS, T_DOUBLE_ARROW, T_STRING, T_OBJECT_OPERATOR), array(';','!')).'): ';
-            array_push($this->_blockStack, 'foreach');
+            $this->_blockStack[] = 'foreach';
             break;
         case 'while':
             $res = 'while('.$this->_parseFinal($args, $this->_allowedInExpr).'):';
-            array_push($this->_blockStack, 'while');
+            $this->_blockStack[] = 'while';
             break;
         case '/foreach':
             if(end($this->_blockStack) != 'foreach'){
@@ -324,7 +324,7 @@ class IPF_Template_Compiler
             $res = 'echo(__('.$argfct.'));';
             break;
         case 'blocktrans':
-            array_push($this->_blockStack, 'blocktrans');
+            $this->_blockStack[] = 'blocktrans';
             $res = '';
             $this->_transStack = array();
             if ($args) {
