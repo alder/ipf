@@ -1,4 +1,0 @@
-Run tests
-
-    ./vendor/bin/phpunit --bootstrap t/project/htdocs/index.php t
-
