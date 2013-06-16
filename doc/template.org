@@ -17,7 +17,7 @@
     + =foreach_first= -- is true on first iteration and false on the rest ones.
 
 *** {assign <var> <eq-op> <expr>}
-    Example: ={assing $v += 1}=
+    Example: ~{assing $v += 1}~
 
 *** {literal} | {/literal}
     Literally output enclosed text. Mostly used to wrap inlined JavaScript.
