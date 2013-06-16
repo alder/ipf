@@ -58,8 +58,6 @@ class IPF_Template_Compiler
     protected $_transStack = array();
     protected $_transPlural = false;
 
-    protected $_sourceFile;
-
     protected $_currentTag;
 
     private $environment;
@@ -68,9 +66,7 @@ class IPF_Template_Compiler
 
     public $_extendBlocks = array();
 
-    public $_extendedTemplate = '';
-
-    function __construct($template_file, $environment, $load=true)
+    function __construct($templateContent, $environment)
     {
         $allowedtags = IPF::get('template_tags', array());
         $this->_allowedTags = array_merge($allowedtags, $this->_allowedTags);
@@ -80,15 +76,13 @@ class IPF_Template_Compiler
         foreach ($this->_allowedTags as $name=>$model) {
             $this->_extraTags[$name] = new $model();
         }
-        $this->_sourceFile = $template_file;
         $this->_allowedInVar = array_merge($this->_vartype, $this->_op);
         $this->_allowedInExpr = array_merge($this->_vartype, $this->_op);
         $this->_allowedAssign = array_merge($this->_vartype, $this->_assignOp,
                                             $this->_op);
+
+        $this->templateContent = $templateContent;
         $this->environment = $environment;
-        if ($load) {
-            $this->templateContent = $this->environment->loadTemplateFile($template_file);
-        }
     }
 
     function compile()
@@ -159,10 +153,10 @@ class IPF_Template_Compiler
     function compileBlocks()
     {
         $tplcontent = $this->templateContent;
-        $this->_extendedTemplate = '';
+        $extendedTemplate = '';
         // Match extends on the first line of the template
         if (preg_match("!{extends\s['\"](.*?)['\"]}!", $tplcontent, $_match)) {
-            $this->_extendedTemplate = $_match[1];
+            $extendedTemplate = $_match[1];
         }
         // Get the blocks in the current template
         $blocks = self::toplevelBlocks($this->templateContent);
@@ -182,11 +176,10 @@ class IPF_Template_Compiler
                 }
             }
         }
-        if (strlen($this->_extendedTemplate) > 0) {
+        if (strlen($extendedTemplate) > 0) {
             // The template of interest is now the extended template
             // as we are not in a base template
-            $this->templateContent = $this->environment->loadTemplateFile($this->_extendedTemplate);
-            $this->_sourceFile = $this->_extendedTemplate;
+            $this->templateContent = $this->environment->loadTemplateFile($extendedTemplate);
             $this->compileBlocks(); //It will recurse to the base template.
         } else {
             // Replace the current blocks by a place holder
@@ -386,9 +379,9 @@ class IPF_Template_Compiler
             $res = '$_b_t_s=ob_get_contents(); ob_end_clean(); ob_start(); ';
             break;
         case 'include':
-            // XXX fixme: Will need some security check, when online editing.
             $argfct = preg_replace('!^[\'"](.*)[\'"]$!', '$1', $args);
-            $_comp = new IPF_Template_Compiler($argfct, $this->environment);
+            $includedTemplateContent = $this->environment->loadTemplateFile($argfct);
+            $_comp = new IPF_Template_Compiler($includedTemplateContent, $this->environment);
             $res = $_comp->compile();
             $this->updateModifierStack($_comp);
             break;

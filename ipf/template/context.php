@@ -1,6 +1,6 @@
 <?php
 
-class IPF_Template_Context 
+class IPF_Template_Context
 {
     public $_vars;
 
@@ -22,3 +22,4 @@ class IPF_Template_Context
         $this->_vars[$var] = $value;
     }
 }
+

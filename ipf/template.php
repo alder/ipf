@@ -1,28 +1,21 @@
 <?php
 
-class IPF_Template
+abstract class IPF_Template
 {
-    private $tpl;
-    private $environment;
+    protected $environment;
 
-    function __construct($template, $environment=null)
+    public function __construct($environment)
     {
-        $this->tpl = $template;
-
-        if ($environment)
-            $this->environment = $environment;
-        else
-            $this->environment = IPF_Template_Environment::getDefault();
+        $this->environment = $environment;
     }
 
-    public function __toString()
-    {
-        return $this->tpl;
-    }
+    abstract public function __toString();
+
+    abstract protected function content();
 
     public function compile()
     {
-        $compiler = new IPF_Template_Compiler($this->tpl, $this->environment);
+        $compiler = new IPF_Template_Compiler($this->content(), $this->environment);
         return $compiler->getCompiledTemplate();
     }
 

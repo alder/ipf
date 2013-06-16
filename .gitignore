@@ -1,4 +1,4 @@
 /vendor
 /composer.phar
 /t/project/htdocs/media/upload/thumbs
-
+/t/project/tmp/*
