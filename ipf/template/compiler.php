@@ -58,8 +58,6 @@ class IPF_Template_Compiler
     protected $_transStack = array();
     protected $_transPlural = false;
 
-    protected $_currentTag;
-
     private $environment;
 
     public $templateContent = '';
@@ -196,7 +194,6 @@ class IPF_Template_Compiler
             trigger_error(sprintf(__('Invalid tag syntax: %s'), $tag), E_USER_ERROR);
             return '';
         }
-        $this->_currentTag = $tag;
         if (in_array($firstcar, array('$', '\'', '"'))) {
             if ('blocktrans' !== end($this->_blockStack)) {
                 return '<?php IPF_Template_safeEcho('.$this->_parseVariable($tag).'); ?>';
@@ -230,7 +227,7 @@ class IPF_Template_Compiler
         $res = $this->_parseFinal(array_shift($tok), $this->_allowedInVar);
         foreach ($tok as $modifier) {
             if (!preg_match('/^(\w+)(?:\:(.*))?$/', $modifier, $m)) {
-                trigger_error(sprintf(__('Invalid modifier syntax: (%s) %s'), $this->_currentTag, $modifier), E_USER_ERROR);
+                trigger_error(sprintf(__('Invalid modifier syntax: (%s) %s'), $expr, $modifier), E_USER_ERROR);
                 return '';
             }
             $targs = array($res);
@@ -240,7 +237,7 @@ class IPF_Template_Compiler
             else if (isset($this->_modifier[$m[1]])) {
                 $res = $this->_modifier[$m[1]].'('.$res.')';
             } else {
-                trigger_error(sprintf(__('Unknown modifier: (%s) %s'), $this->_currentTag, $m[1]), E_USER_ERROR);
+                trigger_error(sprintf(__('Unknown modifier: (%s) %s'), $expr, $m[1]), E_USER_ERROR);
                 return '';
             }
             if (!in_array($this->_modifier[$m[1]], $this->_usedModifiers)) {
@@ -278,7 +275,7 @@ class IPF_Template_Compiler
             array_push($this->_blockStack, 'foreach');
             break;
         case 'while':
-            $res = 'while('.$this->_parseFinal($args,$this->_allowedInExpr).'):';
+            $res = 'while('.$this->_parseFinal($args, $this->_allowedInExpr).'):';
             array_push($this->_blockStack, 'while');
             break;
         case '/foreach':
@@ -463,12 +460,12 @@ class IPF_Template_Compiler
                 } elseif ($type == T_WHITESPACE || in_array($type, $allowed)) {
                     $result .= $str;
                 } else {
-                    trigger_error(sprintf(__('Invalid syntax: (%s) %s.'), $this->_currentTag, $str), E_USER_ERROR);
+                    trigger_error(sprintf(__('Invalid syntax: (%s) %s.'), $string, $str), E_USER_ERROR);
                     return '';
                 }
             } else {
                 if (in_array($tok, $exceptchar)) {
-                    trigger_error(sprintf(__('Invalid character: (%s) %s.'), $this->_currentTag, $tok), E_USER_ERROR);
+                    trigger_error(sprintf(__('Invalid character: (%s) %s.'), $string, $tok), E_USER_ERROR);
                 } elseif ($tok == '.') {
                     $inDot = true;
                     $result .= '->';
