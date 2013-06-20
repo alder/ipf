@@ -1,101 +1,67 @@
 <?php
 
-class IPF_Cli{
-
+class IPF_Cli
+{
     protected $commands;
 
-    public function __construct(){
-        $this->commands = array('help','sql','buildmodels','buildcontribmodels','syncdb', 'createsuperuser', 'syncperms', 'fixtures');
-    }
-    
-    protected function usage(&$args){
-        print "Type 'php index.php help' for usage.\n";
+    public function __construct()
+    {
+        $this->commands = array(
+            new IPF_Command_BuildModels,
+            new IPF_Command_BuildContribModels,
+            new IPF_Command_Sql,
+            new IPF_Command_SyncDB,
+            new IPF_Command_Fixtures,
+            new IPF_Command_CreateSuperUser,
+            new IPF_Command_SyncPerms,
+        );
+        
+        foreach (IPF::get('commands', array()) as $cmd) {
+            if (is_string($cmd))
+                $cmd = new $cmd;
+            $this->commands[] = $cmd;
+        }
     }
 
-    protected function main_help(&$args){
-        print "php index.php <subcommand> [options] [args]\n";
+    protected function usage()
+    {
+        print "Usage: php index.php <subcommand> [options] [args]\n\n";
         print "Available subcommands:\n";
-        foreach ($this->commands as &$command)
-            print "  $command\n";
-    }
-    
-    protected function help($args){
-        if (count($args)==2)
-            $this->main_help($args);
-    }
-    
-    protected function sql(&$args){
-        print "Show All Sql DDL From Model Classes\n";
-        print IPF_Project::getInstance()->generateSql();
-    }
 
-    protected function syncdb(&$args){
-        print "Create Tables From Model Classes\n";
-        IPF_Project::getInstance()->createTablesFromModels();
-    }
-    
-    protected function syncperms(&$args)
-    {
-        print "Create/Update Permissions From Model Classes\n";
-        IPF_Project::getInstance()->createPermissionsFromModels();
-    }
-
-    protected function buildmodels(&$args){
-        print "Build All Model Classses\n";
-        IPF_Project::getInstance()->generateModels();
-    }
-
-    protected function buildcontribmodels(&$args){
-        print "Build All Contrib Model Classses\n";
-        IPF_Project::getInstance()->generateContribModels();
-    }
-
-    protected function createSuperUser(&$args){
-        print "Create SuperUser\n";
-
-        IPF_Project::getInstance()->loadModels();
-
-        $username = '';  while ($username==''){  print "  Username: "; $username = trim(fgets(STDIN)); };
-        $password = '';  while ($password==''){  print "  Password: "; $password = trim(fgets(STDIN)); };
-        $email = '';  while ($email==''){  print "  e-mail: "; $email = trim(fgets(STDIN)); };
-
-        $su = new User();
-        $su->username = $username;
-        $su->email = $email;
-        $su->is_staff = true;
-        $su->is_active = true;
-        $su->is_superuser = true;
-        $su->setPassword($password);
-        $su->save();
-        print "Done\n";
-    }
-
-    protected function fixtures(&$args)
-    {
-        print "Load project fixtures to database\n";
-        IPF_Project::getInstance()->loadFixtures();
+        $firstColumnSize = 7;
+        foreach ($this->commands as $command) {
+            $l = strlen($command->command);
+            if ($l > $firstColumnSize)
+                $firstColumnSize = $l;
+        }
+        foreach ($this->commands as $command) {
+            print '    '.str_pad($command->command, $firstColumnSize) . "\t" . $command->description . "\n";
+        }
+        print "\n";
     }
 
     public function run()
     {
         print "IPF command line tool. Version: ".IPF_Version::$name."\n";
-        print "Project config: ".IPF::get('settings_file')."\n";
+        print "Project config: ".IPF::get('settings_file')."\n\n";
 
         $opt  = new IPF_Getopt();
         //$z = $opt->getopt2($opt->readPHPArgv(), array('s',)); //, array('s',));
         $args = $opt->readPHPArgv();
-        if (count($args) == 1) {
-            $this->usage($args);
-            return;
-        }
-            
-        if (in_array($args[1], $this->commands)) {
-            eval('$this->'.$args[1].'($args);');
+        if (count($args) < 2) {
+            $this->usage();
             return;
         }
 
-        print "Unknown command: '".$args[1]."'\n";
-        $this->usage($args);
+        foreach ($this->commands as $command) {
+            if ($command->command === $args[1]) {
+                $command->run(array_slice($args, 2));
+                return;
+            }
+        }
+
+        print "Unknown command: '".$args[1]."'\n\n";
+        $this->usage();
     }
 }
 

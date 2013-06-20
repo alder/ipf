@@ -61,7 +61,7 @@ final class IPF_Project
             $this->getApp($appname);
     }
 
-    protected function frameworkApps()
+    public function frameworkApps()
     {
         $result = array();
         foreach ($this->apps as $appname => &$app) {
@@ -71,7 +71,7 @@ final class IPF_Project
         return $result;
     }
 
-    protected function customApps()
+    public function customApps()
     {
         $result = array();
         foreach ($this->apps as $appname => &$app) {
@@ -79,99 +79,6 @@ final class IPF_Project
                 $result[] = $this->getApp($appname);
         }
         return $result;
-    }
-
-    public function generateModels()
-    {
-        IPF_ORM::generateModelsFromYaml(
-            IPF::get('project_path').DIRECTORY_SEPARATOR.'models.yml',
-            IPF::get('project_path').DIRECTORY_SEPARATOR.'models'
-        );
-        foreach ($this->customApps() as $app)
-            $app->generateModels();
-    }
-
-    public function generateContribModels()
-    {
-        foreach ($this->frameworkApps() as $app)
-            $app->generateModels();
-    }
-
-    public function createTablesFromModels()
-    {
-        foreach ($this->frameworkApps() as $app)
-            $app->createTablesFromModels();
-        IPF_ORM::createTablesFromModels(IPF::get('project_path').DIRECTORY_SEPARATOR.'models');
-        foreach ($this->customApps() as $app)
-            $app->createTablesFromModels();
-    }
-    
-    public function createPermissionsFromModels()
-    {
-        $pathes = array();
-
-        foreach ($this->apps as $appname => &$app) {
-            $app = $this->getApp($appName);
-            $pathes[] = $app->getPath().'models';
-        }
-
-        $pathes[] = IPF::get('project_path').DIRECTORY_SEPARATOR.'models';
-
-        return IPF_Auth_App::createPermissionsFromModels($pathes);
-    }
-
-    public function generateSql()
-    {
-        $sql = '';
-
-        foreach ($this->frameworkApps() as $app)
-            $sql .= $app->generateSql()."\n";
-
-        $sql .= IPF_ORM::generateSqlFromModels(IPF::get('project_path').DIRECTORY_SEPARATOR.'models')."\n";
-
-        foreach ($this->customApps() as $app)
-            $sql .= $app->generateSql()."\n";
-
-        return $sql;
-    }
-
-    public function loadFixtures()
-    {
-        $ficturesPath = IPF::get('project_path').DIRECTORY_SEPARATOR.'fixtures.php';
-        if (!is_file($ficturesPath)) {
-            echo "No fixtures found\n";
-            return;
-        }
-
-        $this->loadModels();
-
-        $fixtures = require $ficturesPath;
-
-        foreach ($fixtures as $fixture) {
-            $modelClass = $fixture['model'];
-            $key = $fixture['key'];
-            $records = $fixture['records'];
-            echo "Loading $modelClass ";
-            foreach ($records as $record) {
-                $model = IPF_ORM::getTable($modelClass)
-                    ->createQuery()
-                    ->where($key . ' = ?', array($record[$key]))
-                    ->limit(1)
-                    ->execute();
-
-                if ($model)
-                    $model = $model[0];
-                else
-                    $model = new $modelClass;
-
-                foreach ($record as $k => $v)
-                    $model->$k = $v;
-
-                $model->save();
-                echo '.';
-            }
-            echo "\n";
-        }
     }
 
     public function loadModels()
@@ -185,12 +92,6 @@ final class IPF_Project
             $app->loadModels();
     }
 
-    private function cli()
-    {
-        $cli = new IPF_Cli();
-        $cli->run();
-    }
-
     public function run()
     {
         if (IPF::get('debug')) {
@@ -201,7 +102,8 @@ final class IPF_Project
         IPF_ORM_Manager::getInstance()->openConnection(IPF::get('database', IPF::get('dsn')));
 
         if (php_sapi_name() === 'cli') {
-            $this->cli();
+            $cli = new IPF_Cli;
+            $cli->run();
         } else {
             $this->loadModels();
             $this->router = new IPF_Router();
