@@ -11,7 +11,7 @@ final class IPF
 {
     private static $settings = array();
 
-    private static function applySettings(&$settings)
+    private static function applySettings($settings)
     {
         foreach($settings as $key=>$val)
             IPF::$settings[strtolower($key)] = $val;

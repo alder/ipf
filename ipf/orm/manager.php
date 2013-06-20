@@ -64,26 +64,8 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
             if (!($adapter instanceof PDO))
                 throw new IPF_ORM_Exception("First argument should be an instance of PDO");
             $driverName = $adapter->getAttribute(PDO::ATTR_DRIVER_NAME);
-        } else if (is_array($adapter)) {
-            if (!count($adapter))
-                throw new IPF_ORM_Exception('Empty data source name given.');
-
-            if (array_key_exists('database', $adapter)) {
-                $adapter['dsn'] = $this->makeDsnForPDO($adapter['driver'], $adapter['host'], @$adapter['port'], $adapter['database']);
-            } else {
-                $adapter = array(
-                    'dsn'       => urldecode($adapter[0]),
-                    'username'  => (isset($adapter[1])) ? urldecode($adapter[1]) : null,
-                    'password'  => (isset($adapter[2])) ? urldecode($adapter[2]) : null,
-                );
-            }
-
-            $e = explode(':', $adapter['dsn']);
-            $driverName = $e[0] !== 'uri' ? $e[0] : 'odbc';
         } else {
-            $adapter = $this->parseDsn($adapter);
-            $adapter['username'] = $adapter['user'];
-            $adapter['password'] = $adapter['pass'];
+            $adapter = $this->connectionParameters($adapter);
             $driverName = $adapter['scheme'];
         }
 
@@ -129,6 +111,31 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
         return $this->_connections[$name];
     }
     
+    public function connectionParameters($adapter)
+    {
+        if (is_array($adapter)) {
+            if (!count($adapter))
+                throw new IPF_ORM_Exception('Empty data source name given.');
+
+            if (array_key_exists('database', $adapter)) {
+                $adapter['dsn'] = $this->makeDsnForPDO($adapter['driver'], $adapter['host'], @$adapter['port'], $adapter['database']);
+                $adapter['scheme'] = $adapter['driver'];
+                return $adapter;
+            } else {
+                $dsn = urldecode($adapter[0]);
+                $result = $this->parseDsn($dsn);
+                $result['username'] = (isset($adapter[1])) ? urldecode($adapter[1]) : null;
+                $result['password'] = (isset($adapter[2])) ? urldecode($adapter[2]) : null;
+                return $result;
+            }
+        } else {
+            $result = $this->parseDsn($adapter);
+            $result['username'] = $result['user'];
+            $result['password'] = $result['pass'];
+            return $result;
+        }
+    }
+
     public function parsePdoDsn($dsn)
     {
         $parts = array();
