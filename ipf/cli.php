@@ -12,9 +12,10 @@ class IPF_Cli
             new IPF_Command_BuildModels,
             new IPF_Command_BuildContribModels,
             new IPF_Command_Sql,
-            new IPF_Command_DB,
             new IPF_Command_SyncDB,
             new IPF_Command_Fixtures,
+            new IPF_Command_DB,
+            new IPF_Command_DBDump,
             new IPF_Command_CreateSuperUser,
             new IPF_Command_SyncPerms,
         );
