@@ -26,7 +26,7 @@ abstract class IPF_Application
                 $it = new DirectoryIterator($this->path.DIRECTORY_SEPARATOR.'models');
                 foreach ($it as $file) {
                     $e = explode('.', $file->getFileName(), 2);
-                    if ($e[1] === 'php') {
+                    if (count($e) == 2 && $e[1] === 'php') {
                         $this->models[] = $e[0];
                     }
                 }
