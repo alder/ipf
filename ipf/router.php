@@ -77,5 +77,20 @@ class IPF_Router
         }
         return new IPF_HTTP_Response_NotFound();
     }
+
+    public static function describe()
+    {
+        $routes = array();
+        foreach (IPF::get('urls') as $url) {
+            $prefix = $url['prefix'];
+            foreach ($url['urls'] as $suburl) {
+                $routes[] = array(
+                    $prefix . $suburl['regex'],
+                    $suburl['func'],
+                );
+            }
+        }
+        return $routes;
+    }
 }
 

@@ -7,6 +7,8 @@ class IPF_Cli
     public function __construct()
     {
         $this->commands = array(
+            new IPF_Command_DebugServer,
+            new IPF_Command_Routes,
             new IPF_Command_BuildModels,
             new IPF_Command_BuildContribModels,
             new IPF_Command_Sql,
@@ -29,15 +31,15 @@ class IPF_Cli
         print "Usage: php index.php <subcommand> [options] [args]\n\n";
         print "Available subcommands:\n";
 
-        $firstColumnSize = 7;
-        foreach ($this->commands as $command) {
-            $l = strlen($command->command);
-            if ($l > $firstColumnSize)
-                $firstColumnSize = $l;
-        }
-        foreach ($this->commands as $command) {
-            print '    '.str_pad($command->command, $firstColumnSize) . "\t" . $command->description . "\n";
-        }
+        $rows = array();
+        foreach ($this->commands as $command)
+            $rows[] = array(
+                '    ' . $command->command,
+                $command->description,
+            );
+
+        IPF_Shell::displayTwoColumns($rows);
+
         print "\n";
     }
 

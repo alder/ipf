@@ -112,13 +112,14 @@ final class IPF
         return is_file($path);
     }
 
-    public static function boot($ipf_path, $project_path)
+    public static function boot($ipf_path, $project_path, $document_root)
     {
         if (php_sapi_name() === 'cli-server' && IPF::requestedFileExists())
             return false;
 
         IPF::$settings['ipf_path'] = $ipf_path;
         IPF::$settings['project_path'] = $project_path;
+        IPF::$settings['document_root'] = $document_root;
 
         try {
             IPF::loadSettings();
