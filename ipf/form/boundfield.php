@@ -81,8 +81,7 @@ class IPF_Form_BoundField
 
     public function fieldErrors()
     {
-        IPF::loadFunction('IPF_Form_renderErrorsAsHTML');
-        return new IPF_Template_SafeString(IPF_Form_renderErrorsAsHTML($this->errors), true);
+        return new IPF_Template_SafeString(IPF_Form::renderErrorsAsHTML($this->errors), true);
     }
 
     public function __get($prop)

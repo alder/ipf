@@ -111,7 +111,7 @@ abstract class IPF_Form implements Iterator
     {
         $top_errors = (isset($this->errors['__all__'])) ? $this->errors['__all__'] : array();
         array_walk($top_errors, 'IPF_Form_htmlspecialcharsArray');
-        return new IPF_Template_SafeString(IPF_Form_renderErrorsAsHTML($top_errors), true);
+        return new IPF_Template_SafeString(IPF_Form::renderErrorsAsHTML($top_errors), true);
     }
 
     public function get_top_errors()
@@ -170,7 +170,7 @@ abstract class IPF_Form implements Iterator
                     $hidden_fields[] = $bf; // Not rendered
                 } else {
                     if ($errors_on_separate_row and count($bf_errors)) {
-                        $output[] = sprintf($error_row, IPF_Form_renderErrorsAsHTML($bf_errors));
+                        $output[] = sprintf($error_row, IPF_Form::renderErrorsAsHTML($bf_errors));
                     }
                     if (strlen($bf->label) > 0) {
                         $label = htmlspecialchars($bf->label, ENT_COMPAT, 'UTF-8');
@@ -197,7 +197,7 @@ abstract class IPF_Form implements Iterator
                     }
                     $errors = '';
                     if (!$errors_on_separate_row and count($bf_errors)) {
-                        $errors = IPF_Form_renderErrorsAsHTML($bf_errors);
+                        $errors = IPF_Form::renderErrorsAsHTML($bf_errors);
                     }
                     $output[] = sprintf($normal_row, $errors, $label,
                                         $bf->render_w(), $help_text);
@@ -205,8 +205,7 @@ abstract class IPF_Form implements Iterator
             }
         }
         if (count($top_errors)) {
-            $errors = sprintf($error_row,
-                              IPF_Form_renderErrorsAsHTML($top_errors));
+            $errors = sprintf($error_row, IPF_Form::renderErrorsAsHTML($top_errors));
             array_unshift($output, $errors);
         }
         if (count($hidden_fields)) {
@@ -308,21 +307,21 @@ abstract class IPF_Form implements Iterator
     {
         return (false !== current($this->fields));
     }
+
+    public static function renderErrorsAsHTML($errors)
+    {
+        if (count($errors)==0)
+            return '';
+        $tmp = array();
+        foreach ($errors as $err) {
+            $tmp[] = '<li>'.$err.'</li>';
+        }
+        return '<ul class="errorlist">'.implode("\n", $tmp).'</ul>';
+    }
 }
 
 function IPF_Form_htmlspecialcharsArray(&$item, $key)
 {
     $item = htmlspecialchars($item, ENT_COMPAT, 'UTF-8');
-}
-
-function IPF_Form_renderErrorsAsHTML($errors)
-{
-    if (count($errors)==0)
-        return '';
-    $tmp = array();
-    foreach ($errors as $err) {
-        $tmp[] = '<li>'.$err.'</li>';
-    }
-    return '<ul class="errorlist">'.implode("\n", $tmp).'</ul>';
 }
 
