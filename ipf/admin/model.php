@@ -544,7 +544,7 @@ class IPF_Admin_Model
                 $this->_afterAdd($item);
                 $url = @$request->POST['ipf_referrer'];
                 if ($url=='')
-                    $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+                    $url = IPF_HTTP_URL::urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }
         }
@@ -585,7 +585,7 @@ class IPF_Admin_Model
             $o->delete();
             $url = @$request->POST['ipf_referrer'];
             if ($url=='')
-                $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+                $url = IPF_HTTP_URL::urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
             return new IPF_HTTP_Response_Redirect($url);
         }
         $context = array(
@@ -627,7 +627,7 @@ class IPF_Admin_Model
                 $this->_afterEdit($item);
                 $url = @$request->POST['ipf_referrer'];
                 if ($url=='')
-                    $url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
+                    $url = IPF_HTTP_URL::urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel));
                 return new IPF_HTTP_Response_Redirect($url);
             }
         }

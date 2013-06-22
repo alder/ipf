@@ -251,7 +251,7 @@ function IPF_Admin_Views_ChangePassword($request, $match)
                     $user->setPassword($form->cleaned_data['password1']);
                     $user->save();
                    
-                    return new IPF_HTTP_Response_Redirect(IPF_HTTP_URL_urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel)));
+                    return new IPF_HTTP_Response_Redirect(IPF_HTTP_URL::urlForView('IPF_Admin_Views_ListItems', array($lapp, $lmodel)));
                 }
             }
             else $form = new IPF_Auth_Forms_ChangePassword();
@@ -282,7 +282,7 @@ function IPF_Admin_Views_Login($request, $match)
     if (!empty($request->REQUEST['next']))
         $success_url = $request->REQUEST['next'];
     if (trim($success_url)=='')
-        $success_url = IPF_HTTP_URL_urlForView('IPF_Admin_Views_Index');
+        $success_url = IPF_HTTP_URL::urlForView('IPF_Admin_Views_Index');
 
     if ($request->method == 'POST') {
         $form = new IPF_Auth_Forms_Login($request->POST);

@@ -6,7 +6,8 @@ class AdminLog extends BaseAdminLog
     const CHANGE    = 2;
     const DELETION  = 3;
 
-    public static function logAction($request, $object, $action_flag, $message=''){
+    public static function logAction($request, $object, $action_flag, $message='')
+    {
         $log = new AdminLog();
         $log->username = $request->user->username;
         $log->user_id = $request->user->id;
@@ -18,27 +19,30 @@ class AdminLog extends BaseAdminLog
         $log->save();
     }
 
-    public function is_addition(){
+    public function is_addition()
+    {
         if ($this->action_flag==AdminLog::ADDITION)
             return true;
         return false;
     }
 
-    public function is_change(){
+    public function is_change()
+    {
         if ($this->action_flag==AdminLog::CHANGE)
             return true;
         return false;
     }
 
-    public function is_deletion(){
+    public function is_deletion()
+    {
         if ($this->action_flag==AdminLog::DELETION)
             return true;
         return false;
     }
 
-    public function GetAdminUrl(){
-        return IPF_HTTP_URL_urlForView('IPF_Admin_Views_Index').IPF_Utils::appLabelByModel($this->object_class).'/'.strtolower($this->object_class).'/'.$this->object_id.'/';
+    public function GetAdminUrl()
+    {
+        return IPF_HTTP_URL::urlForView('IPF_Admin_Views_Index').IPF_Utils::appLabelByModel($this->object_class).'/'.strtolower($this->object_class).'/'.$this->object_id.'/';
     }
-
 }
 
