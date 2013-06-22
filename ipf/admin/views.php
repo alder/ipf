@@ -1,6 +1,7 @@
 <?php
 
-function IPF_Admin_Views_Index($request, $match){
+function IPF_Admin_Views_Index($request, $match)
+{
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 

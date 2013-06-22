@@ -10,7 +10,7 @@ abstract class IPF_Application
         $this->name = str_replace('_App', '', get_class($this));
 
         if (strpos($this->name,'IPF_')===0)
-            $this->path = IPF::get('ipf_path').DIRECTORY_SEPARATOR.'ipf'.DIRECTORY_SEPARATOR.strtolower(str_replace('_',DIRECTORY_SEPARATOR,str_replace('IPF_','',$this->name)));
+            $this->path = IPF::get('ipf_path').DIRECTORY_SEPARATOR.strtolower(str_replace('_',DIRECTORY_SEPARATOR,$this->name));
         else
             $this->path = IPF::get('project_path').DIRECTORY_SEPARATOR.strtolower(str_replace('_',DIRECTORY_SEPARATOR,$this->name));
         $this->path .= DIRECTORY_SEPARATOR;
