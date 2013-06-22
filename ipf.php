@@ -1,12 +1,5 @@
 <?php
 
-function IPF_Autoload($class_name)
-{
-    require_once strtolower(str_replace('_', '/', $class_name)) . '.php';
-}
-
-spl_autoload_register('IPF_Autoload');
-
 final class IPF
 {
     private static $settings = array();
@@ -112,19 +105,21 @@ final class IPF
         return is_file($path);
     }
 
-    public static function boot($ipf_path, $project_path, $document_root)
+    public static function setUp($project_path, $document_root)
     {
         if (php_sapi_name() === 'cli-server' && IPF::requestedFileExists())
             return false;
 
-        IPF::$settings['ipf_path'] = $ipf_path;
+        IPF_ClassLoader::getInstance($project_path);
+
+        IPF::$settings['ipf_path'] = dirname(__FILE__);
         IPF::$settings['project_path'] = $project_path;
         IPF::$settings['document_root'] = $document_root;
 
         try {
             IPF::loadSettings();
             date_default_timezone_set(IPF::$settings['time_zone']);
-        } catch(IPF_Exception_Settings $e) {
+        } catch (IPF_Exception_Settings $e) {
             die('Setting Error: '.$e->getMessage()."\n");
         }
         return true;
@@ -144,10 +139,10 @@ final class IPF
     {
         if (function_exists($function))
             return;
-        if (preg_match('/^(\w+)::\w+$/', $function, $m)) {
-            IPF_Autoload($m[1]);
-            return;
-        }
+
+        if (preg_match('/^(\w+)::\w+$/', $function, $m))
+            return; // nothing to do. autoloader will load a class.
+
         $elts = explode('_', $function);
         array_pop($elts);
         $file = strtolower(implode(DIRECTORY_SEPARATOR, $elts)).'.php';
@@ -171,6 +166,40 @@ final class IPF
     public static function getUploadUrl()
     {
         return IPF::get('upload_url', '/media/upload');
+    }
+}
+
+class IPF_ClassLoader
+{
+    private $classMap;
+
+    private static $loader = null;
+
+    public static function getInstance($project_path)
+    {
+        if (self::$loader == null)
+            self::$loader = new IPF_ClassLoader($project_path);
+        return self::$loader;
+    }
+
+    private function __construct($project_path)
+    {
+        $dir = $project_path . '/vendor/composer/';
+
+        $includePaths = require $project_path . '/vendor/composer/include_paths.php';
+        array_push($includePaths, get_include_path());
+        set_include_path(join(PATH_SEPARATOR, $includePaths));
+
+        $this->classMap = require $project_path . '/vendor/composer/autoload_classmap.php';
+
+        spl_autoload_register(array($this, 'load'), true, true);
+    }
+
+    public function load($class)
+    {
+        if (isset($this->classMap[$class])) {
+            include $this->classMap[$class];
+        }
     }
 }
 

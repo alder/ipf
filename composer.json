@@ -12,8 +12,20 @@
       "email": "andy128k@gmail.com"
     }
   ],
+  "autoload": {
+    "classmap" : ["."]
+  },
+  "require": {
+    "andy128k/routeexpression": "dev-master"
+  },
   "require-dev": {
     "phpunit/phpunit": "3.7.*"
-  }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://packages.andy128k.net/php/"
+    }
+  ]
 }
 

@@ -3,9 +3,47 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1177f075c09daf9849c259a2f3c79236",
+    "hash": "20bffa57e6d8564e8b9bf75a6d2f70af",
     "packages": [
-
+        {
+            "name": "andy128k/routeexpression",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/andy128k/routeexpression.git",
+                "reference": "60f822ca0f7ea50a3bccdd29970d7ee1900c10a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/andy128k/routeexpression/zipball/60f822ca0f7ea50a3bccdd29970d7ee1900c10a8",
+                "reference": "60f822ca0f7ea50a3bccdd29970d7ee1900c10a8",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrey Kutejko",
+                    "email": "andy128k@gmail.com"
+                }
+            ],
+            "description": "Route expression",
+            "support": {
+                "source": "https://github.com/andy128k/routeexpression/tree/master",
+                "issues": "https://github.com/andy128k/routeexpression/issues"
+            },
+            "time": "2013-06-22 08:01:38"
+        }
     ],
     "packages-dev": [
         {
@@ -417,9 +455,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "andy128k/routeexpression": 20
+    },
     "platform": [
 
     ],
