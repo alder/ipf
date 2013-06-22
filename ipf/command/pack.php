@@ -3,7 +3,7 @@
 class IPF_Command_Pack
 {
     public $command = 'pack';
-    public $description = 'Pack database dump and uploaded files to a single archive.';
+    public $description = 'Pack database dump and uploaded files to a single archive';
 
     public function run($args=null)
     {
@@ -14,21 +14,21 @@ class IPF_Command_Pack
             $workingDirectory = getcwd();
             chdir($uploadsDir . '/..');
             $tar_object = new Archive_Tar($workingDirectory . '/upload.tar');
-            $tar_object->setErrorHandling(PEAR_ERROR_PRINT);  
+            $tar_object->setErrorHandling(PEAR_ERROR_PRINT);
             $tar_object->create('upload');
             chdir($workingDirectory);
         }
 
-        (new IPF_Command_DBDump)->run(array('quiet'));
+        (new IPF_Command_DBDump)->run(array('--quiet'));
 
-        unlink($outputFileName);
+        IPF_Shell::unlink($outputFileName);
 
         $tar_object = new Archive_Tar($outputFileName);
-        $tar_object->setErrorHandling(PEAR_ERROR_PRINT);  
+        $tar_object->setErrorHandling(PEAR_ERROR_PRINT);
         $tar_object->create('upload.tar dump.sql');
 
-        unlink('upload.tar');
-        unlink('dump.sql');
+        IPF_Shell::unlink('upload.tar');
+        IPF_Shell::unlink('dump.sql');
     }
 }
 

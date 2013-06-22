@@ -22,6 +22,12 @@ class IPF_Shell
         proc_close($process);
     }
 
+    public static function unlink($filename)
+    {
+        if (is_file($filename))
+            unlink($filename);
+    }
+
     public static function displayTwoColumns($rows, $firstColumnMin=7, $firstColumnMax=47)
     {
         $firstColumnSize = $firstColumnMin;
