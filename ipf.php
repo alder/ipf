@@ -184,11 +184,12 @@ class IPF_ClassLoader
 
     private function __construct($project_path)
     {
-        $dir = $project_path . '/vendor/composer/';
-
-        $includePaths = require $project_path . '/vendor/composer/include_paths.php';
-        array_push($includePaths, get_include_path());
-        set_include_path(join(PATH_SEPARATOR, $includePaths));
+        $includePathsFile = $project_path . '/vendor/composer/include_paths.php';
+        if (is_file($includePathsFile)) {
+            $includePaths = require $includePathsFile;
+            array_push($includePaths, get_include_path());
+            set_include_path(join(PATH_SEPARATOR, $includePaths));
+        }
 
         $this->classMap = require $project_path . '/vendor/composer/autoload_classmap.php';
 
@@ -198,7 +199,7 @@ class IPF_ClassLoader
     public function load($class)
     {
         if (isset($this->classMap[$class])) {
-            include $this->classMap[$class];
+            require $this->classMap[$class];
         }
     }
 }
