@@ -9,7 +9,8 @@ class IPF_Command_DBDump
     {
         $output = 'dump.sql';
 
-        print "Dumping database to file $output\n";
+        if (!in_array('quiet', $args))
+            print "Dumping database to file $output\n";
 
         $db = IPF_ORM_Manager::getInstance()->connectionParameters(IPF::get('database', IPF::get('dsn')));
 

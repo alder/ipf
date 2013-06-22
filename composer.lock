@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "20bffa57e6d8564e8b9bf75a6d2f70af",
+    "hash": "09e63866555a75f0b04932883319a5f1",
     "packages": [
         {
             "name": "andy128k/routeexpression",
@@ -43,6 +43,55 @@
                 "issues": "https://github.com/andy128k/routeexpression/issues"
             },
             "time": "2013-06-22 08:01:38"
+        },
+        {
+            "name": "pear/archive_tar",
+            "version": "1.3.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pear/Archive_Tar",
+                "reference": "1.3.11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pear/Archive_Tar/zipball/1.3.11",
+                "reference": "1.3.11",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=4.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Archive_Tar": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Michiel Rook",
+                    "email": "mrook@php.net"
+                },
+                {
+                    "name": "Vincent Blavet",
+                    "email": "vincent@phpconcept.net"
+                },
+                {
+                    "name": "Greg Beaver",
+                    "email": "greg@chiaraquartet.net"
+                }
+            ],
+            "description": "Tar file management class",
+            "homepage": "https://github.com/pear/Archive_Tar",
+            "keywords": [
+                "archive",
+                "tar"
+            ],
+            "time": "2013-02-09 11:44:32"
         }
     ],
     "packages-dev": [

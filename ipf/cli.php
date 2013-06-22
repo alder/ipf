@@ -16,6 +16,7 @@ class IPF_Cli
             new IPF_Command_Fixtures,
             new IPF_Command_DB,
             new IPF_Command_DBDump,
+            new IPF_Command_Pack,
             new IPF_Command_CreateSuperUser,
             new IPF_Command_SyncPerms,
         );
