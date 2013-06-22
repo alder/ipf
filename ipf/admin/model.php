@@ -528,7 +528,7 @@ class IPF_Admin_Model
         $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
         
         if ($perms === false || !in_array('view', $perms) || !in_array('add', $perms))
-            return new IPF_HTTP_Response_NotFound();
+            return new IPF_HTTP_Response_NotFound($request);
 
         if ($request->method == 'POST')
         {
@@ -577,7 +577,7 @@ class IPF_Admin_Model
         $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
         
         if ($perms === false || !in_array('view', $perms) || !in_array('delete', $perms))
-            return new IPF_HTTP_Response_NotFound();
+            return new IPF_HTTP_Response_NotFound($request);
 
         if ($request->method == 'POST')
         {
@@ -607,12 +607,12 @@ class IPF_Admin_Model
         $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
 
         if ($perms === false || !in_array('view', $perms))
-            return new IPF_HTTP_Response_NotFound();
+            return new IPF_HTTP_Response_NotFound($request);
 
         if ($request->method == 'POST')
         {
             if (!in_array('change', $perms))
-                return new IPF_HTTP_Response_NotFound();
+                return new IPF_HTTP_Response_NotFound($request);
 
             $this->_beforeEdit($o);
             $data = $request->POST+$request->FILES;
@@ -676,7 +676,7 @@ class IPF_Admin_Model
         $perms = IPF_Admin_App::GetAdminModelPermissions($this, $request, $lapp, $lmodel);
 
         if ($perms === false || !in_array('view', $perms))
-            return new IPF_HTTP_Response_NotFound();
+            return new IPF_HTTP_Response_NotFound($request);
 
         $this->ListItemsQuery();
         $this->_GetFilters($request);

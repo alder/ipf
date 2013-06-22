@@ -3,7 +3,7 @@
 class IPF_HTTP_Response
 {
     public $short_session = false;
-	public $content = '';
+    public $content = '';
     public $headers = array();
     public $status_code = 200;
     public $cookies = array();

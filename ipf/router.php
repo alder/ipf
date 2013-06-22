@@ -68,14 +68,14 @@ class IPF_Router
                         }
                         return $r;
                     } catch (IPF_HTTP_Error404 $e) {
-                        return new IPF_HTTP_Response_NotFound();
+                        return new IPF_HTTP_Response_NotFound($req);
                     } catch (IPF_Exception $e) {
                         return IPF_Router::response500($e);
                     }
                 }
             }
         }
-        return new IPF_HTTP_Response_NotFound();
+        return new IPF_HTTP_Response_NotFound($req);
     }
 
     public static function describe()

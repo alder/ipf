@@ -78,7 +78,7 @@ function IPF_Admin_Views_ListItems($request, $match)
             return $ma->ListItems($request, $lapp, $lmodel);
     }
     
-    return new IPF_HTTP_Response_NotFound();
+    return new IPF_HTTP_Response_NotFound($request);
 }
 
 function IPF_Admin_Views_AddItem($request, $match)
@@ -102,7 +102,7 @@ function IPF_Admin_Views_AddItem($request, $match)
             return $ma->AddItem($request, $lapp, $lmodel);
     }
     
-    return new IPF_HTTP_Response_NotFound();
+    return new IPF_HTTP_Response_NotFound($request);
 }
 
 function IPF_Admin_Views_EditItem($request, $match)
@@ -132,7 +132,7 @@ function IPF_Admin_Views_EditItem($request, $match)
         }
     }
     
-    return new IPF_HTTP_Response_NotFound();
+    return new IPF_HTTP_Response_NotFound($request);
 }
 
 function IPF_Admin_Views_DeleteItem($request, $match)
@@ -162,7 +162,7 @@ function IPF_Admin_Views_DeleteItem($request, $match)
         }
     }
     
-    return new IPF_HTTP_Response_NotFound();
+    return new IPF_HTTP_Response_NotFound($request);
 }
 
 function IPF_Admin_Views_Reorder($request, $match)
@@ -171,7 +171,7 @@ function IPF_Admin_Views_Reorder($request, $match)
     if ($ca!==true) return $ca;
 
     if ($request->method != 'POST' || !isset($request->POST['ids']) || !is_array($request->POST['ids']))
-        return new IPF_HTTP_Response_NotFound();
+        return new IPF_HTTP_Response_NotFound($request);
 
     $lapp = $match[1];
     $lmodel = $match[2];
@@ -273,7 +273,7 @@ function IPF_Admin_Views_ChangePassword($request, $match)
         }
     }
     
-    return new IPF_HTTP_Response_NotFound();
+    return new IPF_HTTP_Response_NotFound($request);
 }
 
 function IPF_Admin_Views_Login($request, $match)
