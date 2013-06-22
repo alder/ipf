@@ -146,7 +146,8 @@ final class IPF
         $elts = explode('_', $function);
         array_pop($elts);
         $file = strtolower(implode(DIRECTORY_SEPARATOR, $elts)).'.php';
-        @include $file;
+        @include IPF::$settings['ipf_path'] . $file;
+        @include IPF::$settings['project_path'] . $file;
         if (!function_exists($function))
             throw new IPF_Exception('Impossible to load the function: '.$function.' in '.$file);
     }
