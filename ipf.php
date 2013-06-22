@@ -145,7 +145,7 @@ final class IPF
 
         $elts = explode('_', $function);
         array_pop($elts);
-        $file = strtolower(implode(DIRECTORY_SEPARATOR, $elts)).'.php';
+        $file = '/' . strtolower(implode(DIRECTORY_SEPARATOR, $elts)).'.php';
         @include IPF::$settings['ipf_path'] . $file;
         @include IPF::$settings['project_path'] . $file;
         if (!function_exists($function))
