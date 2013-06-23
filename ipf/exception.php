@@ -1,3 +1,6 @@
 <?php
 
-class IPF_Exception extends Exception{}
+class IPF_Exception extends Exception
+{
+}
+

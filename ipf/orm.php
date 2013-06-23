@@ -1,6 +1,7 @@
 <?php
 
-final class IPF_ORM {
+final class IPF_ORM
+{
     const ERR                       = -1;
     const ERR_SYNTAX                = -2;
     const ERR_CONSTRAINT            = -3;
@@ -178,9 +179,7 @@ final class IPF_ORM {
 
     private static $_loadedModelFiles = array();
 
-    public function __construct(){
-        throw new IPF_Exception_Base('IPF_Const is static class. No instances can be created.');
-    }    
+    private function __construct() {}
 
     public static function getTable($componentName)
     {
