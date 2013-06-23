@@ -95,6 +95,8 @@ final class IPF_Project
     public function run()
     {
         if (IPF::get('debug')) {
+            error_reporting(E_ALL);
+
             $this->sqlProfiler = new IPF_ORM_Connection_Profiler();
             IPF_ORM_Manager::getInstance()->dbListeners[] = $this->sqlProfiler;
         }

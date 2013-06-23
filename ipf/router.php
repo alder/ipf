@@ -4,6 +4,7 @@ class IPF_Router
 {
     public static function response500($e)
     {
+        error_log($e);
         if (IPF::get('debug'))
             return new IPF_HTTP_Response_ServerErrorDebug($e);
         else
