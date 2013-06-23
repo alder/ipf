@@ -85,7 +85,7 @@ class IPF_Form_Model extends IPF_Form
         if (isset($col['html']))
             $type = 'html';
 
-        $cn = 'IPF_Form_DB_'.$type;
+        $cn = 'IPF_Form_DB_'.ucfirst($type);
 
         $db_field = new $cn('', $name, $col);
 
