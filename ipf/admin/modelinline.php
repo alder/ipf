@@ -142,6 +142,9 @@ abstract class IPF_Admin_ModelInline
 
     function save($parent_obj)
     {
+        if (!$this->isValid())
+            throw new IPF_Exception_Form(__('Cannot save models from an invalid formset.'));
+
         if ($this->parentModel->exists()) {
             $objects = IPF_ORM_Query::create()
                 ->from(get_class($this->model))
