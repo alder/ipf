@@ -125,30 +125,21 @@ class IPF_Form_Model extends IPF_Form
 
     function save($commit=true)
     {
-        if ($this->isValid()) {
-            $this->model->SetFromFormData($this->cleaned_data);
-            try{
-                $this->model->save();
-                $rels = $this->model->getTable()->getRelations();
-                foreach($rels as $rname=>$rel){
-                    if (isset($this->cleaned_data[$rname])){
-                        $this->model->unlink($rel->getAlias());
-                        if (is_array($this->cleaned_data[$rname])){
-                            $this->model->link($rel->getAlias(),$this->cleaned_data[$rname]);
-                        }
-                    }
-                }
-                return $this->model;
-            } catch(IPF_ORM_Exception_Validator $e) {
-                $erecords = $e->getInvalidRecords();
-                $errors = $erecords[0]->getErrorStack();
-                foreach($errors as $k=>$v){
-                    echo $k, ' ';
-                    print_r($v);
+        if (!$this->isValid())
+            throw new IPF_Exception_Form(__('Cannot save the model from an invalid form.'));
+
+        $this->model->SetFromFormData($this->cleaned_data);
+        $this->model->save();
+        $rels = $this->model->getTable()->getRelations();
+        foreach ($rels as $rname => $rel) {
+            if (isset($this->cleaned_data[$rname])) {
+                $this->model->unlink($rel->getAlias());
+                if (is_array($this->cleaned_data[$rname])) {
+                    $this->model->link($rel->getAlias(),$this->cleaned_data[$rname]);
                 }
             }
         }
-        //throw new IPF_Exception_Form(__('Cannot save the model from an invalid form.'));
+        return $this->model;
     }
 }
 
