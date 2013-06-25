@@ -58,10 +58,16 @@ class IPF_Form_Model extends IPF_Form
 
     function addDBField($name, $col)
     {
-        if ($name==$this->model->getTable()->getIdentifier())
+        if ($name == $this->model->getTable()->getIdentifier())
             return;
 
-        $defaults = array('blank' => true, 'verbose' => $name, 'help_text' => '', 'editable' => true);
+        $defaults = array(
+            'blank' => true,
+            'help_text' => '',
+            'editable' => true,
+            'verbose'   => isset($col['verbose']) ? $col['verbose'] : $name,
+        );
+
         $type = $col['type'];
 
         if (isset($col['notblank'])) {
@@ -96,25 +102,25 @@ class IPF_Form_Model extends IPF_Form
 
     function addDBRelation($name, $relation, $col)
     {
-        if (isset($col['notblank']))
-            $blank = false;
-        else
-            $blank = true;
+        $rt = $relation->getType();
+        if ($rt !== IPF_ORM_Relation::ONE_AGGREGATE && $rt !== IPF_ORM_Relation::MANY_AGGREGATE)
+            return;
 
-        if ($relation->getType()==IPF_ORM_Relation::ONE_AGGREGATE) {
+        $defaults = array(
+            'blank'     => !isset($col['notblank']),
+            'help_text' => '',
+            'editable'  => true,
+            'model'     => $relation->getClass(),
+            'verbose'   => isset($col['verbose']) ? $col['verbose'] : $name,
+        );
+
+        if ($rt === IPF_ORM_Relation::ONE_AGGREGATE) {
             $name .= "_id";
             $db_field = new IPF_Form_DB_Foreignkey('',$name);
-            $defaults = array('blank' => $blank, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
-            $form_field = $db_field->formField($defaults);
-            $this->fields[$name] = $form_field;
-            return;
-        }
-        if ($relation->getType()==IPF_ORM_Relation::MANY_AGGREGATE) {
+            $this->fields[$name] = $db_field->formField($defaults);
+        } else if ($rt === IPF_ORM_Relation::MANY_AGGREGATE) {
             $db_field = new IPF_Form_DB_ManyToMany('',$name);
-            $defaults = array('blank' => $blank, 'verbose' => $name, 'help_text' => '', 'editable' => true, 'model'=>$relation->getClass());
-            $form_field = $db_field->formField($defaults);
-            $this->fields[$name] = $form_field;
-            return;
+            $this->fields[$name] = $db_field->formField($defaults);
         }
     }
 

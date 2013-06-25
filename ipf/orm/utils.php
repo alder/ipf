@@ -58,6 +58,7 @@ class IPF_ORM_Utils {
             'image',
             'html',
             'uploadTo',
+            'verbose',
         );
     }
 
