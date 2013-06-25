@@ -440,7 +440,7 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     $pth = explode('/',$curr_dir);
     $path = array();
     $cd = '/admin/filebrowser/';
-    foreach($pth as $p){
+    foreach($pth as $p) {
         $cd.=$p.'/';
         $path[] = array('cd'=>$cd, 'name'=>$p);
     }
@@ -470,3 +470,4 @@ function IPF_Admin_Views_FileBrowserRename($request, $match)
         $name=$old_name;
     return new IPF_HTTP_Response($name);
 }
+
