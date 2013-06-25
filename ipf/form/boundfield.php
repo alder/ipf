@@ -27,6 +27,14 @@ class IPF_Form_BoundField
         }
     }
 
+    public function value()
+    {
+        if ($this->form->is_bound)
+            return $this->field->widget->valueToFormData($this->html_name, $this->form->data);
+        else
+            return $this->form->initial($this->name);
+    }
+
     public function render_w($widget=null, $attrs=array())
     {
         if ($widget === null) {
@@ -37,12 +45,7 @@ class IPF_Form_BoundField
             and !array_key_exists('id', $widget->attrs)) {
             $attrs['id'] = $id;
         }
-        if (!$this->form->is_bound) {
-            $data = $this->form->initial($this->name);
-        } else {
-            $data = $this->field->widget->valueToFormData($this->html_name, $this->form->data);
-        }
-        return $widget->render($this->html_name, $data, $attrs);
+        return $widget->render($this->html_name, $this->value(), $attrs);
     }
 
     public function labelTag($contents=null, $attrs=array())
