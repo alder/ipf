@@ -46,9 +46,5 @@ class IPF_ORM_Exception extends IPF_Exception
         return isset(self::$_errorMessages[$value]) ?
            self::$_errorMessages[$value] : self::$_errorMessages[IPF_ORM::ERR];
     }
-
 }
 
-    
-    
-    

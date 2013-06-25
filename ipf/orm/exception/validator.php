@@ -50,3 +50,4 @@ class IPF_ORM_Exception_Validator extends IPF_ORM_Exception implements Countable
         }
     }
 }
+
