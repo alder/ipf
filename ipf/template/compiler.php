@@ -11,7 +11,7 @@ class IPF_Template_Compiler
     {
         $vartype = array(T_CHARACTER, T_CONSTANT_ENCAPSED_STRING, T_DNUMBER,
             T_ENCAPSED_AND_WHITESPACE, T_LNUMBER, T_OBJECT_OPERATOR, T_STRING,
-            T_WHITESPACE, T_ARRAY);
+            T_WHITESPACE, T_ARRAY, T_VARIABLE);
 
         $assignOp = array(T_AND_EQUAL, T_DIV_EQUAL, T_MINUS_EQUAL, T_MOD_EQUAL,
             T_MUL_EQUAL, T_OR_EQUAL, T_PLUS_EQUAL, T_PLUS_EQUAL, T_SL_EQUAL,
@@ -25,7 +25,7 @@ class IPF_Template_Compiler
         self::$allowedInVar   = array_merge($vartype, $op);
         self::$allowedInExpr  = array_merge($vartype, $op);
         self::$allowedAssign  = array_merge($vartype, $op, $assignOp);
-        self::$allowedForeach = array(T_AS, T_DOUBLE_ARROW, T_STRING, T_OBJECT_OPERATOR);
+        self::$allowedForeach = array_merge(self::$allowedInExpr, array(T_AS));
     }
 
     protected $_modifier = array(
@@ -268,11 +268,26 @@ class IPF_Template_Compiler
             $res = 'elseif('.$this->_parseFinal($args, self::$allowedInExpr).'):';
             break;
         case 'foreach':
+            $tokens = $this->tokenize($args, self::$allowedForeach, array(';'));
+            $asFound = false;
+            $scopeVars = array('foreach_counter0', 'foreach_counter', 'foreach_first');
+            foreach ($tokens as $token) {
+                if (!is_array($token))
+                    continue;
+                if ($asFound) {
+                    if ($token[0] == T_VARIABLE)
+                        $scopeVars[] = substr($token[1], 1);
+                } else {
+                    if ($token[0] == T_AS)
+                        $asFound = true;
+                }
+            }
             $res =
+                '$t->push(\'' . implode('\', \'', $scopeVars) . '\'); ' .
                 '$t->_vars[\'foreach_counter0\'] = 0;' .
                 '$t->_vars[\'foreach_counter\'] = 1;' .
                 '$t->_vars[\'foreach_first\'] = true;' .
-                'foreach ('.$this->_parseFinal($args, self::$allowedForeach, array(';','!')).'): ';
+                'foreach ('.$this->compileExpression($tokens).'): ';
             $this->_blockStack[] = 'foreach';
             break;
         case 'while':
@@ -288,7 +303,8 @@ class IPF_Template_Compiler
                 '$t->_vars[\'foreach_counter0\'] = $t->_vars[\'foreach_counter0\'] + 1;' .
                 '$t->_vars[\'foreach_counter\'] = $t->_vars[\'foreach_counter\'] + 1;' .
                 '$t->_vars[\'foreach_first\'] = false;' .
-                'endforeach; ';
+                'endforeach; ' .
+                '$t->pop(); ';
             break;
         case '/if':
         case '/while':
@@ -426,37 +442,51 @@ class IPF_Template_Compiler
 
     private function _parseFinal($string, &$allowed, $exceptchar=array(';'))
     {
+        $tokens = $this->tokenize($string, $allowed, $exceptchar);
+        return $this->compileExpression($tokens);
+    }
+
+    private function tokenize($string, $allowed, $exceptchar)
+    {
         $tokens = token_get_all('<?php '.$string.'?>');
-        $result = '';
-        $inDot = false;
+        $result = array();
         foreach ($tokens as $tok) {
             if (is_array($tok)) {
                 list($type, $str) = $tok;
-                if ($type == T_OPEN_TAG || $type == T_CLOSE_TAG)
-                    continue;
-
-                if ($type == T_STRING && $inDot) {
-                    $result .= $str;
-                } elseif ($type == T_VARIABLE) {
-                    $result .= '$t->_vars[\''.substr($str, 1).'\']';
-                } elseif ($type == T_WHITESPACE || in_array($type, $allowed)) {
-                    $result .= $str;
+                if ($type == T_OPEN_TAG || $type == T_CLOSE_TAG) {
+                    // skip
+                } elseif (in_array($type, $allowed)) {
+                    $result[] = $tok;
                 } else {
-                    trigger_error(sprintf(__('Invalid syntax: (%s) %s.'), $string, $str), E_USER_ERROR);
-                    return '';
+                    throw new IPF_Exception_Template(sprintf(__('Invalid syntax: (%s) %s.'), $string, $str));
                 }
             } else {
                 if (in_array($tok, $exceptchar)) {
                     trigger_error(sprintf(__('Invalid character: (%s) %s.'), $string, $tok), E_USER_ERROR);
-                } elseif ($tok == '.') {
-                    $inDot = true;
+                } else {
+                    $result[] = $tok;
+                }
+            }
+        }
+        return $result;
+    }
+
+    private function compileExpression($tokens)
+    {
+        $result = '';
+        foreach ($tokens as $tok) {
+            if (is_array($tok)) {
+                list($type, $str) = $tok;
+                if ($type == T_VARIABLE) {
+                    $result .= '$t->_vars[\''.substr($str, 1).'\']';
+                } else {
+                    $result .= $str;
+                }
+            } else {
+                if ($tok == '.') {
                     $result .= '->';
                 } elseif ($tok == '~') {
                     $result .= '.';
-                } elseif ($tok =='[') {
-                    $result.=$tok;
-                } elseif ($tok ==']') {
-                    $result.=$tok;
                 } else {
                     $result .= $tok;
                 }
