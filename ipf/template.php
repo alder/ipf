@@ -36,16 +36,6 @@ abstract class IPF_Template
     }
 }
 
-function IPF_Template_unsafe($string)
-{
-    return new IPF_Template_SafeString($string, true);
-}
-
-function IPF_Template_htmlspecialchars($string)
-{
-    return htmlspecialchars((string)$string, ENT_COMPAT, 'UTF-8');
-}
-
 function IPF_Template_dateFormat($date, $format='%b %e, %Y')
 {
     if (substr(PHP_OS,0,3) == 'WIN') {
@@ -65,16 +55,5 @@ function IPF_Template_timeFormat($time, $format='Y-m-d H:i:s')
 function IPF_Template_floatFormat($number, $decimals=2, $dec_point='.', $thousands_sep=',')
 {
     return number_format($number, $decimals, $dec_point, $thousands_sep);
-}
-
-function IPF_Template_safeEcho($mixed, $echo=true)
-{
-    $result = (is_object($mixed) and 'IPF_Template_SafeString' === get_class($mixed))
-        ? $mixed->value
-        : htmlspecialchars((string) $mixed, ENT_COMPAT, 'UTF-8');
-    if ($echo)
-        echo $result;
-    else
-        return $result;
 }
 

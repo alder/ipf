@@ -28,34 +28,35 @@ class IPF_Template_Compiler
         self::$allowedForeach = array(T_AS, T_DOUBLE_ARROW, T_STRING, T_OBJECT_OPERATOR);
     }
 
-    protected $_modifier = array('upper' => 'strtoupper',
-                                 'lower' => 'strtolower',
-                                 'escxml' => 'htmlspecialchars',
-                                 'escape' => 'IPF_Template_htmlspecialchars',
-                                 'strip_tags' => 'strip_tags',
-                                 'escurl' => 'rawurlencode',
-                                 'capitalize' => 'ucwords',
-                                 // Not var_export because of recursive issues.
-                                 'debug' => 'print_r',
-                                 'fulldebug' => 'var_export',
-                                 'count' => 'count',
-                                 'nl2br' => 'nl2br',
-                                 'trim' => 'trim',
-                                 'unsafe' => 'IPF_Template_unsafe',
-                                 'safe' => 'IPF_Template_unsafe',
-                                 'date' => 'IPF_Template_dateFormat',
-                                 'time' => 'IPF_Template_timeFormat',
-                                 'floatformat' => 'IPF_Template_floatFormat',
-                                 'limit_words' => 'IPF_Utils::limitWords',
-                                 );
+    protected $_modifier = array(
+        'upper'       => 'strtoupper',
+        'lower'       => 'strtolower',
+        'escxml'      => 'htmlspecialchars',
+        'escape'      => 'IPF_Utils::escape',
+        'strip_tags'  => 'strip_tags',
+        'escurl'      => 'rawurlencode',
+        'capitalize'  => 'ucwords',
+        'debug'       => 'print_r', // Not var_export because of recursive issues.
+        'fulldebug'   => 'var_export',
+        'count'       => 'count',
+        'nl2br'       => 'nl2br',
+        'trim'        => 'trim',
+        'unsafe'      => 'IPF_Template_SafeString::markSafe',
+        'safe'        => 'IPF_Template_SafeString::markSafe',
+        'date'        => 'IPF_Template_dateFormat',
+        'time'        => 'IPF_Template_timeFormat',
+        'floatformat' => 'IPF_Template_floatFormat',
+        'limit_words' => 'IPF_Utils::limitWords',
+    );
 
     protected $_literals;
 
     public $_usedModifiers = array();
 
     protected $_allowedTags = array(
-                                    'url' => 'IPF_Template_Tag_Url',
-                                    );
+        'url' => 'IPF_Template_Tag_Url',
+    );
+
     protected $_extraTags = array();
 
     protected $_blockStack = array();
@@ -197,7 +198,7 @@ class IPF_Template_Compiler
         }
         if (in_array($firstcar, array('$', '\'', '"'))) {
             if ('blocktrans' !== end($this->_blockStack)) {
-                return '<?php IPF_Template_safeEcho('.$this->_parseVariable($tag).'); ?>';
+                return '<?php echo IPF_Template_SafeString::value('.$this->_parseVariable($tag).'); ?>';
             } else {
                 $tok = explode('|', $tag);
                 $this->_transStack[substr($tok[0], 1)] = $this->_parseVariable($tag);
@@ -346,7 +347,7 @@ class IPF_Template_Compiler
                 $res .= 'IPF_Translation::sprintf(_n($_b_t_s, $_b_t_p, $_b_t_c), array(';
                 $_tmp = array();
                 foreach ($this->_transStack as $key=>$_trans) {
-                    $_tmp[] = '\''.addslashes($key).'\' => IPF_Template_safeEcho('.$_trans.', false)';
+                    $_tmp[] = '\''.addslashes($key).'\' => IPF_Template_SafeString::value('.$_trans.')';
                 }
                 $res .= implode(', ', $_tmp);
                 unset($_trans, $_tmp);
@@ -360,7 +361,7 @@ class IPF_Template_Compiler
                     $res .= 'echo(IPF_Translation::sprintf(__($_b_t_s), array(';
                     $_tmp = array();
                     foreach ($this->_transStack as $key=>$_trans) {
-                        $_tmp[] = '\''.addslashes($key).'\' => IPF_Template_safeEcho('.$_trans.', false)';
+                        $_tmp[] = '\''.addslashes($key).'\' => IPF_Template_SafeString::value('.$_trans.')';
                     }
                     $res .= implode(', ', $_tmp);
                     unset($_trans, $_tmp);

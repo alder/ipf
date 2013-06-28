@@ -262,6 +262,11 @@ class IPF_Utils
         return $html;
     }
 
+    public static function escape($string)
+    {
+        return htmlspecialchars((string)$string, ENT_COMPAT, 'UTF-8');
+    }
+
     static function moneyFormat($val)
     {
         return number_format((float)$val,2);
