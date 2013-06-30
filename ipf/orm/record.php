@@ -1259,7 +1259,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
     public function __toString()
     {
-        return (string) $this->_oid;
+        return sprintf('<%s #%d>', get_class($this), $this->_oid);
     }
 
     public function ModelAdmin()
