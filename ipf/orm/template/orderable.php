@@ -17,7 +17,7 @@ class IPF_ORM_Template_Orderable extends IPF_ORM_Template
 
     public function setTableDefinition()
     {
-        $this->hasColumn($this->columnName, 'integer', null, '');
+        $this->hasColumn($this->columnName, 'integer', null, array('exclude' => true));
         $this->getTable()->listeners['Orderable_'.$this->columnName] = new IPF_ORM_Template_Listener_Orderable($this->columnName);
     }
 }

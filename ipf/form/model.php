@@ -26,14 +26,13 @@ class IPF_Form_Model extends IPF_Form
                 $exclude = array();
 
             foreach ($db_columns as $name => $col) {
-                if (array_search($name, $exclude) !== false)
-                    continue;
-                $this->addDBField($name, $col);
+                if (array_search($name, $exclude) === false && !isset($col['exclude']))
+                    $this->addDBField($name, $col);
             }
+
             foreach ($db_relations as $name => $relation) {
-                if (array_search($name, $exclude) !== false)
-                    continue;
-                $this->addDBRelation($name, $relation, $col);
+                if (array_search($name, $exclude) === false && !isset($relation['exclude']))
+                    $this->addDBRelation($name, $relation, $col); // FIXME: $col is undefined
             }
         } else {
             foreach ($user_fields as $uname) {

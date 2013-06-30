@@ -27,6 +27,7 @@ abstract class IPF_ORM_Relation implements ArrayAccess
                                   'equal'       => false,
                                   'cascade'     => array(), // application-level cascades
                                   'owningSide'  => false, // whether this is the owning side
+                                  'exclude'     => false,
                                   );
 
     public function __construct(array $definition)
