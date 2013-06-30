@@ -4,7 +4,6 @@ class IPF_ORM_Validator_Creditcard
 {                                                         
     public function validate($value)
     {
-        $cardType = "";
         $card_regexes = array(
             "/^4\d{12}(\d\d\d){0,1}$/"      => 'visa',
             "/^5[12345]\d{14}$/"            => 'mastercard',
@@ -13,15 +12,17 @@ class IPF_ORM_Validator_Creditcard
             "/^30[012345]\d{11}$/"          => 'diners',
             "/^3[68]\d{12}$/"               => 'diners',
         );
+
+        $cardType = '';
         foreach ($card_regexes as $regex => $type) {
             if (preg_match($regex, $value)) {
                  $cardType = $type;
                  break;
             }
         }
-        if ( ! $cardType) {
+        if (!$cardType)
             return false;
-        }
+
         /* mod 10 checksum algorithm */
         $revcode = strrev($value);
         $checksum = 0;
@@ -36,10 +37,7 @@ class IPF_ORM_Validator_Creditcard
                  $checksum += 1;
             }
         }
-        if ($checksum % 10 == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return $checksum % 10 == 0;
     }
 }
+

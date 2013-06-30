@@ -258,3 +258,4 @@ class IPF_ORM_Validator_Country
         return isset(self::$countries[$value]);
     }
 }
+

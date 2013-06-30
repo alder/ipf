@@ -119,7 +119,7 @@ class IPF_Form_Model extends IPF_Form
             $db_field = new IPF_Form_DB_Foreignkey('',$name);
             $this->fields[$name] = $db_field->formField($defaults);
         } else if ($rt === IPF_ORM_Relation::MANY_AGGREGATE) {
-            $db_field = new IPF_Form_DB_ManyToMany('',$name);
+            $db_field = new IPF_Form_DB_Manytomany('',$name);
             $this->fields[$name] = $db_field->formField($defaults);
         }
     }
