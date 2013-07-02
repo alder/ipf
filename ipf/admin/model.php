@@ -389,16 +389,26 @@ class IPF_Admin_Model
     public function ListItemsHeader()
     {
         $this->header = array();
-        if (method_exists($this,'list_display'))
+        if (method_exists($this, 'list_display'))
             $this->names = $this->list_display();
         else
             $this->names = $this->model->getTable()->getColumnNames();
 
+        $columns = $this->model->getTable()->getColumns();
+
         foreach ($this->names as $name) {
+            if (is_array($name)) {
+                list($name, $title) = $name;
+            } elseif (array_key_exists($name, $columns) && array_key_exists('verbose', $columns[$name])) {
+                $title = $columns[$name]['verbose'];
+            } else {
+                $title = IPF_Utils::humanTitle($name);
+            }
+
             $this->header[$name] = new IPF_Template_ContextVars(array(
-                'title' => IPF_Utils::humanTitle($name),
-                'name' => $name,
-                'sortable' => null,
+                'title'     => $title,
+                'name'      => $name,
+                'sortable'  => null,
             ));
         }
         return $this->header;
