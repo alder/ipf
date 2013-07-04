@@ -32,15 +32,18 @@ class IPF_Command_Fixtures
         foreach ($fixtures as $fixture) {
             $modelClass = $fixture['model'];
             $key = $fixture['key'];
+            if (!is_array($key))
+                $key = array($key);
             $records = $fixture['records'];
             echo "Loading $modelClass ";
             foreach ($records as $record) {
-                $model = IPF_ORM::getTable($modelClass)
+                $query = IPF_ORM::getTable($modelClass)
                     ->createQuery()
-                    ->where($key . ' = ?', array($record[$key]))
-                    ->limit(1)
-                    ->execute();
+                    ->limit(1);
+                foreach ($key as $k)
+                    $query->where($k . ' = ?', array($record[$k]));
 
+                $model = $query->execute();
                 if ($model)
                     $model = $model[0];
                 else
