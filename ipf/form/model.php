@@ -45,17 +45,17 @@ class IPF_Form_Model extends IPF_Form
                 $add_method = 'add__'.$uname.'__field';
                 if (method_exists($this, $add_method)) {
                     $this->$add_method();
-                    continue;
-                }
-                if (array_key_exists($uname,$db_columns)) {
-                    $this->addDBField($uname,$db_columns[$uname]);
-                } elseif (array_key_exists($uname,$db_relations)) {
+                } elseif (array_key_exists($uname, $db_columns)) {
+                    $this->addDBField($uname, $db_columns[$uname]);
+                } elseif (array_key_exists($uname, $db_relations)) {
                     $lfn = $db_relations[$uname]->getLocalFieldName();
                     if (isset($db_columns[$lfn]))
                         $col = $db_columns[$lfn];
                     else
                         $col = array();
-                    $this->addDBRelation($uname,$db_relations[$uname],$col);
+                    $this->addDBRelation($uname, $db_relations[$uname], $col);
+                } else {
+                    throw new IPF_Exception_Form(sprintf(__("Model '%s' has no column '%s'."), $this->model->getTable()->getComponentName(), $uname));
                 }
             }
         }
