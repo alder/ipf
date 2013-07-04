@@ -3,6 +3,7 @@
 final class IPF_Project
 {
     private $apps = array();
+    public $router = null;
     public $sqlProfiler = null;
 
     static private $instance = NULL;
