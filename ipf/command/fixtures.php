@@ -41,7 +41,7 @@ class IPF_Command_Fixtures
                     ->createQuery()
                     ->limit(1);
                 foreach ($key as $k)
-                    $query->where($k . ' = ?', array($record[$k]));
+                    $query->addWhere($k . ' = ?', array($record[$k]));
 
                 $model = $query->execute();
                 if ($model)
