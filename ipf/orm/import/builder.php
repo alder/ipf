@@ -257,6 +257,10 @@ class IPF_ORM_Import_Builder
                     $a[] = '\'owningSide\' => ' . self::varExport($relation['owningSide']);
                 }
 
+                if (isset($relation['exclude']) && $relation['exclude']) {
+                    $a[] = '\'exclude\' => ' . self::varExport($relation['exclude']);
+                }
+
                 if ( ! empty($a)) {
                     $ret[$i] .= ', ' . 'array(';
                     $length = strlen($ret[$i]);
