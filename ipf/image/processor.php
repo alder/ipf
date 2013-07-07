@@ -27,7 +27,7 @@ class IPF_Image_Processor
     public function execute($sourceUrl, $directory, $root=null)
     {
         if ($root === null)
-            $root = IPF::get('upload_path') . DIRECTORY_SEPARATOR;
+            $root = IPF::getUploadPath();
 
         $destinationUrl = IPF_Utils::insertDirectory($sourceUrl, $directory);
         $path = $root . $destinationUrl;

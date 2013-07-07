@@ -6,6 +6,7 @@ final class IPF
         'app_base'          => '',
         'debug'             => false,
         'media_url'         => '/media/',
+        'media_url'         => '/media/upload/',
         'static_url'        => '/static/',
         'session_cookie_id' => 'sessionid',
         'dir_permission'    => 0777,
@@ -129,12 +130,12 @@ final class IPF
 
     public static function getUploadPath()
     {
-        return IPF::get('upload_path', '/tmp');
+        return IPF::get('document_root') . getUploadUrl();
     }
 
     public static function getUploadUrl()
     {
-        return IPF::get('upload_url', '/media/upload');
+        return IPF::get('upload_url');
     }
 }
 

@@ -350,7 +350,8 @@ function dir_recursive($dir, $path=DIRECTORY_SEPARATOR, $level='')
     //print_r($dirtree);
 }
 
-function IPF_Admin_Views_FileBrowser($request, $match){
+function IPF_Admin_Views_FileBrowser($request, $match)
+{
     $ca = IPF_Admin_App::checkAdminAuth($request);
     if ($ca!==true) return $ca;
 
@@ -358,14 +359,10 @@ function IPF_Admin_Views_FileBrowser($request, $match){
     if (substr($curr_dir, -1) == '/')
       $curr_dir = substr($curr_dir, 0, strlen($curr_dir)-1);
 
-    $upload_path = IPF::get('editor_upload_path','');
-    if ($upload_path=='')
-        $upload_path = IPF::get('upload_path','');
-    $upload_url = IPF::get('editor_upload_url','');
-    if ($upload_url=='')
-        $upload_url = IPF::get('upload_url','');
+    $upload_path = IPF::getUploadPath();
+    $upload_url = IPF::getUploadUrl();
 
-    $dir = $upload_path.$curr_dir;
+    $dir = $upload_path . $curr_dir;
     $_dir = substr($dir, -1) !== DIRECTORY_SEPARATOR ? $dir.DIRECTORY_SEPARATOR : $dir;
 
     if ($request->method=="GET"){

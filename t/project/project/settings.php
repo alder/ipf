@@ -7,9 +7,6 @@ $set['dsn'] = 'mysql://fake:fake@localhost/fake';
 
 $set['tmp'] = $project_root . '/tmp';
 
-$set['upload_url'] = '/media/upload/';
-$set['upload_path'] = $project_root . '/htdocs/media/upload/';
-
 $set['secret_key'] = '123456';
 
 $set['debug'] = true;

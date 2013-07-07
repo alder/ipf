@@ -4,7 +4,7 @@ class Image_Processor_Test extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->root = IPF::get('upload_path');
+        $this->root = IPF::getUploadPath();
         IPF_Utils::removeDirectories($this->root . '/thumbs');
     }
 
