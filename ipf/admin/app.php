@@ -26,6 +26,14 @@ class IPF_Admin_App extends IPF_Application
         );
     }
 
+    public function templateContext($request)
+    {
+        return array(
+            'IPF_VER' => IPF_Version::$name,
+            'ADMIN_MEDIA_URL' => IPF::get('static_url') . 'admin/',
+        );
+    }
+
     static function checkAdminAuth($request)
     {
         $ok = true;

@@ -91,5 +91,15 @@ abstract class IPF_Application
     {
         IPF_ORM::loadModels($this->path.'models');
     }
+
+    /**
+     * Returns additional context for templates
+     *
+     * @return array Dictionary of values injected into template context
+     */
+    public function templateContext($request)
+    {
+        return array();
+    }
 }
 

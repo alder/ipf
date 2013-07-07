@@ -71,12 +71,12 @@ final class IPF
             IPF::$settings['media_url'] = '/media/';
         }
 
-        if (!isset(IPF::$settings['tiny_mce_url'])){
-            IPF::$settings['tiny_mce_url'] = '/media/tiny_mce/';
+        if (!isset(IPF::$settings['static_url'])){
+            IPF::$settings['static_url'] = '/static/';
         }
 
-        if (!isset(IPF::$settings['admin_media_url'])){
-            IPF::$settings['admin_media_url'] = '/ipf/ipf/admin/media/';
+        if (!isset(IPF::$settings['tiny_mce_url'])){
+            IPF::$settings['tiny_mce_url'] = '/static/admin/tiny_mce/';
         }
 
         if (!isset(IPF::$settings['urls'])){
