@@ -2,6 +2,8 @@
 
   This document describes template language of IPF framework.
 
+  Templates are placed in 'templates' directories of project or application.
+
   =[ ]?= -- optional code
 
   =[ ]*= -- code can be repeated zero or more times.
@@ -127,6 +129,5 @@
    + =template_tags= -- additional template tags
    + =template_modifiers= -- additional template modifiers
    + =template_context_processors= -- list of context processors
-   + =template_dirs= -- list of directories to look for template files. By default it contains 'templates' folder in project directory and 'templates' folder in IPF_Admin application (when it is enabled).
    + =debug= -- forces to recompile template before each rendering
 

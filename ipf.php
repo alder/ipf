@@ -53,13 +53,6 @@ final class IPF
         if (!is_array(IPF::$settings['applications']))
             throw new IPF_Exception_Settings('applications must be array of string');
 
-        if (!isset(IPF::$settings['template_dirs'])){
-            IPF::$settings['template_dirs'] = array();
-            IPF::$settings['template_dirs'][] = IPF::$settings['project_path'].DIRECTORY_SEPARATOR.'templates';
-            if (array_search('IPF_Admin',IPF::$settings['applications']))
-                IPF::$settings['template_dirs'][] = IPF::$settings['ipf_path'].DIRECTORY_SEPARATOR.'ipf'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'templates';
-        }
-
         if (!isset(IPF::$settings['admin_title'])){
             IPF::$settings['admin_title'] = 'IPF Administration';
         }
