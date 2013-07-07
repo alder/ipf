@@ -130,7 +130,7 @@ final class IPF
 
     public static function getUploadPath()
     {
-        return IPF::get('document_root') . getUploadUrl();
+        return IPF::get('document_root') . IPF::getUploadUrl();
     }
 
     public static function getUploadUrl()
