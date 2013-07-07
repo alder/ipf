@@ -6,7 +6,7 @@ final class IPF
         'app_base'          => '',
         'debug'             => false,
         'media_url'         => '/media/',
-        'media_url'         => '/media/upload/',
+        'upload_url'        => '/media/upload/',
         'static_url'        => '/static/',
         'session_cookie_id' => 'sessionid',
         'dir_permission'    => 0777,
