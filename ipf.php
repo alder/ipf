@@ -2,11 +2,20 @@
 
 final class IPF
 {
-    private static $settings = array();
+    private static $settings = array(
+        'app_base'          => '',
+        'debug'             => false,
+        'media_url'         => '/media/',
+        'static_url'        => '/static/',
+        'session_cookie_id' => 'sessionid',
+        'dir_permission'    => 0777,
+        'file_permission'   => 0666,
+        'time_zone'         => 'America/Toronto',
+    );
 
     private static function applySettings($settings)
     {
-        foreach($settings as $key=>$val)
+        foreach ($settings as $key => $val)
             IPF::$settings[strtolower($key)] = $val;
     }
 
@@ -51,50 +60,16 @@ final class IPF
                 IPF::$settings['template_dirs'][] = IPF::$settings['ipf_path'].DIRECTORY_SEPARATOR.'ipf'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'templates';
         }
 
-        if (!isset(IPF::$settings['debug'])){
-            IPF::$settings['debug'] = false;
-        }
-
         if (!isset(IPF::$settings['admin_title'])){
             IPF::$settings['admin_title'] = 'IPF Administration';
         }
 
-        if (!isset(IPF::$settings['app_base'])){
-            IPF::$settings['app_base'] = '/index.php';
-        }
-
-        if (!isset(IPF::$settings['append_slash'])){
-            IPF::$settings['append_slash'] = true;
-        }
-
-        if (!isset(IPF::$settings['media_url'])){
-            IPF::$settings['media_url'] = '/media/';
-        }
-
-        if (!isset(IPF::$settings['static_url'])){
-            IPF::$settings['static_url'] = '/static/';
-        }
-
         if (!isset(IPF::$settings['tiny_mce_url'])){
-            IPF::$settings['tiny_mce_url'] = '/static/admin/tiny_mce/';
+            IPF::$settings['tiny_mce_url'] =  IPF::$settings['static_url'] . 'admin/tiny_mce/';
         }
 
         if (!isset(IPF::$settings['urls'])){
             throw new IPF_Exception_Settings('Specify site url routes');
-        }
-
-        if (!isset(IPF::$settings['session_cookie_id'])){
-            IPF::$settings['session_cookie_id'] = 'sessionid';
-        }
-
-        if (!isset(IPF::$settings['dir_permission']))
-            IPF::$settings['dir_permission'] = 0777;
-
-        if (!isset(IPF::$settings['file_permission']))
-            IPF::$settings['file_permission'] = 0666;
-
-        if (!isset(IPF::$settings['time_zone'])){
-            IPF::$settings['time_zone'] = 'America/Toronto';
         }
     }
 

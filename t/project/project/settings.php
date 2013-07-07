@@ -9,8 +9,6 @@ $set['tmp'] = $project_root . '/tmp';
 
 $set['upload_url'] = '/media/upload/';
 $set['upload_path'] = $project_root . '/htdocs/media/upload/';
-$set['media_path'] = $project_root . '/htdocs/media/';
-$set['media_url'] = '/media/';
 
 $set['secret_key'] = '123456';
 
