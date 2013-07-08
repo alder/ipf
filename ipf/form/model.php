@@ -38,7 +38,7 @@ class IPF_Form_Model extends IPF_Form
                     continue;
                 if (isset($relation['exclude']) && $relation['exclude'])
                     continue;
-                $this->addDBRelation($name, $relation, $col); // FIXME: $col is undefined
+                $this->addDBRelation($name, $relation, $db_columns);
             }
         } else {
             foreach ($user_fields as $uname) {
@@ -48,12 +48,7 @@ class IPF_Form_Model extends IPF_Form
                 } elseif (array_key_exists($uname, $db_columns)) {
                     $this->addDBField($uname, $db_columns[$uname]);
                 } elseif (array_key_exists($uname, $db_relations)) {
-                    $lfn = $db_relations[$uname]->getLocalFieldName();
-                    if (isset($db_columns[$lfn]))
-                        $col = $db_columns[$lfn];
-                    else
-                        $col = array();
-                    $this->addDBRelation($uname, $db_relations[$uname], $col);
+                    $this->addDBRelation($uname, $db_relations[$uname], $db_columns);
                 } else {
                     throw new IPF_Exception_Form(sprintf(__("Model '%s' has no column '%s'."), $this->model->getTable()->getComponentName(), $uname));
                 }
@@ -105,11 +100,17 @@ class IPF_Form_Model extends IPF_Form
             $this->fields[$name] = $form_field;
     }
 
-    function addDBRelation($name, $relation, $col)
+    function addDBRelation($name, $relation, $db_columns)
     {
         $rt = $relation->getType();
         if ($rt !== IPF_ORM_Relation::ONE_AGGREGATE && $rt !== IPF_ORM_Relation::MANY_AGGREGATE)
             return;
+
+        $lfn = $relation->getLocalFieldName();
+        if (isset($db_columns[$lfn]))
+            $col = $db_columns[$lfn];
+        else
+            $col = array();
 
         $defaults = array(
             'blank'     => !isset($col['notblank']),
