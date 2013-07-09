@@ -185,14 +185,27 @@ final class IPF_ORM
     {
         return IPF_ORM_Manager::getInstance()->getConnectionForComponent($componentName)->getTable($componentName);
     }
-    
-    public static function generateModelsFromYaml($yamlPath, $directory, $options = array())
+
+    public static function generateModelsFromYaml($directory, $extraAllwedReferences=array())
     {
-        $import = new IPF_ORM_Import_Schema();
-        $import->setOptions($options);
-        $import->importSchema($yamlPath, 'yml', $directory);
+        // load schema
+        $import = new IPF_ORM_Import_Schema;
+        $definitions = $import->importSchema($directory . '/models.yml', $extraAllwedReferences);
+
+        // build
+        $builder = new IPF_ORM_Import_Builder;
+        $builder->setTargetPath($directory . '/models');
+
+        $models = array();
+        foreach ($definitions as $name => $definition) {
+            print "    $name\n";
+            $builder->buildRecord($definition);
+            $models[] = $name;
+        }
+
+        return $models;
     }
-    
+
     public static function createTablesFromModels($directory)
     {
         return IPF_ORM_Manager::connection()->export->exportSchema($directory);

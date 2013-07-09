@@ -82,11 +82,6 @@ abstract class IPF_Application
         return IPF_ORM::createTablesFromModels($this->path.'models');
     }
 
-    public function generateModels()
-    {
-        IPF_ORM::generateModelsFromYaml($this->path.'models.yml', $this->path.'models');
-    }
-
     public function loadModels()
     {
         IPF_ORM::loadModels($this->path.'models');

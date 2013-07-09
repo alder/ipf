@@ -11,8 +11,11 @@ class IPF_Command_BuildContribModels
 
         $project = IPF_Project::getInstance();
 
-        foreach ($project->frameworkApps() as $app)
-            $app->generateModels();
+        $extraAllwedReferences = array();
+        foreach ($project->frameworkApps() as $app) {
+            $models = IPF_ORM::generateModelsFromYaml($app->path, $extraAllwedReferences);
+            $extraAllwedReferences = array_merge($extraAllwedReferences, $models);
+        }
     }
 }
 

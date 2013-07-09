@@ -4,74 +4,70 @@ class IPF_ORM_Import_Schema
 {
     protected $_relations = array();
 
-    protected $_options = array('packagesPrefix'        =>  'Package',
-                                'packagesPath'          =>  '',
-                                'packagesFolderName'    =>  'packages',
-                                'suffix'                =>  '.php',
-                                'generateBaseClasses'   =>  true,
-                                'generateTableClasses'  =>  false,
-                                'generateAccessors'     =>  false,
-                                'baseClassesPrefix'     =>  'Base',
-                                'baseClassesDirectory'  =>  IPF_ORM::BASE_CLASSES_DIRECTORY,
-                                'baseClassName'         =>  'IPF_ORM_Record');
-
-    protected $_validation = array('root'       =>  array('abstract',
-                                                          'connection',
-                                                          'className',
-                                                          'tableName',
-                                                          'connection',
-                                                          'relations',
-                                                          'columns',
-                                                          'indexes',
-                                                          'attributes',
-                                                          'templates',
-                                                          'actAs',
-                                                          'options',
-                                                          'package',
-                                                          'inheritance',
-                                                          'detect_relations',
-                                                          'generate_accessors',
-                                                          'listeners'),
-
-                                   'column'     =>  array('name',
-                                                          'format',
-                                                          'fixed',
-                                                          'primary',
-                                                          'autoincrement',
-                                                          'type',
-                                                          'length',
-                                                          'size',
-                                                          'default',
-                                                          'scale',
-                                                          'values',
-                                                          'comment',
-                                                          'sequence',
-                                                          'protected',
-                                                          'zerofill',
-                                                          'owner',
-                                                          'exclude'),
-
-                                   'relation'   =>  array('key',
-                                                          'class',
-                                                          'alias',
-                                                          'type',
-                                                          'refClass',
-                                                          'local',
-                                                          'foreign',
-                                                          'foreignClass',
-                                                          'foreignAlias',
-                                                          'foreignType',
-                                                          'foreignExclude',
-                                                          'autoComplete',
-                                                          'onDelete',
-                                                          'onUpdate',
-                                                          'equal',
-                                                          'owningSide'),
-
-                                   'inheritance'=>  array('type',
-                                                          'extends',
-                                                          'keyField',
-                                                          'keyValue'));
+    protected $_validation = array(
+        'root' => array(
+            'abstract',
+            'connection',
+            'className',
+            'tableName',
+            'connection',
+            'relations',
+            'columns',
+            'indexes',
+            'attributes',
+            'templates',
+            'actAs',
+            'options',
+            'package',
+            'inheritance',
+            'detect_relations',
+            'generate_accessors',
+            'listeners',
+        ),
+        'column' => array(
+            'name',
+            'format',
+            'fixed',
+            'primary',
+            'autoincrement',
+            'type',
+            'length',
+            'size',
+            'default',
+            'scale',
+            'values',
+            'comment',
+            'sequence',
+            'protected',
+            'zerofill',
+            'owner',
+            'exclude',
+        ),
+        'relation' => array(
+            'key',
+            'class',
+            'alias',
+            'type',
+            'refClass',
+            'local',
+            'foreign',
+            'foreignClass',
+            'foreignAlias',
+            'foreignType',
+            'foreignExclude',
+            'autoComplete',
+            'onDelete',
+            'onUpdate',
+            'equal',
+            'owningSide',
+        ),
+        'inheritance' => array(
+            'type',
+            'extends',
+            'keyField',
+            'keyValue',
+        ),
+    );
 
     protected $_validators = array();
 
@@ -83,75 +79,12 @@ class IPF_ORM_Import_Schema
         return $this->_validators;
     }
 
-    public function getOption($name)
+    public function importSchema($filename, $extraAllwedReferences)
     {
-        if (isset($this->_options[$name]))   {
-            return $this->_options[$name];
-        }
-    }
-
-    public function getOptions()
-    {
-        return $this->_options;
-    }
-
-    public function setOption($name, $value)
-    {
-        if (isset($this->_options[$name])) {
-            $this->_options[$name] = $value;
-        }
-    }
-    
-    public function setOptions($options)
-    {
-        if ( ! empty($options)) {
-          $this->_options = $options;
-        }
-    }
-
-    public function buildSchema($schema, $format)
-    {
-        $array = array();
-
-        foreach ((array) $schema AS $s) {
-            if (is_file($s)) {
-                $array = array_merge($array, $this->parseSchema($s, $format));
-            } else if (is_dir($s)) {
-                $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($s),
-                                                      RecursiveIteratorIterator::LEAVES_ONLY);
-
-                foreach ($it as $file) {
-                    $e = explode('.', $file->getFileName());
-                    if (end($e) === $format) {
-                        $array = array_merge($array, $this->parseSchema($file->getPathName(), $format));
-                    }
-                }
-            } else {
-              $array = array_merge($array, $this->parseSchema($s, $format));
-            }
-        }
-
-        $array = $this->_buildRelationships($array);
+        $array = $this->parseSchema($filename, 'yml');
+        $array = $this->_buildRelationships($array, $extraAllwedReferences);
         $array = $this->_processInheritance($array);
-
         return $array;
-    }
-
-    public function importSchema($schema, $format = 'yml', $directory = null, $models = array())
-    {
-        $builder = new IPF_ORM_Import_Builder();
-        $builder->setTargetPath($directory);
-        $builder->setOptions($this->getOptions());
-        
-        $array = $this->buildSchema($schema, $format);
-
-        foreach ($array as $name => $definition) {
-            if (!empty($models) && !in_array($definition['className'], $models)) {
-                continue;
-            }
-            print "    $name\n";
-            $builder->buildRecord($definition);
-        }
     }
 
     public function parseSchema($schema, $type)
@@ -369,7 +302,7 @@ class IPF_ORM_Import_Schema
         }
     }
 
-    protected function _buildRelationships($array)
+    protected function _buildRelationships($array, $extraAllwedReferences)
     {
         // Handle auto detecting relations by the names of columns
         // User.contact_id will automatically create User hasOne Contact local => contact_id, foreign => id
@@ -399,13 +332,13 @@ class IPF_ORM_Import_Schema
             if (!isset($properties['relations'])) {
                 continue;
             }
-            
+
             $className = $properties['className'];
             $relations = $properties['relations'];
-            
+
             foreach ($relations as $alias => $relation) {
-                $class = isset($relation['class']) ? $relation['class']:$alias;
-                if (!isset($array[$class])) {
+                $class = isset($relation['class']) ? $relation['class'] : $alias;
+                if (!isset($array[$class]) && !in_array($class, $extraAllwedReferences)) {
                     print "Warning: Ignoring relation to unknown model '$class' in model '$className'. \n";
                     continue;
                 }
@@ -436,31 +369,35 @@ class IPF_ORM_Import_Schema
                 }
                 
                 $relation['key'] = $this->_buildUniqueRelationKey($relation);
-                
+
                 $this->_validateSchemaElement('relation', array_keys($relation), $className . '->relation->' . $relation['alias']);
                 
                 $this->_relations[$className][$alias] = $relation;
             }
         }
-        
+
         // Now we auto-complete opposite ends of relationships
-        $this->_autoCompleteOppositeRelations();
-        
+        $this->_autoCompleteOppositeRelations($extraAllwedReferences);
+
         // Make sure we do not have any duplicate relations
         $this->_fixDuplicateRelations();
 
         //$array['relations'];
         // Set the full array of relationships for each class to the final array
         foreach ($this->_relations as $className => $relations) {
-            $array[$className]['relations'] = $relations;
+            if (!in_array($className, $extraAllwedReferences))
+                $array[$className]['relations'] = $relations;
         }
-        
+
         return $array;
     }
 
-    protected function _autoCompleteOppositeRelations()
+    protected function _autoCompleteOppositeRelations($extraAllwedReferences)
     {
-        foreach($this->_relations as $className => $relations) {
+        foreach ($this->_relations as $className => $relations) {
+            if (in_array($className, $extraAllwedReferences))
+                continue;
+
             foreach ($relations as $alias => $relation) {
                 if ((isset($relation['equal']) && $relation['equal']) || (isset($relation['autoComplete']) && $relation['autoComplete'] === false)) {
                     continue;
