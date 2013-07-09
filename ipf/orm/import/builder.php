@@ -7,7 +7,6 @@ class IPF_ORM_Import_Builder
     protected $_packagesPath = '';
     protected $_packagesFolderName = 'packages';
     protected $_suffix = '.php';
-    protected $_generateBaseClasses = true;
     protected $_baseClassPrefix = 'Base';
     protected $_baseClassesDirectory = IPF_ORM::BASE_CLASSES_DIRECTORY;
     protected $_baseClassName = 'IPF_ORM_Record';
@@ -53,15 +52,6 @@ class IPF_ORM_Import_Builder
         if ($packagesPath) {
             $this->_packagesPath = $packagesPath;
         }
-    }
-
-    public function generateBaseClasses($bool = null)
-    {
-        if ($bool !== null) {
-            $this->_generateBaseClasses = $bool;
-        }
-
-        return $this->_generateBaseClasses;
     }
 
     public function generateAccessors($bool = null)
@@ -591,61 +581,57 @@ class IPF_ORM_Import_Builder
 
     public function buildRecord(array $definition)
     {
-        if ( !isset($definition['className'])) {
+        if (!isset($definition['className']))
             throw new IPF_ORM_Exception('Missing class name.');
-        }
+
         $definition['topLevelClassName'] = $definition['className'];
-        if ($this->generateBaseClasses()) {
-            $definition['is_package'] = (isset($definition['package']) && $definition['package']) ? true:false;
+        $definition['is_package'] = (isset($definition['package']) && $definition['package']) ? true:false;
 
-            if ($definition['is_package']) {
-                $e = explode('.', trim($definition['package']));
-                $definition['package_name'] = $e[0];
+        if ($definition['is_package']) {
+            $e = explode('.', trim($definition['package']));
+            $definition['package_name'] = $e[0];
 
-                $definition['package_path'] = ! empty($e) ? implode(DIRECTORY_SEPARATOR, $e):$definition['package_name'];
-            }
-            // Top level definition that extends from all the others
-            $topLevel = $definition;
-            unset($topLevel['tableName']);
-
-            // If we have a package then we need to make this extend the package definition and not the base definition
-            // The package definition will then extends the base definition
-            $topLevel['inheritance']['extends'] = (isset($topLevel['package']) && $topLevel['package']) ? $this->_packagesPrefix . $topLevel['className']:$this->_baseClassPrefix . $topLevel['className'];
-            $topLevel['no_definition'] = true;
-            $topLevel['generate_once'] = true;
-            $topLevel['is_main_class'] = true;
-            unset($topLevel['connection']);
-
-            // Package level definition that extends from the base definition
-            if (isset($definition['package'])) {
-
-                $packageLevel = $definition;
-                $packageLevel['className'] = $topLevel['inheritance']['extends'];
-                $packageLevel['inheritance']['extends'] = $this->_baseClassPrefix . $topLevel['className'];
-                $packageLevel['no_definition'] = true;
-                $packageLevel['abstract'] = true;
-                $packageLevel['override_parent'] = true;
-                $packageLevel['generate_once'] = true;
-                $packageLevel['is_package_class'] = true;
-                unset($packageLevel['connection']);
-            }
-
-            $baseClass = $definition;
-            $baseClass['className'] = $this->_baseClassPrefix . $baseClass['className'];
-            $baseClass['abstract'] = true;
-            $baseClass['override_parent'] = false;
-            $baseClass['is_base_class'] = true;
-
-            $this->writeDefinition($baseClass);
-
-            if ( ! empty($packageLevel)) {
-                $this->writeDefinition($packageLevel);
-            }
-
-            $this->writeDefinition($topLevel);
-        } else {
-            $this->writeDefinition($definition);
+            $definition['package_path'] = ! empty($e) ? implode(DIRECTORY_SEPARATOR, $e):$definition['package_name'];
         }
+        // Top level definition that extends from all the others
+        $topLevel = $definition;
+        unset($topLevel['tableName']);
+
+        // If we have a package then we need to make this extend the package definition and not the base definition
+        // The package definition will then extends the base definition
+        $topLevel['inheritance']['extends'] = (isset($topLevel['package']) && $topLevel['package']) ? $this->_packagesPrefix . $topLevel['className']:$this->_baseClassPrefix . $topLevel['className'];
+        $topLevel['no_definition'] = true;
+        $topLevel['generate_once'] = true;
+        $topLevel['is_main_class'] = true;
+        unset($topLevel['connection']);
+
+        // Package level definition that extends from the base definition
+        if (isset($definition['package'])) {
+
+            $packageLevel = $definition;
+            $packageLevel['className'] = $topLevel['inheritance']['extends'];
+            $packageLevel['inheritance']['extends'] = $this->_baseClassPrefix . $topLevel['className'];
+            $packageLevel['no_definition'] = true;
+            $packageLevel['abstract'] = true;
+            $packageLevel['override_parent'] = true;
+            $packageLevel['generate_once'] = true;
+            $packageLevel['is_package_class'] = true;
+            unset($packageLevel['connection']);
+        }
+
+        $baseClass = $definition;
+        $baseClass['className'] = $this->_baseClassPrefix . $baseClass['className'];
+        $baseClass['abstract'] = true;
+        $baseClass['override_parent'] = false;
+        $baseClass['is_base_class'] = true;
+
+        $this->writeDefinition($baseClass);
+
+        if ( ! empty($packageLevel)) {
+            $this->writeDefinition($packageLevel);
+        }
+
+        $this->writeDefinition($topLevel);
     }
 
     public function writeDefinition(array $definition)
