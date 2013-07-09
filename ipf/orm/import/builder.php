@@ -8,7 +8,6 @@ class IPF_ORM_Import_Builder
     protected $_packagesFolderName = 'packages';
     protected $_suffix = '.php';
     protected $_generateBaseClasses = true;
-    protected $_generateTableClasses = false;
     protected $_baseClassPrefix = 'Base';
     protected $_baseClassesDirectory = IPF_ORM::BASE_CLASSES_DIRECTORY;
     protected $_baseClassName = 'IPF_ORM_Record';
@@ -63,15 +62,6 @@ class IPF_ORM_Import_Builder
         }
 
         return $this->_generateBaseClasses;
-    }
-
-    public function generateTableClasses($bool = null)
-    {
-        if ($bool !== null) {
-            $this->_generateTableClasses = $bool;
-        }
-
-        return $this->_generateTableClasses;
     }
 
     public function generateAccessors($bool = null)
@@ -638,15 +628,6 @@ class IPF_ORM_Import_Builder
                 $packageLevel['generate_once'] = true;
                 $packageLevel['is_package_class'] = true;
                 unset($packageLevel['connection']);
-
-                $packageLevel['tableClassName'] = $packageLevel['className'] . 'Table';
-                $packageLevel['inheritance']['tableExtends'] = isset($definition['inheritance']['extends']) ? $definition['inheritance']['extends'] . 'Table':'IPF_ORM_Table';
-
-                $topLevel['tableClassName'] = $topLevel['topLevelClassName'] . 'Table';
-                $topLevel['inheritance']['tableExtends'] = $packageLevel['className'] . 'Table';
-            } else {
-                $topLevel['tableClassName'] = $topLevel['className'] . 'Table';
-                $topLevel['inheritance']['tableExtends'] = isset($definition['inheritance']['extends']) ? $definition['inheritance']['extends'] . 'Table':'IPF_ORM_Table';
             }
 
             $baseClass = $definition;
@@ -667,28 +648,6 @@ class IPF_ORM_Import_Builder
         }
     }
 
-    public function writeTableDefinition($className, $path, $options = array())
-    {
-        $content  = '<?php' . PHP_EOL;
-        $content .= sprintf(self::$_tpl, false,
-                                       $className,
-                                       isset($options['extends']) ? $options['extends']:'IPF_ORM_Table',
-                                       null,
-                                       null,
-                                       null
-                                       );
-
-        IPF_Utils::makeDirectories($path);
-
-        $writePath = $path . DIRECTORY_SEPARATOR . $className . $this->_suffix;
-
-        IPF_ORM::loadModel($className, $writePath);
-
-        if ( ! file_exists($writePath)) {
-            file_put_contents($writePath, $content);
-        }
-    }
-
     public function writeDefinition(array $definition)
     {
         $definitionCode = $this->buildDefinition($definition);
@@ -706,18 +665,10 @@ class IPF_ORM_Import_Builder
             } else {
                 $writePath = $this->_path;
             }
-
-            if ($this->generateTableClasses()) {
-                $this->writeTableDefinition($definition['tableClassName'], $writePath, array('extends' => $definition['inheritance']['tableExtends']));
-            }
         }
         // If is the package class then we need to make the path to the complete package
         else if (isset($definition['is_package_class']) && $definition['is_package_class']) {
             $writePath = $packagesPath . DIRECTORY_SEPARATOR . $definition['package_path'];
-
-            if ($this->generateTableClasses()) {
-                $this->writeTableDefinition($definition['tableClassName'], $writePath, array('extends' => $definition['inheritance']['tableExtends']));
-            }
         }
         // If it is the base class of the IPF_ORM record definition
         else if (isset($definition['is_base_class']) && $definition['is_base_class']) {
