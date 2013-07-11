@@ -9,11 +9,8 @@ abstract class IPF_Application
     {
         $this->name = str_replace('_App', '', get_class($this));
 
-        if (strpos($this->name,'IPF_')===0)
-            $this->path = IPF::get('ipf_path').DIRECTORY_SEPARATOR.strtolower(str_replace('_',DIRECTORY_SEPARATOR,$this->name));
-        else
-            $this->path = IPF::get('project_path').DIRECTORY_SEPARATOR.strtolower(str_replace('_',DIRECTORY_SEPARATOR,$this->name));
-        $this->path .= DIRECTORY_SEPARATOR;
+        $root = (strpos($this->name,'IPF_') === 0) ? IPF::get('ipf_path') : IPF::get('project_path');
+        $this->path = $root.DIRECTORY_SEPARATOR.strtolower(str_replace('_',DIRECTORY_SEPARATOR,$this->name)).DIRECTORY_SEPARATOR;
 
         if (array_key_exists('models',$data)) {
             foreach ($data['models'] as &$modelname) {
