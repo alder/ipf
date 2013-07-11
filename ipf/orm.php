@@ -193,13 +193,14 @@ final class IPF_ORM
         $definitions = $import->importSchema($directory . '/models.yml', $extraAllwedReferences);
 
         // build
-        $builder = new IPF_ORM_Import_Builder;
-        $builder->setTargetPath($directory . '/models');
-
+        $targetPath = $directory . '/models';
         $models = array();
         foreach ($definitions as $name => $definition) {
             print "    $name\n";
-            $builder->buildRecord($definition);
+
+            $builder = new IPF_ORM_Import_Builder;
+            $builder->buildRecord($definition, $targetPath);
+
             $models[] = $name;
         }
 

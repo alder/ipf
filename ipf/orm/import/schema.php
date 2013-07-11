@@ -18,10 +18,8 @@ class IPF_ORM_Import_Schema
             'templates',
             'actAs',
             'options',
-            'package',
             'inheritance',
             'detect_relations',
-            'generate_accessors',
             'listeners',
         ),
         'column' => array(
@@ -99,10 +97,8 @@ class IPF_ORM_Import_Schema
                           'templates'           =>  array(),
                           'actAs'               =>  array(),
                           'options'             =>  array(),
-                          'package'             =>  null,
                           'inheritance'         =>  array(),
-                          'detect_relations'    =>  false,
-                          'generate_accessors'  =>  false);
+                          'detect_relations'    =>  false);
         
         $array = IPF_ORM_Parser::load($schema, $type);
 
@@ -113,10 +109,8 @@ class IPF_ORM_Import_Schema
                             'templates',
                             'actAs',
                             'options',
-                            'package',
                             'inheritance',
-                            'detect_relations',
-                            'generate_accessors');
+                            'detect_relations');
 
         // Loop over and build up all the global values and remove them from the array
         foreach ($array as $key => $value) {
