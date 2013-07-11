@@ -395,6 +395,8 @@ class IPF_ORM_Import_Builder
         $code[] = $this->buildTableDefinition($definition);
         $code[] = '';
         $code[] = $this->buildSetUp($definition);
+        $code[] = '';
+        $code   = array_merge($code, $this->buildShortcuts($definition));
         $code[] = '}';
 
         $fileName = $this->_baseClassPrefix . $definition['className'] . '.php';
@@ -406,21 +408,49 @@ class IPF_ORM_Import_Builder
             throw new IPF_ORM_Exception("Couldn't write file " . $writePath);
     }
 
+    private function buildShortcuts(array $definition)
+    {
+        return array(
+            '  public static function table()',
+            '  {',
+            '    return IPF_ORM::getTable(\''.$definition['className'].'\');',
+            '  }',
+            '',
+            '  public static function query($alias=\'\')',
+            '  {',
+            '    return IPF_ORM::getTable(\''.$definition['className'].'\')->createQuery($alias);',
+            '  }',
+        );
+    }
+
     private function writeModelDefinition(array $definition, $targetPath)
     {
         $className = $definition['className'];
+        $adminClassName = $className.'Admin';
 
         $writePath = $targetPath . DIRECTORY_SEPARATOR . $className . '.php';
         if (file_exists($writePath))
             return;
 
-        $code = sprintf("<?php\n\nclass %s extends %s%s\n{\n}\n",
-            $className,
-            $this->_baseClassPrefix,
-            $className);
+        $code = array(
+            '<?php',
+            '',
+            sprintf('class %s extends %s%s', $className, $this->_baseClassPrefix, $className),
+            '{',
+            '}',
+            '',
+            '/*',
+            'class '.$adminClassName.' extends IPF_Model_Admin',
+            '{',
+            '}',
+            '',
+            'IPF_Model_Admin::register(\''.$className.'\', \''.$adminClassName.'\');',
+            '*/',
+            '',
+        );
 
         IPF_Utils::makeDirectories($targetPath);
-        if (file_put_contents($writePath, $code) === false)
+        if (file_put_contents($writePath, implode(PHP_EOL, $code)) === false)
             throw new IPF_ORM_Exception("Couldn't write file " . $writePath);
 
         IPF_ORM::loadModel($className, $writePath);
