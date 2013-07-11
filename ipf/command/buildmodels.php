@@ -7,12 +7,14 @@ class IPF_Command_BuildModels
 
     public function run($args=null)
     {
-        print "Build all model classes\n";
+        print "Build all model classes\n\n";
 
         $project = IPF_Project::getInstance();
 
         $extraAllwedReferences = $this->frameworkModels($project);
-        foreach ($this->paths($project) as $path) {
+        foreach ($this->paths($project) as $p) {
+            list($name, $path) = $p;
+            print "$name\n";
             $models = IPF_ORM::generateModelsFromYaml($path, $extraAllwedReferences);
             $extraAllwedReferences = array_merge($extraAllwedReferences, $models);
         }
@@ -29,10 +31,10 @@ class IPF_Command_BuildModels
     private function paths($project)
     {
         $paths = array(
-            IPF::get('project_path'),
+            array('Project', IPF::get('project_path')),
         );
         foreach ($project->customApps() as $app)
-            $paths[] = $app->path;
+            $paths[] = array($app->getName(), $app->getPath());
         return $paths;
     }
 }
