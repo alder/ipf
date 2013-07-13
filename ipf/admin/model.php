@@ -439,9 +439,9 @@ class IPF_Admin_Model
                 $str = $o->$h['name'];
                 if ($t=='boolean'){
                     if ($str)
-                        $str = '<img src="'.IPF::get('admin_media_url').'img/icon-yes.gif" alt="True" />';
+                        $str = '<img src="'.IPF::get('static_url').'admin/img/icon-yes.gif" alt="True" />';
                     else
-                        $str = '<img src="'.IPF::get('admin_media_url').'img/icon-no.gif" alt="False" />';
+                        $str = '<img src="'.IPF::get('static_url').'admin/img/icon-no.gif" alt="False" />';
                 }
             }
             $row[$h['name']] = $str;
