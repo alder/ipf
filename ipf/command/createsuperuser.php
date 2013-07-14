@@ -15,8 +15,6 @@ class IPF_Command_CreateSuperUser
 
         $project = IPF_Project::getInstance();
 
-        $project->loadModels();
-
         $su = new User;
         $su->username     = $username;
         $su->email        = $email;

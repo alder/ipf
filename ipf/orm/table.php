@@ -326,11 +326,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     public function getTemplates()
     {
         return $this->_templates;
-    }
 
-    public function export()
-    {
-        $this->_conn->export->exportTable($this);
     }
 
     public function getExportableFormat($parseForeignKeys = true)

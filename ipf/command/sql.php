@@ -14,12 +14,10 @@ class IPF_Command_Sql
         $sql = '';
 
         foreach ($project->frameworkApps() as $app)
-            $sql .= $app->generateSql()."\n";
-
-        $sql .= IPF_ORM::generateSqlFromModels(IPF::get('project_path').DIRECTORY_SEPARATOR.'models')."\n";
+            $sql .= IPF_ORM::generateSqlFromModels($app)."\n";
 
         foreach ($project->customApps() as $app)
-            $sql .= $app->generateSql()."\n";
+            $sql .= IPF_ORM::generateSqlFromModels($app)."\n";
 
         print $sql;
     }

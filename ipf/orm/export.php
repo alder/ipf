@@ -128,15 +128,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         return $sql;
     }
 
-    public function createTable($name, array $fields, array $options = array())
-    {
-        $sql = (array) $this->createTableSql($name, $fields, $options);
-
-        foreach ($sql as $query) {
-            $this->conn->execute($query);
-        }
-    }
-
     public function createSequence($seqName, $start = 1, array $options = array())
     {
         return $this->conn->execute($this->createSequenceSql($seqName, $start = 1, $options));
@@ -443,16 +434,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         return '';
     }
 
-    public function exportSchema($directory = null)
-    {
-        if ($directory !== null) {
-            $models = IPF_ORM::filterInvalidModels(IPF_ORM::loadModels($directory));
-        } else {
-            $models = IPF_ORM::getLoadedModels();
-        }
-        $this->exportClasses($models);
-    }
-
     public function exportSortedClassesSql($classes, $groupByConnection = true)
     {
          $connections = array();
@@ -548,10 +529,8 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
          }
      }
 
-    public function exportClassesSql(array $classes)
+    public function exportClassesSql(array $models)
     {
-        $models = IPF_ORM::filterInvalidModels($classes);
-        
         $sql = array();
         
         foreach ($models as $name) {
@@ -630,29 +609,5 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
 
         return $sql;
     }
-
-    public function exportSql($directory = null)
-    {
-        if ($directory !== null) {
-            $models = IPF_ORM::filterInvalidModels(IPF_ORM::loadModels($directory));
-        } else {
-            $models = IPF_ORM::getLoadedModels();
-        }
-        
-        return $this->exportSortedClassesSql($models, false);
-    }
-
-    public function exportTable(IPF_ORM_Table $table)
-    {
-        try {
-            $data = $table->getExportableFormat();
-
-            $this->conn->export->createTable($data['tableName'], $data['columns'], $data['options']);
-        } catch(IPF_ORM_Exception $e) {
-            // we only want to silence table already exists errors
-            if ($e->getPortableCode() !== IPF_ORM::ERR_ALREADY_EXISTS) {
-                throw $e;
-            }
-        }
-    }
 }
+

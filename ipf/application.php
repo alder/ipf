@@ -33,11 +33,6 @@ abstract class IPF_Application
         }
     }
 
-    public function generateSql()
-    {
-        return IPF_ORM::generateSqlFromModels($this->path.'models');
-    }
-
     public function modelList()
     {
         return $this->models;
@@ -72,16 +67,6 @@ abstract class IPF_Application
     {
         $e = explode('_',$this->name);
         return strtolower($e[count($e)-1]);
-    }
-
-    public function createTablesFromModels()
-    {
-        return IPF_ORM::createTablesFromModels($this->path.'models');
-    }
-
-    public function loadModels()
-    {
-        IPF_ORM::loadModels($this->path.'models');
     }
 
     /**

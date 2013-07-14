@@ -177,8 +177,6 @@ final class IPF_ORM
     
     const BASE_CLASSES_DIRECTORY    = '_generated';
 
-    private static $_loadedModelFiles = array();
-
     private function __construct() {}
 
     public static function getTable($componentName)
@@ -207,80 +205,20 @@ final class IPF_ORM
         return $models;
     }
 
-    public static function createTablesFromModels($directory)
+    public static function createTablesFromModels($app)
     {
-        return IPF_ORM_Manager::connection()->export->exportSchema($directory);
+        IPF_ORM_Manager::connection()->export->exportClasses($app->modelList());
     }
-    
-    public static function generateSqlFromModels($directory = null)
+
+    public static function generateSqlFromModels($app)
     {
-        $sql = IPF_ORM_Manager::connection()->export->exportSql($directory);
+        $sql = IPF_ORM_Manager::connection()->export->exportSortedClassesSql($app->modelList(), false);
+
         $build = '';
         foreach ($sql as $query) {
             $build .= $query.";\n\n";
         }
         return $build;
-    }    
-    
-    public static function loadModel($className, $path = null)
-    {
-        self::$_loadedModelFiles[$className] = $path;
-    }
-
-    public static function filterInvalidModels($classes)
-    {
-        $validModels = array();
-        foreach ((array) $classes as $name) {
-            if (self::isValidModelClass($name) && ! in_array($name, $validModels)) {
-                $validModels[] = $name;
-            }
-        }
-
-        return $validModels;
-    }
-
-    public static function loadModels($directory, $modelLoading = null)
-    {
-        $loadedModels = array();
-        try{
-            $it = new DirectoryIterator($directory.DIRECTORY_SEPARATOR.IPF_ORM::BASE_CLASSES_DIRECTORY);
-        }catch(RuntimeException $e){
-            return $loadedModels;
-        }
-        foreach ($it as $file) {
-            $e = explode('.', $file->getFileName());
-            if (end($e) === 'php') {
-               $className = $e[0];
-               require_once($file->getPathName());
-            }
-        }
-        $it = new DirectoryIterator($directory);
-        foreach ($it as $file) {
-            $e = explode('.', $file->getFileName());
-            if (end($e) === 'php') {
-               $className = $e[0];
-               require_once($file->getPathName());
-               $loadedModels[$className] = $className;
-            }
-        }
-        return $loadedModels;
-    }
-
-
-    public static function isValidModelClass($class)
-    {
-        if ($class instanceof IPF_ORM_Record) {
-            $class = get_class($class);
-        }
-        if (is_string($class) && class_exists($class)) {
-            $class = new ReflectionClass($class);
-        }
-        if ($class instanceof ReflectionClass) {
-            if ( ! $class->isAbstract() && $class->isSubClassOf('IPF_ORM_Record')) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static function dump($var, $output = true, $indent = "")
@@ -311,3 +249,4 @@ final class IPF_ORM
         return implode("\n", $ret);
     }
 }
+

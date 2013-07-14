@@ -452,8 +452,6 @@ class IPF_ORM_Import_Builder
         IPF_Utils::makeDirectories($targetPath);
         if (file_put_contents($writePath, implode(PHP_EOL, $code)) === false)
             throw new IPF_ORM_Exception("Couldn't write file " . $writePath);
-
-        IPF_ORM::loadModel($className, $writePath);
     }
 }
 

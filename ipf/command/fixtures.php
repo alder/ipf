@@ -27,8 +27,6 @@ class IPF_Command_Fixtures
             return;
         }
 
-        $project->loadModels();
-
         foreach ($fixtures as $fixture) {
             $modelClass = $fixture['model'];
             $key = $fixture['key'];

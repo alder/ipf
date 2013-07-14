@@ -33,32 +33,17 @@ class IPF_Auth_App extends IPF_Application
         $request->session->setData('logout_time', gmdate('Y-m-d H:i:s'));
     }
 
-    static function createPermissionsFromModels(array $pathesToModels)
+    static function createPermissionsFromModels(array $apps)
     {
-        $baseAdmin  = new IPF_Admin_Model();
-        $basePerms  = $baseAdmin->getPerms();
         $permsTable = IPF_ORM::getTable('Permission');
-        $appList    = IPF_Project::getInstance()->appList();
 
         $permissions = array();
-
-        foreach ($pathesToModels as $path)
-        {
-            foreach (IPF_ORM::filterInvalidModels(IPF_ORM::loadModels($path)) as $modelName)
-            {
+        foreach ($apps as $appname => $app) {
+            foreach ($app->modelList() as $modelName) {
                 $adminModel = IPF_Admin_Model::getModelAdmin($modelName);
-
-                if ($adminModel)
-                {
-                    $perms = method_exists($adminModel, 'getPerms') ? $adminModel->getPerms(null) : $basePerms;
-
-                    foreach ($appList as $app)
-                    {
-                        if (in_array($modelName, $app->modelList()) && (!method_exists($app, 'NoPermsFor') || !in_array($modelName, $app->NoPermsFor())))
-                        {
-                            foreach ($perms as $permName)
-                                $permissions[] = get_class($app).'|'.$modelName.'|'.$permName;
-                        }
+                if ($adminModel) {
+                    foreach ($adminModel->getPerms(null) as $permName) {
+                        $permissions[] = $appname.'|'.$modelName.'|'.$permName;
                     }
                 }
             }
@@ -66,8 +51,7 @@ class IPF_Auth_App extends IPF_Application
 
         print "COLLECTED PERMS:\n----\n".implode("\n", $permissions)."\n----\n";
 
-        if (count($permissions))
-        {
+        if (count($permissions)) {
             $existingPerms = array();
 
             foreach ($permsTable->findAll() as $model)
@@ -75,14 +59,12 @@ class IPF_Auth_App extends IPF_Application
 
             print "EXISTING PERMS:\n----\n".implode("\n",$existingPerms)."\n----\n";
 
-            if (count($existingPerms))
-            {
+            if (count($existingPerms)) {
                 $toDel = array_diff($existingPerms, $permissions);
 
                 print "2DEL:\n----\n".implode("\n",$toDel)."\n----\n";
 
-                if (count($toDel))
-                {
+                if (count($toDel)) {
                     $permsTable->createQuery()
                         ->delete()
                         ->where("name in ('".implode("','", $toDel)."')")
@@ -90,9 +72,8 @@ class IPF_Auth_App extends IPF_Application
                 }
 
                 $toAdd = array_diff($permissions, $existingPerms);
-            }
-            else    // first time
-            {
+            } else {
+                // first time
                 // *** FIX: previously, the following models haven't "onDelete: CASCADE" constrain ***
                 print "DROP RolePermission, UserRole, UserPermission\n";
                 $export = IPF_ORM_Manager::connection()->export;
@@ -100,23 +81,19 @@ class IPF_Auth_App extends IPF_Application
                 $export->dropTable(IPF_ORM::getTable('UserRole')->getTableName());
                 $export->dropTable(IPF_ORM::getTable('UserPermission')->getTableName());
                 $auth_app = new IPF_Auth_App();
-                $auth_app->createTablesFromModels();
-                // *** FIX ***
+                IPF_ORM::createTablesFromModels($auth_app);
 
                 $toAdd = $permissions;
             }
 
             print "2ADD:\n----\n".implode("\n",$toAdd)."\n----\n";
 
-            foreach ($toAdd as $name)
-            {
+            foreach ($toAdd as $name) {
                 $model = new Permission();
                 $model->name = $name;
                 $model->save();
             }
-        }
-        else
-        {
+        } else {
             print "REMOVE ALL\n";
 
             $permsTable->createQuery()->delete()->execute();   // no women, no cry...
