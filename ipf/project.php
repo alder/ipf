@@ -23,6 +23,7 @@ final class IPF_Project
                 throw new IPF_Exception_Panic("Application name \"$name\" is incorrect");
             $this->apps[$appname] = null;
         }
+        $this->router = new IPF_Router;
     }
 
     private function __clone()
@@ -97,7 +98,6 @@ final class IPF_Project
             $cli = new IPF_Cli;
             $cli->run();
         } else {
-            $this->router = new IPF_Router();
             $this->router->dispatch(IPF_HTTP_URL::getAction());
         }
 

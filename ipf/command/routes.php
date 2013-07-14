@@ -7,7 +7,7 @@ class IPF_Command_Routes
 
     public function run($args=null)
     {
-        $rows = IPF_Router::describe();
+        $rows = IPF_Project::getInstance()->router->describe();
         IPF_Shell::displayTwoColumns($rows);
     }
 }
