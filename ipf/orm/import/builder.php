@@ -440,11 +440,11 @@ class IPF_ORM_Import_Builder
             '}',
             '',
             '/*',
-            'class '.$adminClassName.' extends IPF_Model_Admin',
+            'class '.$adminClassName.' extends IPF_Admin_Model',
             '{',
             '}',
             '',
-            'IPF_Model_Admin::register(\''.$className.'\', \''.$adminClassName.'\');',
+            'IPF_Admin_Model::register(\''.$className.'\', \''.$adminClassName.'\');',
             '*/',
             '',
         );
