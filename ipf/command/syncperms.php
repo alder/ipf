@@ -8,9 +8,7 @@ class IPF_Command_SyncPerms
     public function run($args=null)
     {
         print "Create/Update permissions from model classes\n";
-
-        $project = IPF_Project::getInstance();
-        return IPF_Auth_App::createPermissionsFromModels($project->appList());
+        IPF_Auth_App::createPermissionsFromModels();
     }
 }
 

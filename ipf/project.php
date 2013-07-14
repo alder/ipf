@@ -83,6 +83,13 @@ final class IPF_Project
         return $result;
     }
 
+    public function loadAllModels()
+    {
+        foreach ($this->appList() as $appname => $app)
+            foreach ($app->modelList() as $modelName)
+                new $modelName;
+    }
+
     public function run()
     {
         if (IPF::get('debug')) {
@@ -98,6 +105,7 @@ final class IPF_Project
             $cli = new IPF_Cli;
             $cli->run();
         } else {
+            $this->loadAllModels();
             $this->router->dispatch(IPF_HTTP_URL::getAction());
         }
 

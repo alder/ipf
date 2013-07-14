@@ -33,12 +33,15 @@ class IPF_Auth_App extends IPF_Application
         $request->session->setData('logout_time', gmdate('Y-m-d H:i:s'));
     }
 
-    static function createPermissionsFromModels(array $apps)
+    static function createPermissionsFromModels()
     {
         $permsTable = IPF_ORM::getTable('Permission');
 
+        $project = IPF_Project::getInstance();
+        $project->loadAllModels();
+
         $permissions = array();
-        foreach ($apps as $appname => $app) {
+        foreach ($project->appList() as $appname => $app) {
             foreach ($app->modelList() as $modelName) {
                 $adminModel = IPF_Admin_Model::getModelAdmin($modelName);
                 if ($adminModel) {
