@@ -109,7 +109,7 @@ final class IPF_Project
             $this->loadAllModels();
 
             $this->request = new IPF_HTTP_Request;
-            $this->router->dispatch($request);
+            $this->router->dispatch($this->request);
             $this->request = null;
         }
 
