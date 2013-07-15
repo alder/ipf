@@ -12,6 +12,7 @@ class IPF_Form_Widget_DatetimeInput extends IPF_Form_Widget_Input
         if (strlen($value) > 0) {
             $value = date($this->format, strtotime($value.' GMT'));
         }
+        $extra_attrs['class'] = 'datetimeinput';
         return parent::render($name, $value, $extra_attrs);
     }
 }

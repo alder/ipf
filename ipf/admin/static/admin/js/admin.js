@@ -1,5 +1,6 @@
 $(function(){
     $('.dateinput').datepicker({dateFormat: 'yy-mm-dd'});
+    $('.datetimeinput').datetimepicker({dateFormat: 'yy-mm-dd'});
 
     $('.checkgroup').closest('ul').each(function(){
         var master = $(this),

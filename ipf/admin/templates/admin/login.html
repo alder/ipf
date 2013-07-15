@@ -1,7 +1,12 @@
 {extends 'admin/base.html'}
 
-{block css}<link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/login.css" />{/block}
+{block css}
+  {superblock}
+  <link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/login.css" />
+{/block}
+
 {block bodyclass}login{/block}
+
 {block usertools}{/block}
 
 {block content}

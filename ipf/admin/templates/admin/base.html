@@ -3,10 +3,11 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   {block css}
-  <link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/base.css" />
-  {/block}
-  <link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/jquery-ui.custom.css" />
+  <link rel="stylesheet" type="text/css" href="{$ADMIN_MEDIA_URL}css/base.css" />
+  <link rel="stylesheet" type="text/css" href="{$ADMIN_MEDIA_URL}css/jquery-ui.custom.css" />
+  <link rel="stylesheet" type="text/css" href="{$ADMIN_MEDIA_URL}css/jquery-ui-timepicker-addon.css" />
   <link rel="stylesheet" type="text/css" href="{$ADMIN_MEDIA_URL}css/print.css" media="print" />
+  {/block}
   <title>{$page_title} - IPF Administration</title>
 </head>
 
@@ -25,8 +26,10 @@
 {block commonjs}
   <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery.js"></script>
   <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery-ui.custom.js"></script>
+  <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/jquery-ui-timepicker-addon.js"></script>
   <script type="text/javascript" src="{$ADMIN_MEDIA_URL}js/admin.js"></script>
 {/block}
 {block scripts}{/block}
 </body>
 </html>
+

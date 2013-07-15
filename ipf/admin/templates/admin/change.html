@@ -1,7 +1,12 @@
 {extends "admin/base.html"}
 
-{block css}<link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/forms.css" />{/block}
+{block css}
+  {superblock}
+  <link rel="stylesheet" href="{$ADMIN_MEDIA_URL}css/forms.css" />
+{/block}
+
 {block bodyclass}change-form{/block}
+
 {block breadcrumbs}<div class="breadcrumbs"><a href="{url 'IPF_Admin_Views_Index'}">Home</a> &raquo; <a href="{url 'IPF_Admin_Views_ListItems', array($lapp, $lmodel)}">{$classname}</a> &raquo; {$page_title}</div>{/block}
 
 {block content}

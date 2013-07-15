@@ -40,3 +40,4 @@ class IPF_Form_Field_Datetime extends IPF_Form_Field
         throw new IPF_Exception_Form(__('Enter a valid date/time.'));
     }
 }
+

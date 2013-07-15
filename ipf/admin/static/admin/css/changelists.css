@@ -1,5 +1,3 @@
-@import url('base.css');
-
 /* CHANGELISTS */
 #changelist { position:relative; width:100%; }
 #changelist table { width:100%; }
@@ -50,3 +48,4 @@
 .paginator a:hover { color:white; background:#5b80b2; border-color:#036; }
 
 .ItemsDragClass{background-color:#E3F3FE;}
+
