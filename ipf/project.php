@@ -4,6 +4,7 @@ final class IPF_Project
 {
     private $apps = array();
     public $router = null;
+    public $request = null;
     public $sqlProfiler = null;
 
     static private $instance = NULL;
@@ -106,8 +107,10 @@ final class IPF_Project
             $cli->run();
         } else {
             $this->loadAllModels();
-            $request = new IPF_HTTP_Request;
+
+            $this->request = new IPF_HTTP_Request;
             $this->router->dispatch($request);
+            $this->request = null;
         }
 
         return true;

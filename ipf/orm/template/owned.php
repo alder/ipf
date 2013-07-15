@@ -1,0 +1,41 @@
+<?php
+
+class IPF_ORM_Template_Owned extends IPF_ORM_Template
+{
+    private $name = 'owner';
+    private $columnName = 'owner_id';
+    private $exclude = true;
+    private $verbose = 'owner';
+
+    public function __construct(array $options=array())
+    {
+        if ($options) {
+            if (array_key_exists('column', $options))
+                $this->columnName = $options['column'];
+            if (array_key_exists('name', $options))
+                $this->name = $options['name'];
+            if (array_key_exists('exclude', $options))
+                $this->exclude = $options['exclude'];
+            if (array_key_exists('verbose', $options))
+                $this->verbose = $options['verbose'];
+        }
+    }
+
+    public function getColumnName()
+    {
+        return $this->columnName;
+    }
+
+    public function setTableDefinition()
+    {
+        $this->hasColumn($this->columnName, 'integer', null, array(
+            'exclude'   => $this->exclude,
+            'notblank'  => true,
+            'notnull'   => true,
+            'verbose'   => $this->verbose,
+        ));
+        $this->hasOne('User as '.$this->name, array('local' => $this->columnName, 'foreign' => 'id', 'onDelete' => 'CASCADE'));
+        $this->getTable()->listeners['Owned_'.$this->columnName] = new IPF_ORM_Template_Listener_Owned($this->columnName);
+    }
+}
+
