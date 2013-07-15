@@ -30,11 +30,14 @@ class IPF_ORM_Template_Owned extends IPF_ORM_Template
     {
         $this->hasColumn($this->columnName, 'integer', null, array(
             'exclude'   => $this->exclude,
-            'notblank'  => true,
-            'notnull'   => true,
             'verbose'   => $this->verbose,
         ));
-        $this->hasOne('User as '.$this->name, array('local' => $this->columnName, 'foreign' => 'id', 'onDelete' => 'CASCADE'));
+        $this->hasOne('User as '.$this->name, array(
+            'local'     => $this->columnName,
+            'exclude'   => $this->exclude,
+            'foreign'   => 'id',
+            'onDelete'  => 'CASCADE',
+        ));
         $this->getTable()->listeners['Owned_'.$this->columnName] = new IPF_ORM_Template_Listener_Owned($this->columnName);
     }
 }

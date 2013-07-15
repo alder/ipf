@@ -11,15 +11,15 @@ class IPF_ORM_Template_Listener_Owned
 
     public function preInsert(IPF_ORM_Event $event)
     {
-        $this->setOrderValue($event->getInvoker());
+        $this->setOwner($event->getInvoker());
     }
 
     public function preUpdate(IPF_ORM_Event $event)
     {
-        $this->setOrderValue($event->getInvoker());
+        $this->setOwner($event->getInvoker());
     }
 
-    private function setOrderValue($obj)
+    private function setOwner($obj)
     {
         $columnName = $this->columnName;
         if ($obj->$columnName)
