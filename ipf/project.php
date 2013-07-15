@@ -106,7 +106,8 @@ final class IPF_Project
             $cli->run();
         } else {
             $this->loadAllModels();
-            $this->router->dispatch(IPF_HTTP_URL::getAction());
+            $request = new IPF_HTTP_Request;
+            $this->router->dispatch($request);
         }
 
         return true;

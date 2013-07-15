@@ -17,5 +17,6 @@ function IPF_Context_Upload($request)
 
 function IPF_Context_Current($request)
 {
-    return array('CURRENT_URL' => IPF_HTTP_URL::getAction());
+    return array('CURRENT_URL' => $request->query);
 }
+

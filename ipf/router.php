@@ -33,11 +33,9 @@ class IPF_Router
             return new IPF_HTTP_Response_ServerError($e);
     }
 
-    public function dispatch($query='')
+    public function dispatch($req)
     {
-        try{
-            $query = preg_replace('#^(/)+#', '/', '/'.$query);
-            $req = new IPF_HTTP_Request($query);
+        try {
             $middleware = array();
             foreach (IPF::get('middlewares', array()) as $mw) {
                 $middleware[] = new $mw();

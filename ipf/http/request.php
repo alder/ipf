@@ -14,8 +14,9 @@ class IPF_HTTP_Request
     public $remote_addr = '';
     public $http_host = '';
     public $SERVER = array();
+    public $is_secure = false;
 
-    function __construct($query)
+    public function __construct()
     {
         $http = new IPF_HTTP();
         $http->removeTheMagic();
@@ -24,28 +25,33 @@ class IPF_HTTP_Request
         $this->REQUEST =& $_REQUEST;
         $this->COOKIE =& $_COOKIE;
         $this->FILES =& $_FILES;
-        $this->query = $query;
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->uri = $_SERVER['REQUEST_URI'];
         $this->remote_addr = $_SERVER['REMOTE_ADDR'];
         $this->http_host = $_SERVER['HTTP_HOST'];
+
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $uri = $_SERVER['REQUEST_URI'];
+            $pq = strpos($uri,'?');
+            if ($pq !== false)
+                $uri = substr($uri, 0, $pq);
+            $this->query = preg_replace('#^(//+)#', '/', '/'.$uri);
+        } else {
+            $this->query = '/';
+        }
+
         if (isset($_SERVER['PATH_INFO']))
             $this->path_info = $_SERVER['PATH_INFO'];
         else
             $this->path_info = '/';
         
         $this->SERVER =& $_SERVER;
+        $this->is_secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
     }
-    
-    function isSecure(){
-        return false; // # FIXME 
-    }
-    
-    function addUrlrotocol($uri){
-        if ($this->isSecure())
-            $proto = 'https';
-        else
-            $proto = 'http';
-        return $proto.'://'.$uri;
+
+    public function absoluteUrl()
+    {
+        return ($this->is_secure ? 'https://' : 'http://') . $this->http_host . $this->query;
     }
 }
+

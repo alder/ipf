@@ -21,18 +21,6 @@ class IPF_HTTP_URL
         return $url;
     }
 
-    public static function getAction()
-    {
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $uri = $_SERVER['REQUEST_URI'];
-            $pq = strpos($uri,'?');
-            if ($pq!==false)
-                $uri = substr($uri,0,$pq);
-            return $uri;
-        }
-        return '/';
-    }
-
     public static function urlForView($view, $params=array(), $get_params=array(), $encoded=true)
     {
         $action = IPF_Project::getInstance()->router->reverse($view, $params);
