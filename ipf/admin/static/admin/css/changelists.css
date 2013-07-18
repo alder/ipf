@@ -1,14 +1,13 @@
 /* CHANGELISTS */
 #changelist { position:relative; width:100%; }
 #changelist table { width:100%; }
-.change-list .filtered table { border-right:1px solid #ddd;  }
-.change-list .filtered { min-height:400px; }
-.change-list .filtered { background:white url(../img/changelist-bg.gif) top right repeat-y !important; }
-.change-list .filtered table, .change-list .filtered .paginator, .filtered #toolbar, .filtered div.xfull { margin-right:200px !important; width:auto !important; }
-.change-list .filtered table tbody th { padding-right:1em; }
+
+.change-list .filtered #items-grid-container { margin-right: 200px; padding-right: 5px; }
+.change-list .filtered table,
+.change-list .filtered .paginator { border-right:1px solid #ddd; }
+
 #changelist .toplinks { border-bottom:1px solid #ccc !important; }
 #changelist .paginator { color:#666; border-top:1px solid #eee; border-bottom:1px solid #eee; background:white url(../img/nav-bg.gif) 0 180% repeat-x; overflow:hidden; }
-.change-list .filtered .paginator { border-right:1px solid #ddd; }
 
 /*  CHANGELIST TABLES  */
 #changelist table thead th { white-space:nowrap; }
@@ -22,7 +21,7 @@
 #changelist #changelist-search img { vertical-align:middle; }
 
 /*  FILTER COLUMN  */
-#changelist-filter { position:absolute; top:0; right:0; z-index:1000; width:200px; border-left:1px solid #ddd; background:#efefef; margin:0; }
+#changelist-filter { float: right; width:200px; border:1px solid #ddd; background:#efefef; margin:0 -1px 0 0; }
 #changelist-filter h2 { font-size:11px; padding:2px 5px; border-bottom:1px solid #ddd; }
 #changelist-filter h3 { font-size:12px; margin-bottom:0; }
 #changelist-filter ul { padding-left:0;margin-left:10px; }
