@@ -26,8 +26,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
                                      'type'           => null,
                                      'charset'        => null,
                                      'collation'      => null,
-                                     'treeImpl'       => null,
-                                     'treeOptions'    => array(),
                                      'indexes'        => array(),
                                      'parents'        => array(),
                                      'joinedParents'  => array(),
@@ -36,7 +34,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
                                      'subclasses'     => array(),
                                      );
 
-    protected $_tree;
     protected $_parser;
 
     protected $_templates   = array();
@@ -62,11 +59,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
             $this->initIdentifier();
 
             $this->record->setUp();
-
-            // if tree, set up tree
-            if ($this->isTree()) {
-                $this->getTree()->setUp();
-            }
         } else {
             if ( ! isset($this->_options['tableName'])) {
                 $this->setTableName(IPF_ORM_Inflector::tableize($this->_options['name']));
@@ -169,11 +161,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         $this->_options['joinedParents'] = array_values(array_unique($this->_options['joinedParents']));
 
         $this->_options['declaringClass'] = $class;
-
-        // set the table definition for the given tree implementation
-        if ($this->isTree()) {
-            $this->getTree()->setTableDefinition();
-        }
 
         $this->columnCount = count($this->_columns);
 
@@ -552,10 +539,8 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
             case 'enumMap':
             case 'inheritanceMap':
             case 'index':
-            case 'treeOptions':
-                if ( ! is_array($value)) {
-                throw new IPF_ORM_Exception($name . ' should be an array.');
-                }
+                if (!is_array($value))
+                    throw new IPF_ORM_Exception($name . ' should be an array.');
                 break;
         }
         $this->_options[$name] = $value;
@@ -1174,21 +1159,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return $value;
     }
 
-    public function getTree()
-    {
-        if (isset($this->_options['treeImpl'])) {
-            if ( ! $this->_tree) {
-                $options = isset($this->_options['treeOptions']) ? $this->_options['treeOptions'] : array();
-                $this->_tree = IPF_ORM_Tree::factory($this,
-                    $this->_options['treeImpl'],
-                    $options
-                );
-            }
-            return $this->_tree;
-        }
-        return false;
-    }
-
     public function getComponentName()
     {
         return $this->_options['name'];
@@ -1202,11 +1172,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     public function setTableName($tableName)
     {
         $this->setOption('tableName', $this->_conn->formatter->getTableName($tableName));
-    }
-
-    public function isTree()
-    {
-        return ( ! is_null($this->_options['treeImpl'])) ? true : false;
     }
 
     public function getTemplate($template)

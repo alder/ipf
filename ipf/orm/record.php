@@ -9,7 +9,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     const STATE_TCLEAN      = 5;
     const STATE_LOCKED     = 6;
 
-    protected $_node;
     protected $_id           = array();
     protected $_data         = array();
     protected $_values       = array();
@@ -258,7 +257,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         unset($vars['_table']);
         unset($vars['_errorStack']);
         unset($vars['_filter']);
-        unset($vars['_node']);
 
         $name = $this->_table->getIdentifier();
         $this->_data = array_merge($this->_data, $this->_id);
@@ -1077,22 +1075,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         return $this;
     }
 
-    public function getNode()
-    {
-        if ( ! $this->_table->isTree()) {
-            return false;
-        }
-
-        if ( ! isset($this->_node)) {
-            $this->_node = IPF_ORM_Node::factory($this,
-                                              $this->getTable()->getOption('treeImpl'),
-                                              $this->getTable()->getOption('treeOptions')
-                                              );
-        }
-
-        return $this->_node;
-    }
-
     public function unshiftFilter(IPF_ORM_Record_Filter $filter)
     {
         return $this->_table->unshiftFilter($filter);
@@ -1223,11 +1205,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         }
 
         throw new IPF_ORM_Exception(sprintf('Unknown method %s::%s', get_class($this), $method));
-    }
-
-    public function deleteNode()
-    {
-        $this->getNode()->delete();
     }
 
     public function free($deep = false)
