@@ -508,63 +508,8 @@ abstract class IPF_ORM_Query_Abstract
         return $result;
     }
 
-    protected function _getDqlCallback()
-    {
-        $callback = false;
-        if ( ! empty($this->_dqlParts['from'])) {
-            switch ($this->_type) {
-                case self::DELETE:
-                    $callback = array(
-                        'callback' => 'preDqlDelete',
-                        'const' => IPF_ORM_Event::RECORD_DQL_DELETE
-                    );
-                break;
-                case self::UPDATE:
-                    $callback = array(
-                        'callback' => 'preDqlUpdate',
-                        'const' => IPF_ORM_Event::RECORD_DQL_UPDATE
-                    );
-                break;
-                case self::SELECT:
-                    $callback = array(
-                        'callback' => 'preDqlSelect',
-                        'const' => IPF_ORM_Event::RECORD_DQL_SELECT
-                    );
-                break;
-            }
-        }
-
-        return $callback;
-    }
-
     protected function _preQuery()
     {
-        if ( ! $this->_preQueried && IPF_ORM_Manager::getInstance()->getAttribute('use_dql_callbacks')) {
-            $this->_preQueried = true;
-
-            $callback = $this->_getDqlCallback();
-
-            // if there is no callback for the query type, then we can return early
-            if ( ! $callback) {
-                return;
-            }
-
-            $copy = $this->copy();
-            $copy->getSqlQuery();
-
-            foreach ($copy->getQueryComponents() as $alias => $component) {
-                $table = $component['table'];
-                $record = $table->getRecordInstance();
-
-                // Trigger preDql*() callback event
-                $params = array('component' => $component, 'alias' => $alias);
-                $event = new IPF_ORM_Event($record, $callback['const'], $this, $params);
-
-                $record->$callback['callback']($event);
-                $table->notifyRecordListeners($callback['callback'], $event);
-            }
-        }
-
         // Invoke preQuery() hook on IPF_ORM_Query for child classes which implement this hook
         $this->preQuery();
     }

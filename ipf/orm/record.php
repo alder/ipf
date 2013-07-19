@@ -143,12 +143,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
     public function postInsert($event){}
 
-    public function preDqlSelect($event){}
-
-    public function preDqlUpdate($event){}
-
-    public function preDqlDelete($event){}
-
     public function getErrorStack(){
         if ( ! $this->_errorStack) {
             $this->_errorStack = new IPF_ORM_Validator_ErrorStack(get_class($this));

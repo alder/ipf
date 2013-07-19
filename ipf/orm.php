@@ -137,7 +137,6 @@ final class IPF_ORM
     const ATTR_MODEL_LOADING            = 161;
     const ATTR_RECURSIVE_MERGE_FIXTURES = 162;
     const ATTR_SINGULARIZE_IMPORT       = 163;
-    const ATTR_USE_DQL_CALLBACKS        = 164;
 
     const FETCH_IMMEDIATE       = 0;
     const FETCH_BATCH           = 1;

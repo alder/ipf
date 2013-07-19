@@ -78,7 +78,6 @@ abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
             case IPF_ORM::ATTR_QUERY_CACHE_LIFESPAN:
             case IPF_ORM::ATTR_RECURSIVE_MERGE_FIXTURES;
             case IPF_ORM::ATTR_SINGULARIZE_IMPORT;
-            case IPF_ORM::ATTR_USE_DQL_CALLBACKS;
 
                 break;
             case IPF_ORM::ATTR_SEQCOL_NAME:
