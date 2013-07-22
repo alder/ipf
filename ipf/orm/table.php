@@ -28,7 +28,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
                                      'collation'      => null,
                                      'indexes'        => array(),
                                      'parents'        => array(),
-                                     'joinedParents'  => array(),
                                      'queryParts'     => array(),
                                      'versioning'     => null,
                                      'subclasses'     => array(),
@@ -112,54 +111,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
             $class = new ReflectionClass($class);
         }
 
-        $this->_options['joinedParents'] = array();
-
-        foreach (array_reverse($this->_options['parents']) as $parent) {
-
-            if ($parent === $class->getName()) {
-                continue;
-            }
-            $ref = new ReflectionClass($parent);
-
-            if ($ref->isAbstract()) {
-                continue;
-            }
-            $parentTable = $this->_conn->getTable($parent);
-
-            $found = false;
-            $parentColumns = $parentTable->getColumns();
-
-            foreach ($parentColumns as $columnName => $definition) {
-                if ( ! isset($definition['primary']) || $definition['primary'] === false) {
-                    if (isset($this->_columns[$columnName])) {
-                        $found = true;
-                        break;
-                    } else {
-                        if ( ! isset($parentColumns[$columnName]['owner'])) {
-                            $parentColumns[$columnName]['owner'] = $parentTable->getComponentName();
-                        }
-
-                        $this->_options['joinedParents'][] = $parentColumns[$columnName]['owner'];
-                    }
-                } else {
-                    unset($parentColumns[$columnName]);
-                }
-            }
-
-            if ($found) {
-                continue;
-            }
-
-            foreach ($parentColumns as $columnName => $definition) {
-                $fullName = $columnName . ' as ' . $parentTable->getFieldName($columnName);
-                $this->setColumn($fullName, $definition['type'], $definition['length'], $definition, true);
-            }
-
-            break;
-        }
-
-        $this->_options['joinedParents'] = array_values(array_unique($this->_options['joinedParents']));
-
         $this->_options['declaringClass'] = $class;
 
         $this->columnCount = count($this->_columns);
@@ -175,39 +126,13 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     {
         switch (count($this->_identifier)) {
             case 0:
-                if ( ! empty($this->_options['joinedParents'])) {
-                    $root = current($this->_options['joinedParents']);
-
-                    $table = $this->_conn->getTable($root);
-
-                    $this->_identifier = $table->getIdentifier();
-
-                    $this->_identifierType = ($table->getIdentifierType() !== IPF_ORM::IDENTIFIER_AUTOINC)
-                                            ? $table->getIdentifierType() : IPF_ORM::IDENTIFIER_NATURAL;
-
-                    // add all inherited primary keys
-                    foreach ((array) $this->_identifier as $id) {
-                        $definition = $table->getDefinitionOf($id);
-
-                        // inherited primary keys shouldn't contain autoinc
-                        // and sequence definitions
-                        unset($definition['autoincrement']);
-                        unset($definition['sequence']);
-
-                        // add the inherited primary key column
-                        $fullName = $id . ' as ' . $table->getFieldName($id);
-                        $this->setColumn($fullName, $definition['type'], $definition['length'],
-                                $definition, true);
-                    }
-                } else {
-                    $definition = array('type' => 'integer',
-                                        'length' => 20,
-                                        'autoincrement' => true,
-                                        'primary' => true);
-                    $this->setColumn('id', $definition['type'], $definition['length'], $definition, true);
-                    $this->_identifier = 'id';
-                    $this->_identifierType = IPF_ORM::IDENTIFIER_AUTOINC;
-                }
+                $definition = array('type' => 'integer',
+                                    'length' => 20,
+                                    'autoincrement' => true,
+                                    'primary' => true);
+                $this->setColumn('id', $definition['type'], $definition['length'], $definition, true);
+                $this->_identifier = 'id';
+                $this->_identifierType = IPF_ORM::IDENTIFIER_AUTOINC;
                 $this->columnCount++;
                 break;
             case 1:
@@ -259,28 +184,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
             default:
                 $this->_identifierType = IPF_ORM::IDENTIFIER_COMPOSITE;
         }
-    }
-
-    public function getColumnOwner($columnName)
-    {
-        if (isset($this->_columns[$columnName]['owner'])) {
-            return $this->_columns[$columnName]['owner'];
-        } else {
-            return $this->getComponentName();
-        }
-    }
-
-    public function getRecordInstance()
-    {
-        if ( ! $this->record) {
-            $this->record = new $this->_options['name'];
-        }
-        return $this->record;
-    }
-
-    public function isInheritedColumn($columnName)
-    {
-        return (isset($this->_columns[$columnName]['owner']));
     }
 
     public function isIdentifier($fieldName)

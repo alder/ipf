@@ -244,21 +244,9 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
         $sql = array();
         foreach ($fields as $fieldName) {
             $columnName = $table->getColumnName($fieldName);
-            if (($owner = $table->getColumnOwner($columnName)) !== null &&
-                    $owner !== $table->getComponentName()) {
-
-                $parent = $this->_conn->getTable($owner);
-                $columnName = $parent->getColumnName($fieldName);
-                $parentAlias = $this->getTableAlias($componentAlias . '.' . $parent->getComponentName());
-                $sql[] = $this->_conn->quoteIdentifier($parentAlias . '.' . $columnName)
-                       . ' AS '
-                       . $this->_conn->quoteIdentifier($tableAlias . '__' . $columnName);
-            } else {
-                $columnName = $table->getColumnName($fieldName);
-                $sql[] = $this->_conn->quoteIdentifier($tableAlias . '.' . $columnName)
-                       . ' AS '
-                       . $this->_conn->quoteIdentifier($tableAlias . '__' . $columnName);
-            }
+            $sql[] = $this->_conn->quoteIdentifier($tableAlias . '.' . $columnName)
+                   . ' AS '
+                   . $this->_conn->quoteIdentifier($tableAlias . '__' . $columnName);
         }
 
         $this->_neededTables[] = $tableAlias;
@@ -1336,31 +1324,7 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
         // get the short alias for this table
         $tableAlias = $this->getTableAlias($componentAlias, $tableName);
 
-        $queryPart = '';
-
-        foreach ($table->getOption('joinedParents') as $parent) {
-        	$parentTable = $this->_conn->getTable($parent);
-
-            $parentAlias = $componentAlias . '.' . $parent;
-
-            // get the short alias for the parent table
-            $parentTableAlias = $this->getTableAlias($parentAlias, $parentTable->getTableName());
-
-            $queryPart .= ' LEFT JOIN ' . $this->_conn->quoteIdentifier($parentTable->getTableName())
-                        . ' ' . $this->_conn->quoteIdentifier($parentTableAlias) . ' ON ';
-
-            //IPF_ORM::dump($table->getIdentifier());
-            foreach ((array) $table->getIdentifier() as $identifier) {
-                $column = $table->getColumnName($identifier);
-
-                $queryPart .= $this->_conn->quoteIdentifier($tableAlias)
-                            . '.' . $this->_conn->quoteIdentifier($column)
-                            . ' = ' . $this->_conn->quoteIdentifier($parentTableAlias)
-                            . '.' . $this->_conn->quoteIdentifier($column);
-            }
-        }
-
-        return $queryPart;
+        return '';
     }
 
     public function getCountQuery()

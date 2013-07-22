@@ -184,9 +184,6 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
 
                 // adjust state, remove from identity map and inform postDelete listeners
                 foreach ($deletedRecords as $record) {
-                    // currently just for bc!
-                    $this->_deleteCTIParents($table, $record);
-                    //--
                     $record->state(IPF_ORM_Record::STATE_TCLEAN);
                     $record->getTable()->removeRecord($record);
                     $this->_postDelete($record);
@@ -355,14 +352,8 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
 
         if ( ! $event->skipOperation) {
             $identifier = $record->identifier();
-            if ($table->getOption('joinedParents')) {
-                // currrently just for bc!
-                $this->_updateCTIRecord($table, $record);
-                //--
-            } else {
-                $array = $record->getPrepared();
-                $this->conn->update($table, $array, $identifier);
-            }
+            $array = $record->getPrepared();
+            $this->conn->update($table, $array, $identifier);
             $record->assignIdentifier(true);
         }
 
@@ -382,13 +373,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
         $table->notifyRecordListeners('preInsert', $event);
 
         if ( ! $event->skipOperation) {
-            if ($table->getOption('joinedParents')) {
-                // just for bc!
-                $this->_insertCTIRecord($table, $record);
-                //--
-            } else {
-                $this->processSingleInsert($record);
-            }
+            $this->processSingleInsert($record);
         }
 
         $table->addRecord($record);
@@ -571,70 +556,6 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
         return array_values($flushList);
     }
 
-    private function _deleteCTIParents(IPF_ORM_Table $table, $record)
-    {
-        if ($table->getOption('joinedParents')) {
-            foreach (array_reverse($table->getOption('joinedParents')) as $parent) {
-                $parentTable = $table->getConnection()->getTable($parent);
-                $this->conn->delete($parentTable, $record->identifier());
-            }
-        }
-    }
-
-    private function _insertCTIRecord(IPF_ORM_Table $table, IPF_ORM_Record $record)
-    {
-        $dataSet = $this->_formatDataSet($record);
-        $component = $table->getComponentName();
-
-        $classes = $table->getOption('joinedParents');
-        $classes[] = $component;
-
-        foreach ($classes as $k => $parent) {
-            if ($k === 0) {
-                $rootRecord = new $parent();
-                $rootRecord->merge($dataSet[$parent]);
-                $this->processSingleInsert($rootRecord);
-                $record->assignIdentifier($rootRecord->identifier());
-            } else {
-                foreach ((array) $rootRecord->identifier() as $id => $value) {
-                    $dataSet[$parent][$id] = $value;
-                }
-
-                $this->conn->insert($this->conn->getTable($parent), $dataSet[$parent]);
-            }
-        }
-    }
-
-    private function _updateCTIRecord(IPF_ORM_Table $table, IPF_ORM_Record $record)
-    {
-        $identifier = $record->identifier();
-        $dataSet = $this->_formatDataSet($record);
-
-        $component = $table->getComponentName();
-
-        $classes = $table->getOption('joinedParents');
-        $classes[] = $component;
-
-        foreach ($record as $field => $value) {
-            if ($value instanceof IPF_ORM_Record) {
-                if ( ! $value->exists()) {
-                    $value->save();
-                }
-                $record->set($field, $value->getIncremented());
-            }
-        }
-
-        foreach ($classes as $class) {
-            $parentTable = $this->conn->getTable($class);
-
-            if ( ! array_key_exists($class, $dataSet)) {
-                continue;
-            }
-
-            $this->conn->update($this->conn->getTable($class), $dataSet[$class], $identifier);
-        }
-    }
-
     private function _formatDataSet(IPF_ORM_Record $record)
     {
         $table = $record->getTable();
@@ -666,3 +587,4 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
         return $dataSet;
     }
 }
+

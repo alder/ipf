@@ -537,16 +537,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
             $record = new $name();
             $table  = $record->getTable();
 
-            $parents = $table->getOption('joinedParents');
-
-            foreach ($parents as $parent) {
-                $data  = $table->getConnection()->getTable($parent)->getExportableFormat();
-
-                $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
-                
-                $sql = array_merge($sql, (array) $query);
-            }
-
             $data = $table->getExportableFormat();
 
             $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
