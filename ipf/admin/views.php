@@ -397,27 +397,24 @@ function IPF_Admin_Views_FileBrowser($request, $match)
                 continue;
             if (($curr_dir=='') && ($file=='..'))
                 continue;
-            if (filetype($_dir . $file)=='dir'){
+
+            if (filetype($_dir . $file)=='dir') {
                 $dirs[] = array('id'=>$id, 'name'=>$file);
                 $id++;
-            }
-            else{
-                
+            } else {
                 $sx = getimagesize($_dir.$file);
-                if ($sx){
+                if ($sx) {
                     $image = '1';
                     $type = str_replace('image/','',$sx['mime']).' '.$sx[0].'x'.$sx[1];
-                    if ($sx[0]<=200){
+                    if ($sx[0]<=200) {
                         $zw = $sx[0];
                         $zh = $sx[1];
-                    }
-                    else {
+                    } else {
                         $zw = 200;
                         $prop = (float)$sx[1] / (float)$sx[0];
                         $zh = (int)(200.0 * $prop);
                     }
-                }
-                else {
+                } else {
                     $image = '0';
                     $type = 'binary';
                     $zw = 200;

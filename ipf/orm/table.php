@@ -45,8 +45,10 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     public function __construct($name, IPF_ORM_Connection $conn, $initDefinition = false)
     {
-        $this->_conn = $conn;
+        if (empty($name) || !class_exists($name))
+            throw new IPF_ORM_Exception("Couldn't find class " . $name);
 
+        $this->_conn = $conn;
         $this->setParent($this->_conn);
 
         $this->_options['name'] = $name;
@@ -70,9 +72,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     public function initDefinition()
     {
         $name = $this->_options['name'];
-        if ( ! class_exists($name) || empty($name)) {
-            throw new IPF_ORM_Exception("Couldn't find class " . $name);
-        }
         $record = new $name($this);
 
         $names = array();
@@ -82,17 +81,15 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         // get parent classes
 
         do {
-            if ($class === 'IPF_ORM_Record') {
+            if ($class === 'IPF_ORM_Record')
                 break;
-            }
 
             $name = $class;
             $names[] = $name;
         } while ($class = get_parent_class($class));
 
-        if ($class === false) {
+        if ($class === false)
             throw new IPF_ORM_Exception('Class "' . $name . '" must be a child class of IPF_ORM_Record');
-        }
 
         // reverse names
         $names = array_reverse($names);

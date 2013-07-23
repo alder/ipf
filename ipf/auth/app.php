@@ -1,9 +1,5 @@
 <?php
 
-// preload permission model
-require_once(dirname(__FILE__) . '/models/_generated/BasePermission.php');
-require_once(dirname(__FILE__) . '/models/Permission.php');
-
 class IPF_Auth_App extends IPF_Application
 {
     public function __construct()
@@ -35,7 +31,7 @@ class IPF_Auth_App extends IPF_Application
 
     static function createPermissionsFromModels()
     {
-        $permsTable = IPF_ORM::getTable('Permission');
+        $permsTable = Permission::table();
 
         $project = IPF_Project::getInstance();
         $project->loadAllModels();
@@ -173,3 +169,4 @@ class IPF_Auth_App extends IPF_Application
         return $app->getTitle().' | '.$admin->verbose_name().' | '.ucfirst($parts[2]);
     }    
 }
+
