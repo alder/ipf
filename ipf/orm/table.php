@@ -39,11 +39,10 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     protected $_filters     = array();
     protected $_generators     = array();
     protected $_invokedMethods = array();
-    protected $record;
 
     public $listeners = array();
 
-    public function __construct($name, IPF_ORM_Connection $conn, $initDefinition = false)
+    public function __construct($name, IPF_ORM_Connection $conn)
     {
         if (empty($name) || !class_exists($name))
             throw new IPF_ORM_Exception("Couldn't find class " . $name);
@@ -54,32 +53,31 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         $this->_options['name'] = $name;
         $this->_parser = new IPF_ORM_Relation_Parser($this);
 
-        if ($initDefinition) {
-            $this->record = $this->initDefinition();
+        $this->initParents($name);
 
-            $this->initIdentifier();
+        // create database table
+        $record = new $name($this);
+        $record->setTableDefinition();
 
-            $this->record->setUp();
-        } else {
-            if ( ! isset($this->_options['tableName'])) {
-                $this->setTableName(IPF_ORM_Inflector::tableize($this->_options['name']));
-            }
+        $this->columnCount = count($this->_columns);
+
+        if (!isset($this->_options['tableName'])) {
+            $this->setTableName(IPF_ORM_Inflector::tableize($class->getName()));
         }
+
+        $this->initIdentifier();
+
+        $record->setUp();
+
         $this->_filters[]  = new IPF_ORM_Record_Filter_Standard();
         $this->_repository = new IPF_ORM_Table_Repository($this);
     }
 
-    public function initDefinition()
+    private function initParents($name)
     {
-        $name = $this->_options['name'];
-        $record = new $name($this);
-
         $names = array();
 
         $class = $name;
-
-        // get parent classes
-
         do {
             if ($class === 'IPF_ORM_Record')
                 break;
@@ -96,27 +94,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         // save parents
         array_pop($names);
         $this->_options['parents'] = $names;
-
-        // create database table
-        if (method_exists($record, 'setTableDefinition')) {
-            $record->setTableDefinition();
-            // get the declaring class of setTableDefinition method
-            $method = new ReflectionMethod($this->_options['name'], 'setTableDefinition');
-            $class = $method->getDeclaringClass();
-
-        } else {
-            $class = new ReflectionClass($class);
-        }
-
-        $this->_options['declaringClass'] = $class;
-
-        $this->columnCount = count($this->_columns);
-
-        if ( ! isset($this->_options['tableName'])) {
-            $this->setTableName(IPF_ORM_Inflector::tableize($class->getName()));
-        }
-
-        return $record;
     }
 
     public function initIdentifier()

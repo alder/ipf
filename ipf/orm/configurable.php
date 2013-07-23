@@ -72,7 +72,6 @@ abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
             case IPF_ORM::ATTR_DECIMAL_PLACES:
             case IPF_ORM::ATTR_LOAD_REFERENCES:
             case IPF_ORM::ATTR_DEFAULT_PARAM_NAMESPACE:
-            case IPF_ORM::ATTR_AUTOLOAD_TABLE_CLASSES:
             case IPF_ORM::ATTR_MODEL_LOADING:
             case IPF_ORM::ATTR_RESULT_CACHE_LIFESPAN:
             case IPF_ORM::ATTR_QUERY_CACHE_LIFESPAN:

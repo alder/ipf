@@ -24,7 +24,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
             IPF_ORM::ATTR_EXPORT                  => IPF_ORM::EXPORT_ALL,
             IPF_ORM::ATTR_DECIMAL_PLACES          => 2,
             IPF_ORM::ATTR_DEFAULT_PARAM_NAMESPACE => 'ipf',
-            IPF_ORM::ATTR_AUTOLOAD_TABLE_CLASSES  => false,
         );
     }
 

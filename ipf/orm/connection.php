@@ -562,21 +562,9 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
     public function getTable($name)
     {
-        if (isset($this->tables[$name])) {
-            return $this->tables[$name];
-        }
-        $class = $name . 'Table';
-
-        if (class_exists($class, $this->getAttribute(IPF_ORM::ATTR_AUTOLOAD_TABLE_CLASSES)) &&
-                in_array('IPF_ORM_Table', class_parents($class))) {
-            $table = new $class($name, $this, true);
-        } else {
-            $table = new IPF_ORM_Table($name, $this, true);
-        }
-
-        $this->tables[$name] = $table;
-
-        return $table;
+        if (!isset($this->tables[$name]))
+            $this->tables[$name] = new IPF_ORM_Table($name, $this);
+        return $this->tables[$name];
     }
 
     public function getTables()
