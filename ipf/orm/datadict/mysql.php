@@ -172,8 +172,15 @@ class IPF_ORM_DataDict_Mysql extends IPF_ORM_DataDict
             case 'double':
                 return 'DOUBLE';
             case 'decimal':
-                $length = !empty($field['length']) ? $field['length'] : 18;
                 $scale = !empty($field['scale']) ? $field['scale'] : $this->conn->getAttribute(IPF_ORM::ATTR_DECIMAL_PLACES);
+                if (!empty($field['length'])) {
+                    $length = $field['length'];
+                    if (is_array($length)) {
+                        list($length, $scale) = $length;
+                    }
+                } else {
+                    $length = 18;
+                }
                 return 'DECIMAL('.$length.','.$scale.')';
             case 'bit':
                 return 'BIT';

@@ -166,7 +166,10 @@ class IPF_ORM_Import_Builder
             $build = "    ".'$this->hasColumn(\'' . $columnName . '\', \'' . $column['type'] . '\'';
 
             if ($column['length']) {
-                $build .= ', ' . $column['length'];
+                if (is_numeric($column['length']))
+                    $build .= ', ' . $column['length'];
+                else
+                    $build .= ', array(' . $column['length'] . ')';
             } else {
                 $build .= ', null';
             }
