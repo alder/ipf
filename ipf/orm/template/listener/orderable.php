@@ -2,11 +2,12 @@
 
 class IPF_ORM_Template_Listener_Orderable
 {
-    private $columnName = 'ord';
+    private $columnName, $prepend;
 
-    public function __construct($columnName)
+    public function __construct($columnName, $prepend)
     {
         $this->columnName = $columnName;
+        $this->prepend = $prepend;
     }
 
     public function preInsert(IPF_ORM_Event $event)
@@ -22,17 +23,23 @@ class IPF_ORM_Template_Listener_Orderable
     private function setOrderValue($obj)
     {
         $columnName = $this->columnName;
-        if ($obj->$columnName)
+        if ($obj->$columnName !== null)
             return;
 
+        if ($this->prepend) {
+            $f = 'min';
+            $d = '-';
+        } else {
+            $f = 'max';
+            $d = '+';
+        }
+
         $res = IPF_ORM_Query::create()
-             ->select('max('.$this->columnName.') as x_ord')
-             ->from(get_class($obj))
-             ->execute();
-        if (isset($res[0]->x_ord))
-            $obj->$columnName = (int)$res[0]->x_ord + 1;
-        else
-            $obj->$columnName = 1;
+            ->select('coalesce('.$f.'('.$this->columnName.') '.$d.' 1, 1) as x_ord')
+            ->from(get_class($obj))
+            ->execute();
+
+        $obj->$columnName = (int)$res[0]->x_ord;
     }
 }
 
