@@ -217,20 +217,7 @@ class User extends BaseUser
         else
             $user->setUnusablePassword();
 
-        try {
-            $user->save();
-        } catch(IPF_ORM_Exception_Validator $e) {
-            //print_r($e);
-            // Note: you could also use $e->getInvalidRecords(). The direct way
-            // used here is just more simple when you know the records you're dealing with.
-            $userErrors = $user->getErrorStack();
-            //$emailErrors = $user->email->getErrorStack();
-            // Inspect user errors
-            foreach($userErrors as $fieldName => $errorCodes) {
-                echo "Error:".$fieldName;
-                //print_r($errorCodes);
-            }
-        }
+        $user->save();
         return $user;
     }
 
