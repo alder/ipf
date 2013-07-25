@@ -474,7 +474,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
         foreach ($options as $k => $option) {
             if (is_numeric($k)) {
-                if ( ! empty($option)) {
+                if (!empty($option)) {
                     $options[$option] = true;
                 }
                 unset($options[$k]);
@@ -869,58 +869,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return $value;
     }
 
-    public function validateField($fieldName, $value, IPF_ORM_Record $record = null)
-    {
-        if ($record instanceof IPF_ORM_Record) {
-            $errorStack = $record->getErrorStack();
-        } else {
-            $record  = $this->create();
-            $errorStack = new IPF_ORM_Validator_ErrorStack($this->getOption('name'));
-        }
-
-        if ($value === self::$_null) {
-            $value = null;
-        } else if ($value instanceof IPF_ORM_Record) {
-            $value = $value->getIncremented();
-        }
-
-        $dataType = $this->getTypeOf($fieldName);
-
-        // Validate field type
-        if ( ! IPF_ORM_Validator::isValidType($value, $dataType)) {
-            $errorStack->add($fieldName, 'type');
-        }
-        if ($dataType == 'enum') {
-            $enumIndex = $this->enumIndex($fieldName, $value);
-            if ($enumIndex === false) {
-                $errorStack->add($fieldName, 'enum');
-            }
-        }
-
-        // Validate field length
-        if ( ! IPF_ORM_Validator::validateLength($value, $dataType, $this->getFieldLength($fieldName))) {
-            $errorStack->add($fieldName, 'length');
-        }
-
-        // Run all custom validators
-        foreach ($this->getFieldValidators($fieldName) as $validatorName => $args) {
-            if ( ! is_string($validatorName)) {
-                $validatorName = $args;
-                $args = array();
-            }
-
-            $validator = IPF_ORM_Validator::getValidator($validatorName);
-            $validator->invoker = $record;
-            $validator->field = $fieldName;
-            $validator->args = $args;
-            if ( ! $validator->validate($value)) {
-                $errorStack->add($fieldName, $validator);
-            }
-        }
-
-        return $errorStack;
-    }
-
     public function getColumnCount()
     {
         return $this->columnCount;
@@ -1152,11 +1100,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         }
 
         return $validators;
-    }
-
-    public function getFieldLength($fieldName)
-    {
-        return $this->_columns[$this->getColumnName($fieldName)]['length'];
     }
 
     public function getBoundQueryPart($queryPart)

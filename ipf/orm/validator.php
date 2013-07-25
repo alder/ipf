@@ -27,11 +27,60 @@ class IPF_ORM_Validator extends IPF_ORM_Locator_Injectable
         // if record is persistent only the modified fields will be validated
         $fields = $record->exists() ? $record->getModified():$record->getData();
         foreach ($fields as $fieldName => $value) {
-            $table->validateField($fieldName, $value, $record);
+            $this->validateField($table, $fieldName, $value, $record);
         }
     }
 
-    public static function validateLength($value, $type, $maximumLength)
+    private function validateField(IPF_ORM_Table $table, $fieldName, $value, IPF_ORM_Record $record)
+    {
+        $errorStack = $record->getErrorStack();
+
+        if ($value === self::$_null) {
+            $value = null;
+        } else if ($value instanceof IPF_ORM_Record) {
+            $value = $value->getIncremented();
+        }
+
+        $dataType = $table->getTypeOf($fieldName);
+
+        // Validate field type
+        if (!IPF_ORM_Validator::isValidType($value, $dataType)) {
+            $errorStack->add($fieldName, 'type');
+        }
+
+        if ($dataType == 'enum') {
+            $enumIndex = $table->enumIndex($fieldName, $value);
+            if ($enumIndex === false) {
+                $errorStack->add($fieldName, 'enum');
+            }
+        }
+
+        // Validate field length
+        $definition = $table->getDefinitionOf($fieldName);
+        if (!$this->validateLength($value, $dataType, $definition['length'])) {
+            $errorStack->add($fieldName, 'length');
+        }
+
+        // Run all custom validators
+        foreach ($table->getFieldValidators($fieldName) as $validatorName => $args) {
+            if (!is_string($validatorName)) {
+                $validatorName = $args;
+                $args = array();
+            }
+
+            $validator = IPF_ORM_Validator::getValidator($validatorName);
+            $validator->invoker = $record;
+            $validator->field = $fieldName;
+            $validator->args = $args;
+            if (!$validator->validate($value)) {
+                $errorStack->add($fieldName, $validator);
+            }
+        }
+
+        return $errorStack;
+    }
+
+    public function validateLength($value, $type, $maximumLength)
     {
         if ($type == 'timestamp' || $type == 'integer' || $type == 'enum') {
             return true;
@@ -96,3 +145,4 @@ class IPF_ORM_Validator extends IPF_ORM_Locator_Injectable
          }
      }
 }
+
