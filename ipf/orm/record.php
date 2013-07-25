@@ -14,7 +14,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     protected $_values       = array();
     protected $_state;
     protected $_modified     = array();
-    protected $_errorStack;
+    protected $_errors = array();
     protected $_references     = array();
     protected $_pendingDeletes = array();
     protected $_custom         = array();
@@ -98,7 +98,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     public function isValid()
     {
         // Clear the stack from any previous errors.
-        $this->getErrorStack()->clear();
+        $this->_errors = array();
 
         // Run validation process
         $validator = new IPF_ORM_Validator();
@@ -110,7 +110,17 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
             $this->validateOnUpdate();
         }
 
-        return $this->getErrorStack()->count() == 0 ? true : false;
+        return count($this->_errors) === 0;
+    }
+
+    public function addError($invalidFieldName, $errorCode = 'general')
+    {
+        $this->_errors[$invalidFieldName][] = $errorCode;
+    }
+
+    public function getErrors()
+    {
+        return $this->_errors;
     }
 
     protected function validate(){}
@@ -142,26 +152,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     public function preInsert($event){}
 
     public function postInsert($event){}
-
-    public function getErrorStack(){
-        if ( ! $this->_errorStack) {
-            $this->_errorStack = new IPF_ORM_Validator_ErrorStack(get_class($this));
-        }
-
-        return $this->_errorStack;
-    }
-
-    public function errorStack($stack = null)
-    {
-        if ($stack !== null) {
-            if ( ! ($stack instanceof IPF_ORM_Validator_ErrorStack)) {
-               throw new IPF_ORM_Exception('Argument should be an instance of IPF_ORM_Validator_ErrorStack.');
-            }
-            $this->_errorStack = $stack;
-        } else {
-            return $this->getErrorStack();
-        }
-    }
 
     public function assignDefaultValues($overwrite = false)
     {
@@ -249,7 +239,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
         unset($vars['_references']);
         unset($vars['_table']);
-        unset($vars['_errorStack']);
+        unset($vars['_errors']);
         unset($vars['_filter']);
 
         $name = $this->_table->getIdentifier();

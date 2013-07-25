@@ -33,8 +33,6 @@ class IPF_ORM_Validator extends IPF_ORM_Locator_Injectable
 
     private function validateField(IPF_ORM_Table $table, $fieldName, $value, IPF_ORM_Record $record)
     {
-        $errorStack = $record->getErrorStack();
-
         if ($value === self::$_null) {
             $value = null;
         } else if ($value instanceof IPF_ORM_Record) {
@@ -45,20 +43,20 @@ class IPF_ORM_Validator extends IPF_ORM_Locator_Injectable
 
         // Validate field type
         if (!IPF_ORM_Validator::isValidType($value, $dataType)) {
-            $errorStack->add($fieldName, 'type');
+            $record->addError($fieldName, 'type');
         }
 
         if ($dataType == 'enum') {
             $enumIndex = $table->enumIndex($fieldName, $value);
             if ($enumIndex === false) {
-                $errorStack->add($fieldName, 'enum');
+                $record->addError($fieldName, 'enum');
             }
         }
 
         // Validate field length
         $definition = $table->getDefinitionOf($fieldName);
         if (!$this->validateLength($value, $dataType, $definition['length'])) {
-            $errorStack->add($fieldName, 'length');
+            $record->addError($fieldName, 'length');
         }
 
         // Run all custom validators
@@ -73,11 +71,9 @@ class IPF_ORM_Validator extends IPF_ORM_Locator_Injectable
             $validator->field = $fieldName;
             $validator->args = $args;
             if (!$validator->validate($value)) {
-                $errorStack->add($fieldName, $validator);
+                $record->addError($fieldName, $validatorName);
             }
         }
-
-        return $errorStack;
     }
 
     public function validateLength($value, $type, $maximumLength)
