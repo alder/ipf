@@ -107,6 +107,13 @@ class IPF_ORM_Expression_Driver extends IPF_ORM_Connection_Module
         return 'NOW()';
     }
 
+    public function coalesce($expression1, $expression2)
+    {
+        $expression1 = $this->getIdentifier($expression1);
+        $expression2 = $this->getIdentifier($expression2);
+        return 'COALESCE(' . $expression1 . ', ' . $expression2 . ')';
+    }
+
     public function soundex($value)
     {
         throw new IPF_ORM_Exception('SQL soundex function not supported by this driver.');
@@ -278,3 +285,4 @@ class IPF_ORM_Expression_Driver extends IPF_ORM_Connection_Module
         return $m . '(' . implode(', ', $a) . ')';
     }
 }
+
