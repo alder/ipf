@@ -11,8 +11,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
 
     private function __construct()
     {
-        IPF_ORM_Locator_Injectable::initNullObject(new IPF_ORM_Null);
-
         $this->attributes = array(
             IPF_ORM::ATTR_LOAD_REFERENCES         => true,
             IPF_ORM::ATTR_IDXNAME_FORMAT          => "%s_idx",

@@ -1,6 +1,6 @@
 <?php
 
-abstract class IPF_ORM_Hydrator_Abstract extends IPF_ORM_Locator_Injectable
+abstract class IPF_ORM_Hydrator_Abstract
 {
     protected $_queryComponents = array();
 

@@ -9,7 +9,6 @@ class IPF_ORM_Collection extends IPF_ORM_Access implements Countable, IteratorAg
     protected $referenceField;
     protected $relation;
     protected $keyColumn;
-    protected static $null;
 
     public function __construct($table, $keyColumn = null)
     {
@@ -30,11 +29,6 @@ class IPF_ORM_Collection extends IPF_ORM_Access implements Countable, IteratorAg
         if ($keyColumn !== null) {
             $this->keyColumn = $keyColumn;
         }
-    }
-
-    public static function initNullObject(IPF_ORM_Null $null)
-    {
-        self::$null = $null;
     }
 
     public function getTable()

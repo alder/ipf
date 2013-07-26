@@ -844,7 +844,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     public function enumValue($fieldName, $index)
     {
-        if ($index instanceof IPF_ORM_Null) {
+        if (IPF_ORM_Null::isNull($index)) {
             return $index;
         }
 
@@ -942,8 +942,8 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     public function prepareValue($fieldName, $value, $typeHint = null)
     {
-        if ($value === self::$_null) {
-            return self::$_null;
+        if (IPF_ORM_Null::isNull($value)) {
+            return $value;
         } else if ($value === null) {
             return null;
         } else {

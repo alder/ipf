@@ -1,6 +1,6 @@
 <?php
 
-abstract class IPF_ORM_Configurable extends IPF_ORM_Locator_Injectable
+abstract class IPF_ORM_Configurable
 {
     protected $attributes = array();
     protected $parent;

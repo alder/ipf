@@ -1,6 +1,6 @@
 <?php
 
-abstract class IPF_ORM_Access extends IPF_ORM_Locator_Injectable implements ArrayAccess
+abstract class IPF_ORM_Access implements ArrayAccess
 {
     public function setArray(array $array)
     {

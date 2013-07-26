@@ -165,7 +165,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 continue;
             }
 
-            if ($value === self::$_null || $overwrite) {
+            if (IPF_ORM_Null::isNull($value) || $overwrite) {
                 $this->_data[$column] = $default;
                 $this->_modified[]    = $column;
                 $this->_state = IPF_ORM_Record::STATE_TDIRTY;
@@ -182,9 +182,9 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
             if (isset($tmp[$fieldName])) {
                 $data[$fieldName] = $tmp[$fieldName];
             } else if (array_key_exists($fieldName, $tmp)) {
-                $data[$fieldName] = self::$_null;
+                $data[$fieldName] = IPF_ORM_Null::getInstance();
             } else if (!isset($this->_data[$fieldName])) {
-                $data[$fieldName] = self::$_null;
+                $data[$fieldName] = IPF_ORM_Null::getInstance();
             }
             unset($tmp[$fieldName]);
         }
@@ -210,7 +210,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                     $name = $name[0];
                 }
                 if ($exists) {
-                    if (isset($this->_data[$name]) && $this->_data[$name] !== self::$_null) {
+                    if (isset($this->_data[$name]) && !IPF_ORM_Null::isNull($this->_data[$name])) {
                         $this->_id[$name] = $this->_data[$name];
                     }
                 }
@@ -219,7 +219,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 $names = $this->_table->getIdentifier();
 
                 foreach ($names as $name) {
-                    if ($this->_data[$name] === self::$_null) {
+                    if (IPF_ORM_Null::isNull($this->_data[$name])) {
                         $this->_id[$name] = null;
                     } else {
                         $this->_id[$name] = $this->_data[$name];
@@ -248,7 +248,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         foreach ($this->_data as $k => $v) {
             if ($v instanceof IPF_ORM_Record && $this->_table->getTypeOf($k) != 'object') {
                 unset($vars['_data'][$k]);
-            } elseif ($v === self::$_null) {
+            } elseif (IPF_ORM_Null::isNull($v)) {
                 unset($vars['_data'][$k]);
             } else {
                 switch ($this->_table->getTypeOf($k)) {
@@ -424,7 +424,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         if ( ! isset($this->_data[$fieldName])) {
             throw new IPF_ORM_Exception('Unknown property '. $fieldName);
         }
-        if ($this->_data[$fieldName] === self::$_null) {
+        if (IPF_ORM_Null::isNull($this->_data[$fieldName])) {
             return null;
         }
 
@@ -444,14 +444,13 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
     public function get($fieldName, $load = true)
     {
-        $value = self::$_null;
+        $value = IPF_ORM_Null::getInstance();
 
         if (isset($this->_data[$fieldName])) {
-            // check if the value is the IPF_ORM_Null object located in self::$_null)
-            if ($this->_data[$fieldName] === self::$_null && $load) {
+            if (IPF_ORM_Null::isNull($this->_data[$fieldName]) && $load) {
                 $this->load();
             }
-            if ($this->_data[$fieldName] === self::$_null) {
+            if (IPF_ORM_Null::isNull($this->_data[$fieldName])) {
                 $value = null;
             } else {
                 $value = $this->_data[$fieldName];
@@ -503,7 +502,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
             if ($this->_isValueModified($type, $old, $value)) {
                 if ($value === null) {
-                    $value = self::$_null;
+                    $value = IPF_ORM_Null::getInstance();
                 }
 
                 $this->_data[$fieldName] = $value;
@@ -546,7 +545,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         $rel = $this->_table->getRelation($name);
 
         if ($value === null) {
-            $value = self::$_null;
+            $value = IPF_ORM_Null::getInstance();
         }
 
         // one-to-many or one-to-one relation
@@ -561,7 +560,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                     return $this;
                 }
             } else {
-                if ($value !== self::$_null) {
+                if (!IPF_ORM_Null::isNull($value)) {
                     $relatedTable = $value->getTable();
                     $foreignFieldName = $relatedTable->getFieldName($rel->getForeign());
                     $localFieldName = $this->_table->getFieldName($rel->getLocal());
@@ -605,9 +604,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         if (isset($this->_values[$fieldName])) {
             return true;
         }
-        if (isset($this->_references[$fieldName]) &&
-            $this->_references[$fieldName] !== self::$_null) {
-
+        if (isset($this->_references[$fieldName]) && !IPF_ORM_Null::isNull($this->_references[$fieldName])) {
             return true;
         }
         return false;
@@ -620,7 +617,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         } else if (isset($this->_references[$name])) {
             if ($this->_references[$name] instanceof IPF_ORM_Record) {
                 $this->_pendingDeletes[] = $this->$name;
-                $this->_references[$name] = self::$_null;
+                $this->_references[$name] = IPF_ORM_Null::getInstance();
             } elseif ($this->_references[$name] instanceof IPF_ORM_Collection) {
                 $this->_pendingDeletes[] = $this->$name;
                 $this->_references[$name]->setData(array());
@@ -695,7 +692,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         foreach ($modifiedFields as $field) {
             $type = $this->_table->getTypeOf($field);
 
-            if ($this->_data[$field] === self::$_null) {
+            if (IPF_ORM_Null::isNull($this->_data[$field])) {
                 $a[$field] = null;
                 continue;
             }
@@ -766,7 +763,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         $a = array();
 
         foreach ($this as $column => $value) {
-            if ($value === self::$_null || is_object($value)) {
+            if (IPF_ORM_Null::isNull($value) || is_object($value)) {
                 $value = null;
             }
 
@@ -780,7 +777,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
         if ($deep) {
             foreach ($this->_references as $key => $relation) {
-                if (! $relation instanceof IPF_ORM_Null) {
+                if (!IPF_ORM_Null::isNull($relation)) {
                     $a[$key] = $relation->toArray($deep, $prefixKey);
                 }
             }
@@ -911,7 +908,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         $modified = array();
 
         foreach ($data as $key => $val) {
-            if ( ! ($val instanceof IPF_ORM_Null)) {
+            if (!IPF_ORM_Null::isNull($val)) {
                 $ret->_modified[] = $key;
             }
         }
@@ -1185,7 +1182,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
 
             if ($deep) {
                 foreach ($this->_references as $name => $reference) {
-                    if ( ! ($reference instanceof IPF_ORM_Null)) {
+                    if (!IPF_ORM_Null::isNull($reference)) {
                         $reference->free($deep);
                     }
                 }

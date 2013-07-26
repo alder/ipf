@@ -1,6 +1,6 @@
 <?php
 
-class IPF_ORM_Hydrator_RecordDriver extends IPF_ORM_Locator_Injectable
+class IPF_ORM_Hydrator_RecordDriver
 {
     protected $_collections = array();
     protected $_tables = array();
@@ -38,9 +38,9 @@ class IPF_ORM_Hydrator_RecordDriver extends IPF_ORM_Locator_Injectable
         $this->_collections[] = $coll;
     }
     
-    public function getNullPointer() 
+    public function getNullPointer()
     {
-        return self::$_null;
+        return IPF_ORM_Null::getInstance();
     }
     
     public function getElement(array $data, $component)

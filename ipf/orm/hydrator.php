@@ -183,7 +183,7 @@ class IPF_ORM_Hydrator extends IPF_ORM_Hydrator_Abstract
 
     protected function _setLastElement(&$prev, &$coll, $index, $dqlAlias, $oneToOne)
     {
-        if ($coll === self::$_null || $coll === null) {
+        if (IPF_ORM_Null::isNull($coll) || $coll === null) {
             unset($prev[$dqlAlias]); // Ticket #1228
             return;
         }

@@ -1,6 +1,6 @@
 <?php
 
-class IPF_ORM_Validator extends IPF_ORM_Locator_Injectable
+class IPF_ORM_Validator
 {
     private static $validators = array();
     public static function getValidator($name)
@@ -33,7 +33,7 @@ class IPF_ORM_Validator extends IPF_ORM_Locator_Injectable
 
     private function validateField(IPF_ORM_Table $table, $fieldName, $value, IPF_ORM_Record $record)
     {
-        if ($value === self::$_null) {
+        if (IPF_ORM_Null::isNull($value)) {
             $value = null;
         } else if ($value instanceof IPF_ORM_Record) {
             $value = $value->getIncremented();
