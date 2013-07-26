@@ -18,8 +18,6 @@ class IPF_HTTP_Request
 
     public function __construct()
     {
-        $http = new IPF_HTTP();
-        $http->removeTheMagic();
         $this->POST =& $_POST;
         $this->GET =& $_GET;
         $this->REQUEST =& $_REQUEST;
