@@ -79,13 +79,13 @@ class IPF_ORM_Import_Schema
 
     public function importSchema($filename, $extraAllwedReferences)
     {
-        $array = $this->parseSchema($filename, 'yml');
+        $array = $this->parseSchema($filename);
         $array = $this->_buildRelationships($array, $extraAllwedReferences);
         $array = $this->_processInheritance($array);
         return $array;
     }
 
-    public function parseSchema($schema, $type)
+    private function parseSchema($schema)
     {
         $defaults = array('abstract'            =>  false,
                           'className'           =>  null,
@@ -100,7 +100,7 @@ class IPF_ORM_Import_Schema
                           'inheritance'         =>  array(),
                           'detect_relations'    =>  false);
         
-        $array = IPF_ORM_Parser::load($schema, $type);
+        $array = Spyc::YAMLLoad($schema);
 
         // Go through the schema and look for global values so we can assign them to each table/class
         $globals = array();

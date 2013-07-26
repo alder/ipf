@@ -864,24 +864,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         }
     }
 
-    public function exportTo($type, $deep = true)
-    {
-        if ($type == 'array') {
-            return $this->toArray($deep);
-        } else {
-            return IPF_ORM_Parser::dump($this->toArray($deep, true), $type);
-        }
-    }
-
-    public function importFrom($type, $data)
-    {
-        if ($type == 'array') {
-            return $this->fromArray($data);
-        } else {
-            return $this->fromArray(IPF_ORM_Parser::load($data, $type));
-        }
-    }
-
     public function exists()
     {
         return ($this->_state !== IPF_ORM_Record::STATE_TCLEAN &&

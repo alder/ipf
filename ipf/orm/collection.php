@@ -453,24 +453,6 @@ class IPF_ORM_Collection extends IPF_ORM_Access implements Countable, IteratorAg
         return $this->synchronizeWithArray($array);
     }
 
-    public function exportTo($type, $deep = false)
-    {
-        if ($type == 'array') {
-            return $this->toArray($deep);
-        } else {
-            return IPF_ORM_Parser::dump($this->toArray($deep, true), $type);
-        }
-    }
-
-    public function importFrom($type, $data)
-    {
-        if ($type == 'array') {
-            return $this->fromArray($data);
-        } else {
-            return $this->fromArray(IPF_ORM_Parser::load($data, $type));
-        }
-    }
-
     public function getDeleteDiff()
     {
         return array_udiff($this->_snapshot, $this->data, array($this, 'compareRecords'));
