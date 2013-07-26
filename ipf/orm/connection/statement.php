@@ -1,6 +1,6 @@
 <?php
 
-class IPF_ORM_Connection_Statement implements IPF_ORM_Adapter_Statement_Interface
+class IPF_ORM_Connection_Statement
 {
     protected $_conn;
     protected $_stmt;
