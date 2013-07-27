@@ -67,7 +67,6 @@ abstract class IPF_ORM_Configurable
             case IPF_ORM::ATTR_DEFAULT_TABLE_TYPE:
             case IPF_ORM::ATTR_EMULATE_DATABASE:
             case IPF_ORM::ATTR_USE_NATIVE_ENUM:
-            case IPF_ORM::ATTR_DEFAULT_SEQUENCE:
             case IPF_ORM::ATTR_EXPORT:
             case IPF_ORM::ATTR_DECIMAL_PLACES:
             case IPF_ORM::ATTR_LOAD_REFERENCES:
@@ -79,20 +78,14 @@ abstract class IPF_ORM_Configurable
             case IPF_ORM::ATTR_SINGULARIZE_IMPORT;
 
                 break;
-            case IPF_ORM::ATTR_SEQCOL_NAME:
-                if ( ! is_string($value)) {
-                    throw new IPF_ORM_Exception('Sequence column name attribute only accepts string values');
-                }
-                break;
             case IPF_ORM::ATTR_FIELD_CASE:
                 if ($value != 0 && $value != CASE_LOWER && $value != CASE_UPPER)
                     throw new IPF_ORM_Exception('Field case attribute should be either 0, CASE_LOWER or CASE_UPPER constant.');
                 break;
-            case IPF_ORM::ATTR_SEQNAME_FORMAT:
             case IPF_ORM::ATTR_IDXNAME_FORMAT:
             case IPF_ORM::ATTR_TBLNAME_FORMAT:
                 if ($this instanceof IPF_ORM_Table) {
-                    throw new IPF_ORM_Exception('Sequence / index name format attributes cannot be set'
+                    throw new IPF_ORM_Exception('index name format attributes cannot be set'
                                                . 'at table level (only at connection or global level).');
                 }
                 break;

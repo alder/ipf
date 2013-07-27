@@ -20,7 +20,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     protected $_options      = array('name'           => null,
                                      'tableName'      => null,
-                                     'sequenceName'   => null,
                                      'inheritanceMap' => array(),
                                      'enumMap'        => array(),
                                      'type'           => null,
@@ -128,21 +127,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
                                 if ($value !== false) {
                                     $this->_identifierType = IPF_ORM::IDENTIFIER_AUTOINC;
                                     $found = true;
-                                }
-                                break;
-                            case 'seq':
-                            case 'sequence':
-                                $this->_identifierType = IPF_ORM::IDENTIFIER_SEQUENCE;
-                                $found = true;
-
-                                if (is_string($value)) {
-                                    $this->_options['sequenceName'] = $value;
-                                } else {
-                                    if (($sequence = $this->getAttribute(IPF_ORM::ATTR_DEFAULT_SEQUENCE)) !== null) {
-                                        $this->_options['sequenceName'] = $sequence;
-                                    } else {
-                                        $this->_options['sequenceName'] = $this->_conn->formatter->getSequenceName($this->_options['tableName']);
-                                    }
                                 }
                                 break;
                         }
@@ -1080,7 +1064,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
                     || $name == 'autoincrement'
                     || $name == 'default'
                     || $name == 'values'
-                    || $name == 'sequence'
                     || $name == 'zerofill'
                     || $name == 'owner'
                     || $name == 'scale'

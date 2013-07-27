@@ -62,16 +62,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         return $this->dropConstraint($table, $name);
     }
 
-    public function dropSequence($sequenceName)
-    {
-        $this->conn->exec($this->dropSequenceSql($sequenceName));
-    }
-
-    public function dropSequenceSql($sequenceName)
-    {
-        throw new IPF_ORM_Exception('Drop sequence not supported by this driver.');
-    }
-
     public function createDatabase($database)
     {
         $this->conn->execute($this->createDatabaseSql($database));
@@ -126,16 +116,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
             }
         }
         return $sql;
-    }
-
-    public function createSequence($seqName, $start = 1, array $options = array())
-    {
-        return $this->conn->execute($this->createSequenceSql($seqName, $start = 1, $options));
-    }
-
-    public function createSequenceSql($seqName, $start = 1, array $options = array())
-    {
-        throw new IPF_ORM_Exception('Create sequence not supported by this driver.');
     }
 
     public function createConstraint($table, $name, $definition)
@@ -444,7 +424,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
              if ( ! isset($connections[$connectionName])) {
                  $connections[$connectionName] = array(
                      'create_tables'    => array(),
-                     'create_sequences' => array(),
                      'create_indexes'   => array(),
                      'alters'           => array()
                  );
@@ -458,14 +437,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
                  // If create table statement
                  if (substr($query, 0, strlen('CREATE TABLE')) == 'CREATE TABLE') {
                      $connections[$connectionName]['create_tables'][] = $query;
-
-                     unset($sql[$key]);
-                     continue;
-                 }
-
-                 // If create sequence statement
-                 if (substr($query, 0, strlen('CREATE SEQUENCE')) == 'CREATE SEQUENCE') {
-                     $connections[$connectionName]['create_sequences'][] = $query;
 
                      unset($sql[$key]);
                      continue;
@@ -492,7 +463,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
          // Loop over all the sql again to merge everything together so it is in the correct order
          $build = array();
          foreach ($connections as $connectionName => $sql) {
-             $build[$connectionName] = array_merge($sql['create_tables'], $sql['create_sequences'], $sql['create_indexes'], $sql['alters']);
+             $build[$connectionName] = array_merge($sql['create_tables'], $sql['create_indexes'], $sql['alters']);
          }
 
          if ( ! $groupByConnection) {

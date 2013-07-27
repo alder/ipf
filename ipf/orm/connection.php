@@ -15,7 +15,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
                              'dataDict'    => false,
                              'export'      => false,
                              'import'      => false,
-                             'sequence'    => false,
                              'unitOfWork'  => false,
                              'formatter'   => false,
                              'util'        => false,
@@ -682,7 +681,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
     public function lastInsertId($table = null, $field = null)
     {
-        return $this->sequence->lastInsertId($table, $field);
+        return $this->getDbh()->lastInsertId();
     }
 
     public function beginTransaction($savepoint = null)

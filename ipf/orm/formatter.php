@@ -89,17 +89,6 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
         }
     }
 
-    public function fixSequenceName($sqn)
-    {
-        $seqPattern = '/^'.preg_replace('/%s/', '([a-z0-9_]+)',  $this->conn->getAttribute(IPF_ORM::ATTR_SEQNAME_FORMAT)).'$/i';
-        $seqName    = preg_replace($seqPattern, '\\1', $sqn);
-
-        if ($seqName && ! strcasecmp($sqn, $this->getSequenceName($seqName))) {
-            return $seqName;
-        }
-        return $sqn;
-    }
-
     public function fixIndexName($idx)
     {
         $indexPattern   = '/^'.preg_replace('/%s/', '([a-z0-9_]+)', $this->conn->getAttribute(IPF_ORM::ATTR_IDXNAME_FORMAT)).'$/i';
@@ -108,12 +97,6 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
             return $indexName;
         }
         return $idx;
-    }
-
-    public function getSequenceName($sqn)
-    {
-        return sprintf($this->conn->getAttribute(IPF_ORM::ATTR_SEQNAME_FORMAT),
-            preg_replace('/[^a-z0-9_\$.]/i', '_', $sqn));
     }
 
     public function getIndexName($idx)

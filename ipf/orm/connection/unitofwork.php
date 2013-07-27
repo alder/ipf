@@ -397,16 +397,6 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
 
         $identifier = (array) $table->getIdentifier();
 
-        $seq = $record->getTable()->sequenceName;
-
-        if ( ! empty($seq)) {
-            $id = $this->conn->sequence->nextId($seq);
-            $seqName = $table->getIdentifier();
-            $fields[$seqName] = $id;
-
-            $record->assignIdentifier($id);
-        }
-
         $this->conn->insert($table, $fields);
 
         if (empty($seq) && count($identifier) == 1 && $identifier[0] == $table->getIdentifier() &&
@@ -415,7 +405,7 @@ class IPF_ORM_Connection_UnitOfWork extends IPF_ORM_Connection_Module
                 $seq = $table->getTableName() . '_' . $identifier[0];
             }
 
-            $id = $this->conn->sequence->lastInsertId($seq);
+            $id = $this->conn->lastInsertId($seq);
 
             if ( ! $id) {
                 throw new IPF_ORM_Exception("Couldn't get last insert identifier.");

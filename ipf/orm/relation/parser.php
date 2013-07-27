@@ -369,7 +369,6 @@ class IPF_ORM_Relation_Parser
                     unset($col['type']);
                     unset($col['length']);
                     unset($col['autoincrement']);
-                    unset($col['sequence']);
                     unset($col['primary']);
 
                     $def['table']->setColumn($column, $type, $length, $col);

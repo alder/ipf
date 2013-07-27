@@ -237,68 +237,6 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
         return 'ALTER TABLE ' . $name . ' ' . $query;
     }
 
-    public function createSequence($sequenceName, $start = 1, array $options = array())
-    {
-        $sequenceName   = $this->conn->quoteIdentifier($sequenceName, true);
-        $seqcolName     = $this->conn->quoteIdentifier($this->conn->getAttribute(IPF_ORM::ATTR_SEQCOL_NAME), true);
-
-        $optionsStrings = array();
-
-        if (isset($options['comment']) && ! empty($options['comment'])) {
-            $optionsStrings['comment'] = 'COMMENT = ' . $this->conn->quote($options['comment'], 'string');
-        }
-
-        if (isset($options['charset']) && ! empty($options['charset'])) {
-            $optionsStrings['charset'] = 'DEFAULT CHARACTER SET ' . $options['charset'];
-
-            if (isset($options['collate'])) {
-                $optionsStrings['charset'] .= ' COLLATE ' . $options['collate'];
-            }
-        }
-
-        $type = false;
-
-        if (isset($options['type'])) {
-            $type = $options['type'];
-        } else {
-            $type = $this->conn->getAttribute(IPF_ORM::ATTR_DEFAULT_TABLE_TYPE);
-        }
-        if ($type) {
-            $optionsStrings[] = 'ENGINE = ' . $type;
-        }
-
-
-        try {
-            $query  = 'CREATE TABLE ' . $sequenceName
-                    . ' (' . $seqcolName . ' BIGINT NOT NULL AUTO_INCREMENT, PRIMARY KEY ('
-                    . $seqcolName . ')) ' . implode($optionsStrings, ' ');
-
-            $res    = $this->conn->exec($query);
-        } catch(IPF_ORM_Exception $e) {
-            throw new IPF_ORM_Exception('could not create sequence table');
-        }
-
-        if ($start == 1 && $res == 1)
-            return true;
-
-        $query  = 'INSERT INTO ' . $sequenceName
-                . ' (' . $seqcolName . ') VALUES (' . ($start - 1) . ')';
-
-        $res    = $this->conn->exec($query);
-
-        if ($res == 1)
-            return true;
-
-        // Handle error
-        try {
-            $result = $this->conn->exec('DROP TABLE ' . $sequenceName);
-        } catch(IPF_ORM_Exception $e) {
-            throw new IPF_ORM_Exception('could not drop inconsistent sequence table');
-        }
-
-
-    }
-
     public function createIndexSql($table, $name, array $definition)
     {
         $table  = $table;

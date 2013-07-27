@@ -101,8 +101,6 @@ final class IPF_ORM
     const ATTR_QUOTE_IDENTIFIER     = 101;
     const ATTR_FIELD_CASE           = 102;
     const ATTR_IDXNAME_FORMAT       = 103;
-    const ATTR_SEQNAME_FORMAT       = 104;
-    const ATTR_SEQCOL_NAME          = 105;
     const ATTR_CMPNAME_FORMAT       = 118;
     const ATTR_DBNAME_FORMAT        = 117;
     const ATTR_TBLCLASS_FORMAT      = 119;
@@ -118,7 +116,6 @@ final class IPF_ORM
     const ATTR_DEF_TABLESPACE       = 115;
     const ATTR_EMULATE_DATABASE     = 116;
     const ATTR_USE_NATIVE_ENUM      = 117;
-    const ATTR_DEFAULT_SEQUENCE     = 133;
 
     //const ATTR_FETCHMODE                = 118;
     const ATTR_NAME_PREFIX              = 121;
@@ -167,7 +164,6 @@ final class IPF_ORM
 
     const HYDRATE_NONE              = 4;
     const IDENTIFIER_AUTOINC        = 1;
-    const IDENTIFIER_SEQUENCE       = 2;
     const IDENTIFIER_NATURAL        = 3;
     const IDENTIFIER_COMPOSITE      = 4;
     const MODEL_LOADING_AGGRESSIVE   = 1;

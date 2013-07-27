@@ -203,7 +203,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
     {
         switch ($this->_table->getIdentifierType()) {
             case IPF_ORM::IDENTIFIER_AUTOINC:
-            case IPF_ORM::IDENTIFIER_SEQUENCE:
             case IPF_ORM::IDENTIFIER_NATURAL:
                 $name = $this->_table->getIdentifier();
                 if (is_array($name)) {
