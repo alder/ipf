@@ -174,7 +174,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     public function getTemplates()
     {
         return $this->_templates;
-
     }
 
     public function getExportableFormat($parseForeignKeys = true)
@@ -749,28 +748,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return $record;
     }
 
-    public function getClassnameToReturn()
-    {
-        if ( ! isset($this->_options['subclasses'])) {
-            return $this->_options['name'];
-        }
-        foreach ($this->_options['subclasses'] as $subclass) {
-            $table = $this->_conn->getTable($subclass);
-            $inheritanceMap = $table->getOption('inheritanceMap');
-            $nomatch = false;
-            foreach ($inheritanceMap as $key => $value) {
-                if ( ! isset($this->_data[$key]) || $this->_data[$key] != $value) {
-                    $nomatch = true;
-                    break;
-                }
-            }
-            if ( ! $nomatch) {
-                return $table->getComponentName();
-            }
-        }
-        return $this->_options['name'];
-    }
-
     final public function getProxy($id = null)
     {
         if ($id !== null) {
@@ -985,10 +962,8 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     public function getTemplate($template)
     {
-        if ( ! isset($this->_templates[$template])) {
+        if (!isset($this->_templates[$template]))
             throw new IPF_ORM_Exception('Template ' . $template . ' not loaded');
-        }
-
         return $this->_templates[$template];
     }
 

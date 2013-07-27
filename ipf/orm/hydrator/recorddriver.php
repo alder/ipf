@@ -71,7 +71,7 @@ class IPF_ORM_Hydrator_RecordDriver
         $this->_tables = null;
     }
     
-    protected function _getClassnameToReturn(array &$data, $component)
+    protected function _getClassNameToReturn(array &$data, $component)
     {
         if ( ! isset($this->_tables[$component])) {
             $this->_tables[$component] = IPF_ORM::getTable($component);

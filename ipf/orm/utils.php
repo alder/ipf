@@ -125,26 +125,5 @@ class IPF_ORM_Utils {
         $r[] = "</pre>";
         return implode("\n",$r);
     }
-
-    static function setOrd($obj, $field_name='ord', $where=null, $params=null){
-        $res = null;
-        if ($where){
-            $res = IPF_ORM_Query::create()
-                ->select("max($field_name) as max_ord")
-                ->from($obj->getTable()->getClassnameToReturn())
-                ->where($where, $params)
-                ->execute();
-        }
-        else{
-            $res = IPF_ORM_Query::create()
-                ->select("max($field_name) as max_ord")
-                ->from($obj->getTable()->getClassnameToReturn())
-                ->execute();
-        }
-        if (isset($res[0]['max_ord']))
-            $obj->$field_name = (int)$res[0]->max_ord + 1;
-        else
-            $obj->$field_name = 1;
-    }
 }
 

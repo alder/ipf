@@ -7,7 +7,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     protected $_name;
     protected $driverName;
     protected $isConnected      = false;
-    protected $supported        = array();
     protected $pendingAttributes  = array();
 
     private $modules = array('transaction' => false,
@@ -27,7 +26,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
                                   'varchar_max_length'  => 255,
                                   );
 
-    protected $serverInfo = array();
     protected $options    = array();
     private static $availableDrivers    = array(
                                         'Mysql',
