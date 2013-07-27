@@ -8,9 +8,8 @@
 
 abstract class BaseSession extends IPF_ORM_Record
 {
-  public function setTableDefinition()
+  public static function setTableDefinition(IPF_ORM_Table $table)
   {
-    $table = $this->getTable();
     $table->setTableName('session');
     $table->setColumn('session_key', 'string', 40, array('primary' => true, 'type' => 'string', 'length' => '40'));
     $table->setColumn('session_data', 'string', null, array('type' => 'string'));

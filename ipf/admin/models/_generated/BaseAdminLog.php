@@ -8,9 +8,8 @@
 
 abstract class BaseAdminLog extends IPF_ORM_Record
 {
-  public function setTableDefinition()
+  public static function setTableDefinition(IPF_ORM_Table $table)
   {
-    $table = $this->getTable();
     $table->setTableName('admin_log');
     $table->setColumn('username', 'string', 32, array('type' => 'string', 'length' => '32'));
     $table->setColumn('user_id', 'integer', null, array('type' => 'integer'));

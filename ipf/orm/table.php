@@ -55,8 +55,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         $this->initParents($name);
 
         // create database table
-        $record = new $name($this);
-        $record->setTableDefinition();
+        $name::setTableDefinition($this);
 
         $this->columnCount = count($this->_columns);
 
@@ -66,6 +65,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
         $this->initIdentifier();
 
+        $record = new $name($this);
         $record->setUp();
 
         $this->_filters[]  = new IPF_ORM_Record_Filter_Standard();

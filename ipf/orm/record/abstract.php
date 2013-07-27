@@ -4,7 +4,7 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
 {
     protected $_table;
 
-    public function setTableDefinition()
+    public static function setTableDefinition(IPF_ORM_Table $table)
     {
     }
 

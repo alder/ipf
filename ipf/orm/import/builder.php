@@ -21,13 +21,12 @@ class IPF_ORM_Import_Builder
         }
 
         $ret = array(
-            '  public function setTableDefinition()',
+            '  public static function setTableDefinition(IPF_ORM_Table $table)',
             '  {',
-            '    $table = $this->getTable();',
         );
 
         if (isset($definition['inheritance']['type']) && $definition['inheritance']['type'] == 'concrete')
-            $ret[] = "    parent::setTableDefinition();";
+            $ret[] = '    parent::setTableDefinition($table);';
 
         if (isset($definition['tableName']) && !empty($definition['tableName']))
             $ret[] = "    ".'$table->setTableName(\''. $definition['tableName'].'\');';

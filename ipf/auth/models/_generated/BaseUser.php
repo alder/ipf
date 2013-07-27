@@ -8,9 +8,8 @@
 
 abstract class BaseUser extends IPF_ORM_Record
 {
-  public function setTableDefinition()
+  public static function setTableDefinition(IPF_ORM_Table $table)
   {
-    $table = $this->getTable();
     $table->setTableName('auth_user');
     $table->setColumn('username', 'string', 32, array('type' => 'string', 'notblank' => true, 'notnull' => true, 'unique' => true, 'length' => '32'));
     $table->setColumn('password', 'string', 128, array('type' => 'string', 'notblank' => true, 'notnull' => true, 'length' => '128'));
