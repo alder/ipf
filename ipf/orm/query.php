@@ -1338,16 +1338,16 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
         $groupby = $this->_sqlParts['groupby'];
         $map = reset($this->_queryComponents);
         $componentAlias = key($this->_queryComponents);
-        $tableAlias = $this->getTableAlias($componentAlias);
+        $tableAlias = $this->_conn->quoteIdentifier($this->getTableAlias($componentAlias));
         $table = $map['table'];
-        $idColumnNames = $table->getIdentifierColumnNames();
+
+        $idColumnNames = array();
+        foreach ($table->getIdentifierColumnNames() as $column) {
+            $idColumnNames[] = $tableAlias . '.' . $this->_conn->quoteIdentifier($column);
+        }
 
         // build the query base
-        $q  = 'SELECT COUNT(DISTINCT ' . $this->_conn->quoteIdentifier($tableAlias)
-              . '.' . implode(
-                  ' || ' . $this->_conn->quoteIdentifier($tableAlias) . '.', 
-                  $this->_conn->quoteMultipleIdentifier($idColumnNames)
-              ) . ') AS num_results';
+        $q  = 'SELECT COUNT(DISTINCT ' . implode(' || ', $idColumnNames) . ') AS num_results';
 
         foreach ($this->_sqlParts['select'] as $field) {
             if (strpos($field, '(') !== false) {
@@ -1374,11 +1374,7 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
             // Default groupby to primary identifier. Database defaults to this internally
             // This is required for situations where the user has aggregate functions in the select part
             // Without the groupby it fails
-            $q .= ' GROUP BY ' . $this->_conn->quoteIdentifier($tableAlias) 
-			      . '.' . implode(
-                      ', ' . $this->_conn->quoteIdentifier($tableAlias) . '.', 
-                      $this->_conn->quoteMultipleIdentifier($idColumnNames)
-                  );
+            $q .= ' GROUP BY ' . implode(', ', $idColumnNames);
         }
 
         $q .= ( ! empty($having)) ? ' HAVING ' . implode(' AND ', $having): '';
