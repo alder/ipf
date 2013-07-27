@@ -11,9 +11,9 @@ abstract class BaseSession extends IPF_ORM_Record
   public function setTableDefinition()
   {
     $this->setTableName('session');
-    $this->hasColumn('session_key', 'string', 40, array('primary' => true, 'type' => 'string', 'length' => '40'));
-    $this->hasColumn('session_data', 'string', null, array('type' => 'string'));
-    $this->hasColumn('expire_data', 'timestamp', null, array('type' => 'timestamp'));
+    $this->getTable()->setColumn('session_key', 'string', 40, array('primary' => true, 'type' => 'string', 'length' => '40'));
+    $this->getTable()->setColumn('session_data', 'string', null, array('type' => 'string'));
+    $this->getTable()->setColumn('expire_data', 'timestamp', null, array('type' => 'timestamp'));
   }
 
 

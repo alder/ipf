@@ -11,13 +11,13 @@ abstract class BaseAdminLog extends IPF_ORM_Record
   public function setTableDefinition()
   {
     $this->setTableName('admin_log');
-    $this->hasColumn('username', 'string', 32, array('type' => 'string', 'length' => '32'));
-    $this->hasColumn('user_id', 'integer', null, array('type' => 'integer'));
-    $this->hasColumn('object_id', 'integer', null, array('type' => 'integer'));
-    $this->hasColumn('object_class', 'string', 200, array('type' => 'string', 'length' => '200'));
-    $this->hasColumn('object_repr', 'string', 200, array('type' => 'string', 'length' => '200'));
-    $this->hasColumn('action_flag', 'integer', null, array('type' => 'integer'));
-    $this->hasColumn('change_message', 'string', 200, array('type' => 'string', 'length' => '200'));
+    $this->getTable()->setColumn('username', 'string', 32, array('type' => 'string', 'length' => '32'));
+    $this->getTable()->setColumn('user_id', 'integer', null, array('type' => 'integer'));
+    $this->getTable()->setColumn('object_id', 'integer', null, array('type' => 'integer'));
+    $this->getTable()->setColumn('object_class', 'string', 200, array('type' => 'string', 'length' => '200'));
+    $this->getTable()->setColumn('object_repr', 'string', 200, array('type' => 'string', 'length' => '200'));
+    $this->getTable()->setColumn('action_flag', 'integer', null, array('type' => 'integer'));
+    $this->getTable()->setColumn('change_message', 'string', 200, array('type' => 'string', 'length' => '200'));
     $this->index('idx_object_id', array('fields' => 'object_id'));
     $this->index('idx_object_class', array('fields' => 'object_class'));
     $this->index('idx_created_at', array('fields' => 'created_at'));

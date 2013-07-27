@@ -102,18 +102,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         return $this;
     }
 
-    public function hasColumn($name, $type, $length = 2147483647, $options = "")
-    {
-        $this->_table->setColumn($name, $type, $length, $options);
-    }
-
-    public function hasColumns(array $definitions)
-    {
-        foreach ($definitions as $name => $options) {
-            $this->hasColumn($name, $options['type'], $options['length'], $options);
-        }
-    } 
-
     public function bindQueryParts(array $queryParts)
     {
         $this->_table->bindQueryParts($queryParts);

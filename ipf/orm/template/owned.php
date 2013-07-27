@@ -28,7 +28,7 @@ class IPF_ORM_Template_Owned extends IPF_ORM_Template
 
     public function setTableDefinition()
     {
-        $this->hasColumn($this->columnName, 'integer', null, array(
+        $this->getTable()->setColumn($this->columnName, 'integer', null, array(
             'exclude'   => $this->exclude,
             'verbose'   => $this->verbose,
         ));
