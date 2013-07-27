@@ -241,89 +241,32 @@ class IPF_ORM_Import_Builder
         return $build;
     }
 
-    private function emitAssign($level, $name, $option)
-    {
-        // find class matching $name
-        $classname = $name;
-        if (class_exists("IPF_ORM_Template_$name", true)) {
-            $classname = "IPF_ORM_Template_$name";
-        }
-        return "    \$" . strtolower($name) . "$level = new $classname($option);". PHP_EOL;
-    }
-
-    private function emitAddChild($level, $parent, $name)
-    {
-        return "    \$" . strtolower($parent) . ($level - 1) . "->addChild(\$" . strtolower($name) . "$level);" . PHP_EOL;
-    }
-
-    private function emitActAs($level, $name)
-    {
-        return "    \$this->getTable()->addTemplate(\$" . strtolower($name) . "$level);" . PHP_EOL;
-    }
-
     private function buildActAs($actAs)
     {
-        $emittedActAs = array();
-        $build = $this->innerBuildActAs($actAs, 0, null, $emittedActAs);
-        foreach($emittedActAs as $str) {
-            $build .= $str;
-        }
-        return $build;
-    }
-
-    private function innerBuildActAs($actAs, $level, $parent, array &$emittedActAs)
-    {
         // rewrite special case of actAs: [Behavior] which gave [0] => Behavior
-        if(is_array($actAs) && isset($actAs[0]) && !is_array($actAs[0])) {
+        if (is_array($actAs) && isset($actAs[0]) && !is_array($actAs[0])) {
             $actAs = array_flip($actAs);
         }
 
-        $build = '';
-        $currentParent = $parent;
-        if(is_array($actAs)) {
-            foreach($actAs as $template => $options) {
-                if ($template == 'actAs') {
-                    // found another actAs
-                    $build .= $this->innerBuildActAs($options, $level + 1, $parent, $emittedActAs);
-                } else if (is_array($options)) {
-                    // remove actAs from options
-                    $realOptions = array();
-                    $leftActAs = array();
-                    foreach($options as $name => $value) {
-                        if ($name != 'actAs') {
-                            $realOptions[$name] = $options[$name];
-                        } else {
-                            $leftActAs[$name] = $options[$name];
-                        }
-                    } 
+        // rewrite special case of actAs: Behavior
+        if (!is_array($actAs))
+            $actAs = array($actAs => '');
 
-                    $optionPHP = self::varExport($realOptions);
-                    $build .= $this->emitAssign($level, $template, $optionPHP); 
-                    if ($level == 0) {
-                        $emittedActAs[] = $this->emitActAs($level, $template);
-                    } else {
-                        $build .= $this->emitAddChild($level, $currentParent, $template);
-                    }
-                    // descend for the remainings actAs
-                    $parent = $template;            
-                    $build .= $this->innerBuildActAs($leftActAs, $level, $template, $emittedActAs);
-                } else {
-                    $build .= $this->emitAssign($level, $template, null);
-                    if ($level == 0) {
-                        $emittedActAs[] = $this->emitActAs($level, $template);
-                    } else {
-                        $build .= $this->emitAddChild($level, $currentParent, $template);
-                    }
-                    $parent = $template;            
-                }
-            }
-        } else {
-            $build .= $this->emitAssign($level, $actAs, null);
-            if ($level == 0) {
-                $emittedActAs[] = $this->emitActAs($level, $actAs);
+        $build = '';
+        foreach($actAs as $template => $options) {
+            // find class matching $name
+            if (class_exists("IPF_ORM_Template_$template", true)) {
+                $classname = "IPF_ORM_Template_$template";
             } else {
-                $build .= $this->emitAddChild($level, $currentParent, $actAs);
+                $classname = $template;
             }
+
+            if (is_array($options))
+                $options = self::varExport($options);
+            else
+                $options = '';
+
+            $build .= "    \$this->getTable()->addTemplate(new $classname($options));" . PHP_EOL;
         }
 
         return $build;

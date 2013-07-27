@@ -42,8 +42,7 @@ abstract class BaseUser extends IPF_ORM_Record
     $this->hasMany('UserPermission', array('local' => 'id',
                                            'foreign' => 'user_id'));
 
-    $timestampable0 = new IPF_ORM_Template_Timestampable();
-    $this->getTable()->addTemplate($timestampable0);
+    $this->getTable()->addTemplate(new IPF_ORM_Template_Timestampable());
   }
 
   public static function table()
