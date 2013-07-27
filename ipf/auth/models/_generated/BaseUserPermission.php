@@ -10,7 +10,8 @@ abstract class BaseUserPermission extends IPF_ORM_Record
 {
   public function setTableDefinition()
   {
-    $this->setTableName('auth_user_permission');
+    $table = $this->getTable();
+    $table->setTableName('auth_user_permission');
     $this->getTable()->setColumn('user_id', 'integer', null, array('type' => 'integer', 'primary' => true));
     $this->getTable()->setColumn('permission_id', 'integer', null, array('type' => 'integer', 'primary' => true));
     $this->option('type', 'INNODB');

@@ -23,13 +23,14 @@ class IPF_ORM_Import_Builder
         $ret = array(
             '  public function setTableDefinition()',
             '  {',
+            '    $table = $this->getTable();',
         );
 
         if (isset($definition['inheritance']['type']) && $definition['inheritance']['type'] == 'concrete')
             $ret[] = "    parent::setTableDefinition();";
 
         if (isset($definition['tableName']) && !empty($definition['tableName']))
-            $ret[] = "    ".'$this->setTableName(\''. $definition['tableName'].'\');';
+            $ret[] = "    ".'$table->setTableName(\''. $definition['tableName'].'\');';
 
         if (isset($definition['columns']) && is_array($definition['columns']) && !empty($definition['columns']))
             $ret[] = $this->buildColumns($definition['columns']);

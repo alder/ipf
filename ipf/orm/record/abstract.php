@@ -29,10 +29,7 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
     {
         $this->_table->setAttribute($attr, $value);
     }
-    public function setTableName($tableName)
-    {
-        $this->_table->setTableName($tableName);
-    }
+
     public function setInheritanceMap($map)
     {
         $this->_table->setOption('inheritanceMap', $map);
