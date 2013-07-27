@@ -18,17 +18,5 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
         }
         return $text;
     }
-
-    public function getIndexName($idx)
-    {
-        return sprintf($this->conn->getAttribute(IPF_ORM::ATTR_IDXNAME_FORMAT),
-            preg_replace('/[^a-z0-9_\$]/i', '_', $idx));
-    }
-
-    public function getTableName($table)
-    {
-        return sprintf($this->conn->getAttribute(IPF_ORM::ATTR_TBLNAME_FORMAT),
-                $table);
-    }
 }
 

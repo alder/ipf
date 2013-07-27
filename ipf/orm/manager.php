@@ -13,8 +13,6 @@ class IPF_ORM_Manager extends IPF_ORM_Configurable implements Countable, Iterato
     {
         $this->attributes = array(
             IPF_ORM::ATTR_LOAD_REFERENCES         => true,
-            IPF_ORM::ATTR_IDXNAME_FORMAT          => "%s_idx",
-            IPF_ORM::ATTR_TBLNAME_FORMAT          => "%s",
             IPF_ORM::ATTR_PORTABILITY             => IPF_ORM::PORTABILITY_ALL,
             IPF_ORM::ATTR_EXPORT                  => IPF_ORM::EXPORT_ALL,
             IPF_ORM::ATTR_DECIMAL_PLACES          => 2,

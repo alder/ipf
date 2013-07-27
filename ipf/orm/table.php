@@ -980,7 +980,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     public function setTableName($tableName)
     {
-        $this->setOption('tableName', $this->_conn->formatter->getTableName($tableName));
+        $this->setOption('tableName', $tableName);
     }
 
     public function getTemplate($template)

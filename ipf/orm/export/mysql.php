@@ -386,9 +386,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
 
     public function createIndexSql($table, $name, array $definition)
     {
-        $table  = $table;
-        $name   = $this->conn->formatter->getIndexName($name);
-        $name   = $this->conn->quoteIdentifier($name);
+        $name   = $this->conn->quoteIdentifier($this->getIndexName($name));
         $type   = '';
         if (isset($definition['type'])) {
             switch (strtolower($definition['type'])) {
@@ -408,7 +406,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
 
     public function getIndexDeclaration($name, array $definition)
     {
-        $name   = $this->conn->formatter->getIndexName($name);
+        $name   = $this->getIndexName($name);
         $type   = '';
         if (isset($definition['type'])) {
             switch (strtolower($definition['type'])) {
@@ -484,7 +482,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
     public function dropIndexSql($table, $name)
     {
         $table  = $this->conn->quoteIdentifier($table);
-        $name   = $this->conn->quoteIdentifier($this->conn->formatter->getIndexName($name));
+        $name   = $this->conn->quoteIdentifier($this->getIndexName($name));
         return 'DROP INDEX ' . $name . ' ON ' . $table;
     }
 

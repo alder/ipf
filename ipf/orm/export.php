@@ -17,6 +17,11 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         'string'    => ''
     );
 
+    protected function getIndexName($name)
+    {
+        return $name . '_idx';
+    }
+
     public function dropDatabase($database)
     {
         $this->conn->execute($this->dropDatabaseSql($database));
@@ -44,7 +49,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
 
     public function dropIndexSql($table, $name)
     {
-        $name = $this->conn->quoteIdentifier($this->conn->formatter->getIndexName($name));
+        $name = $this->conn->quoteIdentifier($this->getIndexName($name));
         
         return 'DROP INDEX ' . $name;
     }
@@ -128,7 +133,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
     public function createConstraintSql($table, $name, $definition)
     {
         $table = $this->conn->quoteIdentifier($table);
-        $name  = $this->conn->quoteIdentifier($this->conn->formatter->getIndexName($name));
+        $name  = $this->conn->quoteIdentifier($this->getIndexName($name));
         $query = 'ALTER TABLE ' . $table . ' ADD CONSTRAINT ' . $name;
 
         if (isset($definition['primary']) && $definition['primary']) {

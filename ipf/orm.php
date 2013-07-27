@@ -99,11 +99,9 @@ final class IPF_ORM
     const ATTR_MAX_COLUMN_LEN       = 18;
 
     const ATTR_FIELD_CASE           = 102;
-    const ATTR_IDXNAME_FORMAT       = 103;
     const ATTR_CMPNAME_FORMAT       = 118;
     const ATTR_DBNAME_FORMAT        = 117;
     const ATTR_TBLCLASS_FORMAT      = 119;
-    const ATTR_TBLNAME_FORMAT       = 120;
     const ATTR_EXPORT               = 140;
     const ATTR_DECIMAL_PLACES       = 141;
 

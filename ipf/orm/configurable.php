@@ -81,13 +81,6 @@ abstract class IPF_ORM_Configurable
                 if ($value != 0 && $value != CASE_LOWER && $value != CASE_UPPER)
                     throw new IPF_ORM_Exception('Field case attribute should be either 0, CASE_LOWER or CASE_UPPER constant.');
                 break;
-            case IPF_ORM::ATTR_IDXNAME_FORMAT:
-            case IPF_ORM::ATTR_TBLNAME_FORMAT:
-                if ($this instanceof IPF_ORM_Table) {
-                    throw new IPF_ORM_Exception('index name format attributes cannot be set'
-                                               . 'at table level (only at connection or global level).');
-                }
-                break;
             default:
                 throw new IPF_ORM_Exception("Unknown attribute.");
         }
