@@ -33,7 +33,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     protected $_parser;
 
     protected $_templates   = array();
-    protected $_filters     = array();
     protected $_generators     = array();
     protected $_invokedMethods = array();
 
@@ -63,7 +62,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
         $name::setUp($this);
 
-        $this->_filters[]  = new IPF_ORM_Record_Filter_Standard();
         $this->_repository = new IPF_ORM_Table_Repository($this);
     }
 
@@ -734,25 +732,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return $record;
     }
 
-    final public function getProxy($id = null)
-    {
-        if ($id !== null) {
-            $identifierColumnNames = $this->getIdentifierColumnNames();
-            $query = 'SELECT ' . implode(', ', (array) $identifierColumnNames)
-                . ' FROM ' . $this->getTableName()
-                . ' WHERE ' . implode(' = ? && ', (array) $identifierColumnNames) . ' = ?';
-            $query = $this->applyInheritance($query);
-
-            $params = array_merge(array($id), array_values($this->_options['inheritanceMap']));
-
-            $this->_data = $this->_conn->execute($query, $params)->fetch(PDO::FETCH_ASSOC);
-
-            if ($this->_data === false)
-                return false;
-        }
-        return $this->getRecord();
-    }
-
     final public function applyInheritance($where)
     {
         if ( ! empty($this->_options['inheritanceMap'])) {
@@ -1069,22 +1048,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         }
 
         return $this->_options['queryParts'][$queryPart];
-    }
-
-    public function unshiftFilter(IPF_ORM_Record_Filter $filter)
-    {
-        $filter->setTable($this);
-
-        $filter->init();
-
-        array_unshift($this->_filters, $filter);
-
-        return $this;
-    }
-
-    public function getFilters()
-    {
-        return $this->_filters;
     }
 
     public function __toString()

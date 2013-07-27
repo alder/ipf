@@ -37,12 +37,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         }    
     }
 
-    public function bindQueryParts(array $queryParts)
-    {
-        $this->_table->bindQueryParts($queryParts);
-        return $this;
-    }
-
     public function loadGenerator(IPF_ORM_Record_Generator $generator)
     {
         $generator->initialize($this->_table);

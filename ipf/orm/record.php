@@ -460,19 +460,11 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
             return $this->_values[$fieldName];
         }
 
-        try {
-            if ( ! isset($this->_references[$fieldName]) && $load) {
-                $rel = $this->_table->getRelation($fieldName);
-                $this->_references[$fieldName] = $rel->fetchRelatedFor($this);
-            }
-            return $this->_references[$fieldName];
-        } catch (IPF_ORM_Exception_Table $e) {
-            foreach ($this->_table->getFilters() as $filter) {
-                if (($value = $filter->filterGet($this, $fieldName, $value)) !== null) {
-                    return $value;
-                }
-            }
+        if (!isset($this->_references[$fieldName]) && $load) {
+            $rel = $this->_table->getRelation($fieldName);
+            $this->_references[$fieldName] = $rel->fetchRelatedFor($this);
         }
+        return $this->_references[$fieldName];
     }
 
     public function mapValue($name, $value)
@@ -515,15 +507,7 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
                 }
             }
         } else {
-            try {
-                $this->coreSetRelated($fieldName, $value);
-            } catch (IPF_ORM_Exception_Table $e) {
-                foreach ($this->_table->getFilters() as $filter) {
-                    if (($value = $filter->filterSet($this, $fieldName, $value)) !== null) {
-                        break;
-                    }
-                }
-            }
+            $this->coreSetRelated($fieldName, $value);
         }
 
         return $this;
@@ -1034,11 +1018,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
             $this->_data[$fieldName] = $newvalue;
         }
         return $this;
-    }
-
-    public function unshiftFilter(IPF_ORM_Record_Filter $filter)
-    {
-        return $this->_table->unshiftFilter($filter);
     }
 
     public function unlink($alias, $ids = array())
