@@ -22,15 +22,16 @@ class IPF_ORM_Template_Sluggable extends IPF_ORM_Template
 
     public function setTableDefinition()
     {
-        $this->getTable()->setColumn($this->_options['name'], $this->_options['type'], $this->_options['length'], $this->_options['options']);
-        
-        if ($this->_options['unique'] == true && $this->_options['uniqueIndex'] == true && ! empty($this->_options['fields'])) {
+        $table = $this->getTable();
+
+        $table->setColumn($this->_options['name'], $this->_options['type'], $this->_options['length'], $this->_options['options']);
+
+        if ($this->_options['unique'] == true && $this->_options['uniqueIndex'] == true && !empty($this->_options['fields'])) {
             $indexFields = array($this->_options['name']);
             $indexFields = array_merge($indexFields, $this->_options['uniqueBy']);
-            $this->index($this->_options['indexName'], array('fields' => $indexFields,
-                                                             'type' => 'unique'));
+            $table->addIndex($this->_options['indexName'], array('fields' => $indexFields, 'type' => 'unique'));
         }
-        $this->getTable()->listeners['Sluggable_'.print_r($this->_options, true)] = new IPF_ORM_Template_Listener_Sluggable($this->_options);
+        $table->listeners['Sluggable_'.print_r($this->_options, true)] = new IPF_ORM_Template_Listener_Sluggable($this->_options);
     }
 }
 

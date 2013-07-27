@@ -37,7 +37,7 @@ class IPF_ORM_Import_Builder
 
         if (isset($definition['indexes']) && is_array($definition['indexes']) && !empty($definition['indexes']))
             foreach ($definition['indexes'] as $indexName => $definitions)
-                $ret[] = "    \$this->index('" . $indexName . "', " . self::varExport($definitions) . ');';
+                $ret[] = "    \$table->addIndex('" . $indexName . "', " . self::varExport($definitions) . ');';
 
         if (isset($definition['attributes']) && is_array($definition['attributes']) && !empty($definition['attributes']))
             $ret[] = $this->buildAttributes($definition['attributes']);

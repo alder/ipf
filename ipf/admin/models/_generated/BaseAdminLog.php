@@ -19,10 +19,10 @@ abstract class BaseAdminLog extends IPF_ORM_Record
     $this->getTable()->setColumn('object_repr', 'string', 200, array('type' => 'string', 'length' => '200'));
     $this->getTable()->setColumn('action_flag', 'integer', null, array('type' => 'integer'));
     $this->getTable()->setColumn('change_message', 'string', 200, array('type' => 'string', 'length' => '200'));
-    $this->index('idx_object_id', array('fields' => 'object_id'));
-    $this->index('idx_object_class', array('fields' => 'object_class'));
-    $this->index('idx_created_at', array('fields' => 'created_at'));
-    $this->index('idx_action_flag', array('fields' => 'action_flag'));
+    $table->addIndex('idx_object_id', array('fields' => 'object_id'));
+    $table->addIndex('idx_object_class', array('fields' => 'object_class'));
+    $table->addIndex('idx_created_at', array('fields' => 'created_at'));
+    $table->addIndex('idx_action_flag', array('fields' => 'action_flag'));
     $this->option('type', 'INNODB');
     $this->option('collate', 'utf8_unicode_ci');
     $this->option('charset', 'utf8');

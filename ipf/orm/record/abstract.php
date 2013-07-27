@@ -17,14 +17,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         return $this->_table;
     }
 
-    public function index($name, array $definition = array())
-    {
-        if ( ! $definition) {
-            return $this->_table->getIndex($name);
-        } else {
-            return $this->_table->addIndex($name, $definition);
-        }
-    }
     public function setAttribute($attr, $value)
     {
         $this->_table->setAttribute($attr, $value);
