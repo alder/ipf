@@ -20,10 +20,8 @@ class IPF_ORM_Template_Sluggable extends IPF_ORM_Template
         $this->_options = IPF_ORM_Utils::arrayDeepMerge($this->_options, $options);
     }
 
-    public function setTableDefinition()
+    public function setTableDefinition(IPF_ORM_Table $table)
     {
-        $table = $this->getTable();
-
         $table->setColumn($this->_options['name'], $this->_options['type'], $this->_options['length'], $this->_options['options']);
 
         if ($this->_options['unique'] == true && $this->_options['uniqueIndex'] == true && !empty($this->_options['fields'])) {

@@ -26,9 +26,9 @@ class IPF_ORM_Template_Owned extends IPF_ORM_Template
         return $this->columnName;
     }
 
-    public function setTableDefinition()
+    public function setTableDefinition(IPF_ORM_Table $table)
     {
-        $this->getTable()->setColumn($this->columnName, 'integer', null, array(
+        $table->setColumn($this->columnName, 'integer', null, array(
             'exclude'   => $this->exclude,
             'verbose'   => $this->verbose,
         ));
@@ -38,7 +38,7 @@ class IPF_ORM_Template_Owned extends IPF_ORM_Template
             'foreign'   => 'id',
             'onDelete'  => 'CASCADE',
         ));
-        $this->getTable()->listeners['Owned_'.$this->columnName] = new IPF_ORM_Template_Listener_Owned($this->columnName);
+        $table->listeners['Owned_'.$this->columnName] = new IPF_ORM_Template_Listener_Owned($this->columnName);
     }
 }
 

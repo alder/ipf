@@ -23,9 +23,8 @@ class IPF_ORM_Template_Orderable extends IPF_ORM_Template
         return $this->columnName;
     }
 
-    public function setTableDefinition()
+    public function setTableDefinition(IPF_ORM_Table $table)
     {
-        $table = $this->getTable();
         $table->setColumn($this->columnName, 'integer', null, array('exclude' => $this->exclude));
         $table->addIndex($table->getOption('tableName') . '_orderable_' . $this->columnName, array('fields' => array($this->columnName)));
         $table->listeners['Orderable_'.$this->columnName] = new IPF_ORM_Template_Listener_Orderable($this->columnName, $this->prepend);

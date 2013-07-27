@@ -985,9 +985,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         $className = get_class($tpl);
         $this->_templates[$className] = $tpl;
 
-        $tpl->setTable($this);
-        $tpl->setUp();
-        $tpl->setTableDefinition();
+        $tpl->setTableDefinition($this);
     }
 
     public function getGenerators()

@@ -28,15 +28,15 @@ class IPF_ORM_Template_Timestampable extends IPF_ORM_Template
         $this->_options = IPF_ORM_Utils::arrayDeepMerge($this->_options, $options);
     }
 
-    public function setTableDefinition()
+    public function setTableDefinition(IPF_ORM_Table $table)
     {
         if (!$this->_options['created']['disabled']) {
-            $this->getTable()->setColumn($this->_options['created']['name'], $this->_options['created']['type'], null, $this->_options['created']['options']);
+            $table->setColumn($this->_options['created']['name'], $this->_options['created']['type'], null, $this->_options['created']['options']);
         }
         if (!$this->_options['updated']['disabled']) {
-            $this->getTable()->setColumn($this->_options['updated']['name'], $this->_options['updated']['type'], null, $this->_options['updated']['options']);
+            $table->setColumn($this->_options['updated']['name'], $this->_options['updated']['type'], null, $this->_options['updated']['options']);
         }
-        $this->getTable()->listeners['Timestampable_'.print_r($this->_options, true)] = new IPF_ORM_Template_Listener_Timestampable($this->_options);
+        $table->listeners['Timestampable_'.print_r($this->_options, true)] = new IPF_ORM_Template_Listener_Timestampable($this->_options);
     }
 }
 
