@@ -14,8 +14,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     protected $_columnNames = array();
 
-    protected $columnCount;
-
     protected $hasDefaultValues;
 
     protected $_options      = array('name'           => null,
@@ -56,8 +54,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
         // create database table
         $name::setTableDefinition($this);
-
-        $this->columnCount = count($this->_columns);
 
         if (!isset($this->_options['tableName'])) {
             $this->setTableName(IPF_ORM_Inflector::tableize($class->getName()));
@@ -105,7 +101,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
                 $this->setColumn('id', $definition['type'], $definition['length'], $definition, true);
                 $this->_identifier = 'id';
                 $this->_identifierType = IPF_ORM::IDENTIFIER_AUTOINC;
-                $this->columnCount++;
                 break;
             case 1:
                 foreach ($this->_identifier as $pk) {
@@ -823,7 +818,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     public function getColumnCount()
     {
-        return $this->columnCount;
+        return count($this->_columns);
     }
 
     public function getColumns()
@@ -833,14 +828,13 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     public function removeColumn($fieldName)
     {
-        if ( ! $this->hasField($fieldName)) {
-          return false;
+        if ($this->hasField($fieldName)) {
+            $columnName = $this->getColumnName($fieldName);
+            unset($this->_columnNames[$fieldName], $this->_fieldNames[$columnName], $this->_columns[$columnName]);
+            return true;
+        } else {
+            return false;
         }
-
-        $columnName = $this->getColumnName($fieldName);
-        unset($this->_columnNames[$fieldName], $this->_fieldNames[$columnName], $this->_columns[$columnName]);
-        $this->columnCount = count($this->_columns);
-        return true;
     }
 
     public function getColumnNames(array $fieldNames = null)
