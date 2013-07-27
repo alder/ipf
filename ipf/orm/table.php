@@ -65,8 +65,7 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
         $this->initIdentifier();
 
-        $record = new $name($this);
-        $record->setUp();
+        $name::setUp($this);
 
         $this->_filters[]  = new IPF_ORM_Record_Filter_Standard();
         $this->_repository = new IPF_ORM_Table_Repository($this);

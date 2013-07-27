@@ -82,7 +82,6 @@ abstract class IPF_ORM_Record extends IPF_ORM_Record_Abstract implements Countab
         return self::$_index;
     }
 
-    public function setUp(){}
     public function construct(){}
 
     public function getOid()

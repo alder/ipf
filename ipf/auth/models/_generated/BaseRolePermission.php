@@ -19,9 +19,8 @@ abstract class BaseRolePermission extends IPF_ORM_Record
 
   }
 
-  public function setUp()
+  public static function setUp(IPF_ORM_Table $table)
   {
-    $table = $this->getTable();
     $table->hasOne('Role', '', array('local' => 'role_id', 'foreign' => 'id', 'onDelete' => 'CASCADE'));
     $table->hasOne('Permission', '', array('local' => 'permission_id', 'foreign' => 'id', 'onDelete' => 'CASCADE'));
   }

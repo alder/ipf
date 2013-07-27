@@ -8,7 +8,7 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
     {
     }
 
-    public function setUp()
+    public static function setUp(IPF_ORM_Table $table)
     {
     }
 

@@ -135,15 +135,14 @@ class IPF_ORM_Import_Builder
         // then we need call the parent::setUp() before the body of the function
         // Class table inheritance is the only one we shouldn't call parent::setUp() for
         if (count($ret) && isset($definition['inheritance']['type']) && $definition['inheritance']['type'] != 'class_table') {
-            array_unshift($ret, '    parent::setUp();');
+            array_unshift($ret, '    parent::setUp($table);');
         }
 
         // If we have some code for the function then lets define it and return it
         if (count($ret)) {
             array_unshift($ret,
-                '  public function setUp()',
-                '  {',
-                '    $table = $this->getTable();'
+                '  public static function setUp(IPF_ORM_Table $table)',
+                '  {'
             );
             $ret[] = '  }';
         }

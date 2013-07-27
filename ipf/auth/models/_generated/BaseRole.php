@@ -18,9 +18,8 @@ abstract class BaseRole extends IPF_ORM_Record
 
   }
 
-  public function setUp()
+  public static function setUp(IPF_ORM_Table $table)
   {
-    $table = $this->getTable();
     $table->hasMany('Permission', 'Permissions', array('refClass' => 'RolePermission', 'local' => 'role_id', 'foreign' => 'permission_id'));
     $table->hasMany('User', 'Users', array('refClass' => 'UserRole', 'local' => 'role_id', 'foreign' => 'user_id'));
     $table->hasMany('RolePermission', '', array('local' => 'id', 'foreign' => 'role_id'));
