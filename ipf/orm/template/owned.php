@@ -32,7 +32,7 @@ class IPF_ORM_Template_Owned extends IPF_ORM_Template
             'exclude'   => $this->exclude,
             'verbose'   => $this->verbose,
         ));
-        $this->hasOne('User as '.$this->name, array(
+        $table->hasOne('User', $this->name, array(
             'local'     => $this->columnName,
             'exclude'   => $this->exclude,
             'foreign'   => 'id',

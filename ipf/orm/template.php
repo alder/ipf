@@ -14,6 +14,6 @@ abstract class IPF_ORM_Template
         return $this->_invoker;
     }
 
-    abstract public function setTableDefinition(IPF_ORM_Table $table)
+    abstract public function setTableDefinition(IPF_ORM_Table $table);
 }
 
