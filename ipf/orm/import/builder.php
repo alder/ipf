@@ -57,22 +57,20 @@ class IPF_ORM_Import_Builder
     private function buildSetUp(array $definition)
     {
         $ret = array();
-        $i = 0;
 
-        if (isset($definition['relations']) && is_array($definition['relations']) && ! empty($definition['relations'])) {
+        if (isset($definition['relations']) && is_array($definition['relations']) && !empty($definition['relations'])) {
             foreach ($definition['relations'] as $name => $relation) {
-                $class = isset($relation['class']) ? $relation['class']:$name;
-                $alias = (isset($relation['alias']) && $relation['alias'] !== $relation['class']) ? ' as ' . $relation['alias'] : '';
+                $class = isset($relation['class']) ? $relation['class'] : $name;
+                $alias = (isset($relation['alias']) && $relation['alias'] !== $relation['class']) ? $relation['alias'] : '';
 
-                if ( ! isset($relation['type'])) {
+                if (!isset($relation['type']))
                     $relation['type'] = IPF_ORM_Relation::ONE;
-                }
 
                 if ($relation['type'] === IPF_ORM_Relation::ONE ||
                     $relation['type'] === IPF_ORM_Relation::ONE_COMPOSITE) {
-                    $ret[$i] = "    ".'$this->hasOne(\'' . $class . $alias . '\'';
+                    $r = "    \$table->hasOne('$class', '$alias'";
                 } else {
-                    $ret[$i] = "    ".'$this->hasMany(\'' . $class . $alias . '\'';
+                    $r = "    \$table->hasMany('$class', '$alias'";
                 }
 
                 $a = array();
@@ -113,51 +111,44 @@ class IPF_ORM_Import_Builder
                     $a[] = '\'exclude\' => ' . self::varExport($relation['exclude']);
                 }
 
-                if ( ! empty($a)) {
-                    $ret[$i] .= ', ' . 'array(';
-                    $length = strlen($ret[$i]);
-                    $ret[$i] .= implode(',' . PHP_EOL . str_repeat(' ', $length), $a) . ')';
-                }
+                if (!empty($a))
+                    $r .= ', array(' . implode(', ', $a) . ')';
 
-                $ret[$i] .= ');'.PHP_EOL;
-                $i++;
+                $ret[] = $r.');';
             }
         }
 
         if (isset($definition['templates']) && is_array($definition['templates']) && !empty($definition['templates'])) {
-            $ret[$i] = $this->buildTemplates($definition['templates']);
-            $i++;
+            $this->buildTemplates($definition['templates'], $ret);
         }
 
         if (isset($definition['actAs']) && is_array($definition['actAs']) && !empty($definition['actAs'])) {
-            $ret[$i] = $this->buildActAs($definition['actAs']);
-            $i++;
+            $this->buildActAs($definition['actAs'], $ret);
         }
 
         if (isset($definition['listeners']) && is_array($definition['listeners']) && !empty($definition['listeners'])) {
-            foreach($definition['listeners'] as $listener) {
-                $ret[$i] = PHP_EOL.'    $this->getTable()->listeners[\''.$listener.'\'] = new '.$listener.'();';
-                $i++;
+            foreach ($definition['listeners'] as $listener) {
+                $ret[] = "    \$table->listeners['$listener'] = new $listener;";
             }
         }
 
-        $code = implode(PHP_EOL, $ret);
-        $code = trim($code);
-
-        // If the body of the function has contents then we need to 
-        if ($code) {
-            // If the body of the function has contents and we are using inheritance
-            // then we need call the parent::setUp() before the body of the function
-            // Class table inheritance is the only one we shouldn't call parent::setUp() for
-            if ($code && isset($definition['inheritance']['type']) && $definition['inheritance']['type'] != 'class_table') {
-                $code = "parent::setUp();" . PHP_EOL . '    ' . $code;
-            }
+        // If the body of the function has contents and we are using inheritance
+        // then we need call the parent::setUp() before the body of the function
+        // Class table inheritance is the only one we shouldn't call parent::setUp() for
+        if (count($ret) && isset($definition['inheritance']['type']) && $definition['inheritance']['type'] != 'class_table') {
+            array_unshift($ret, '    parent::setUp();');
         }
 
         // If we have some code for the function then lets define it and return it
-        if ($code) {
-            return '  public function setUp()' . PHP_EOL . '  {' . PHP_EOL . '    ' . $code . PHP_EOL . '  }';
+        if (count($ret)) {
+            array_unshift($ret,
+                '  public function setUp()',
+                '  {',
+                '    $table = $this->getTable();'
+            );
+            $ret[] = '  }';
         }
+        return $ret;
     }
 
     private function buildColumns(array $columns)
@@ -222,28 +213,20 @@ class IPF_ORM_Import_Builder
         return implode(PHP_EOL, $result);
     }
 
-    private function buildTemplates(array $templates)
+    private function buildTemplates(array $templates, array &$build)
     {
-        $build = '';
         foreach ($templates as $name => $options) {
-
             if (is_array($options) && !empty($options)) {
-                $optionsPhp = self::varExport($options);
-
-                $build .= "    \$this->getTable()->addTemplate('" . $name . "', " . $optionsPhp . ");" . PHP_EOL;
+                $build[] = "    \$table->addTemplate('$name', " . self::varExport($options) . ");";
+            } elseif (isset($templates[0])) {
+                $build[] = "    \$table->addTemplate('$options');";
             } else {
-                if (isset($templates[0])) {
-                    $build .= "    \$this->getTable()->addTemplate('" . $options . "');" . PHP_EOL;
-                } else {
-                    $build .= "    \$this->getTable()->addTemplate('" . $name . "');" . PHP_EOL;
-                }
+                $build[] = "    \$table->addTemplate('$name');";
             }
         }
-
-        return $build;
     }
 
-    private function buildActAs($actAs)
+    private function buildActAs($actAs, array &$build)
     {
         // rewrite special case of actAs: [Behavior] which gave [0] => Behavior
         if (is_array($actAs) && isset($actAs[0]) && !is_array($actAs[0])) {
@@ -254,24 +237,20 @@ class IPF_ORM_Import_Builder
         if (!is_array($actAs))
             $actAs = array($actAs => '');
 
-        $build = '';
-        foreach($actAs as $template => $options) {
+        foreach ($actAs as $template => $options) {
             // find class matching $name
-            if (class_exists("IPF_ORM_Template_$template", true)) {
-                $classname = "IPF_ORM_Template_$template";
-            } else {
+            if (class_exists('IPF_ORM_Template_'.$template, true))
+                $classname = 'IPF_ORM_Template_'.$template;
+            else
                 $classname = $template;
-            }
 
             if (is_array($options))
                 $options = self::varExport($options);
             else
                 $options = '';
 
-            $build .= "    \$this->getTable()->addTemplate(new $classname($options));" . PHP_EOL;
+            $build[] = "    \$table->addTemplate(new $classname($options));";
         }
-
-        return $build;
     }
 
     private function buildAttributes(array $attributes)
@@ -341,7 +320,7 @@ class IPF_ORM_Import_Builder
         $code[] = '{';
         $code[] = $this->buildTableDefinition($definition);
         $code[] = '';
-        $code[] = $this->buildSetUp($definition);
+        $code   = array_merge($code, $this->buildSetUp($definition));
         $code[] = '';
         $code   = array_merge($code, $this->buildShortcuts($definition));
         $code[] = '}';

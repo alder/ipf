@@ -37,31 +37,21 @@ class IPF_ORM_Relation_Parser
 
     public function hasRelation($name)
     {
-        if ( ! isset($this->_pending[$name]) && ! isset($this->_relations[$name])) {
-            return false;
-        }
-
-        return true;
+        return isset($this->_pending[$name]) || isset($this->_relations[$name]);
     }
 
-    public function bind($name, $options = array())
+    public function bind($name, $alias, $type, $options=array())
     {
-        $e    = explode(' as ', $name);
-        $name = $e[0];
-        $alias = isset($e[1]) ? $e[1] : $name;
+        if (!$alias)
+            $alias = $name;
 
-        if ( ! isset($options['type'])) {
-            throw new IPF_ORM_Exception('Relation type not set.');
-        }
+        unset($this->relations[$alias]);
 
-        if ($this->hasRelation($alias)) {
-            unset($this->relations[$alias]);
-            unset($this->_pending[$alias]);
-        }
+        $options['class'] = $name;
+        $options['alias'] = $alias;
+        $options['type']  = $type;
 
-        $this->_pending[$alias] = array_merge($options, array('class' => $name, 'alias' => $alias));
-
-        return $this->_pending[$alias];
+        $this->_pending[$alias] = $options;
     }
 
     public function getRelation($alias, $recursive = true)
@@ -86,18 +76,18 @@ class IPF_ORM_Relation_Parser
 
                     $parser = $def['refTable']->getRelationParser();
                     if ( ! $parser->hasRelation($this->_table->getComponentName())) {
-                        $parser->bind($this->_table->getComponentName(),
-                                      array('type'    => IPF_ORM_Relation::ONE,
-                                            'local'   => $def['local'],
-                                            'foreign' => $idColumnName,
-                                            'localKey' => true,
-                                            ));
+                        $parser->bind($this->_table->getComponentName(), null, IPF_ORM_Relation::ONE, array(
+                            'local'     => $def['local'],
+                            'foreign'   => $idColumnName,
+                            'localKey'  => true,
+                        ));
                     }
 
-                    if ( ! $this->hasRelation($def['refClass'])) {
-                        $this->bind($def['refClass'], array('type' => IPF_ORM_Relation::MANY,
-                                                            'foreign' => $def['local'],
-                                                            'local'   => $idColumnName));
+                    if (!$this->hasRelation($def['refClass'])) {
+                        $this->bind($def['refClass'], null, IPF_ORM_Relation::MANY, array(
+                            'foreign' => $def['local'],
+                            'local'   => $idColumnName,
+                        ));
                     }
                 }
                 if (in_array($def['class'], $localClasses)) {

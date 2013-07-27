@@ -37,31 +37,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         }    
     }
 
-    public function ownsOne()
-    {
-        $this->_table->bind(func_get_args(), IPF_ORM_Relation::ONE_COMPOSITE);
-        
-        return $this;
-    }
-
-    public function ownsMany()
-    {
-        $this->_table->bind(func_get_args(), IPF_ORM_Relation::MANY_COMPOSITE);
-        return $this;
-    }
-
-    public function hasOne()
-    {
-        $this->_table->bind(func_get_args(), IPF_ORM_Relation::ONE_AGGREGATE);
-        return $this;
-    }
-
-    public function hasMany()
-    {
-        $this->_table->bind(func_get_args(), IPF_ORM_Relation::MANY_AGGREGATE);
-        return $this;
-    }
-
     public function bindQueryParts(array $queryParts)
     {
         $this->_table->bindQueryParts($queryParts);

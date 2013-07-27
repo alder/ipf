@@ -18,7 +18,6 @@ abstract class BaseSession extends IPF_ORM_Record
   }
 
 
-
   public static function table()
   {
     return IPF_ORM::getTable('Session');

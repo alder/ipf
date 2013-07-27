@@ -31,7 +31,8 @@ abstract class BaseAdminLog extends IPF_ORM_Record
 
   public function setUp()
   {
-    $this->getTable()->addTemplate(new IPF_ORM_Template_Timestampable(array('updated' => array('disabled' => true))));
+    $table = $this->getTable();
+    $table->addTemplate(new IPF_ORM_Template_Timestampable(array('updated' => array('disabled' => true))));
   }
 
   public static function table()

@@ -319,47 +319,29 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return false;
     }
 
-    public function bind($args, $type)
+    public function bind($class, $alias, $type, array $options)
     {
-        $options = array();
-        $options['type'] = $type;
+        $this->_parser->bind($class, $alias, $type, $options);
+    }
 
-        if ( ! isset($args[1])) {
-            $args[1] = array();
-        }
+    public function ownsOne($class, $alias, $options=array())
+    {
+        $this->bind($class, $alias, IPF_ORM_Relation::ONE_COMPOSITE, $options);
+    }
 
-        // the following is needed for backwards compatibility
-        if (is_string($args[1])) {
-            if ( ! isset($args[2])) {
-                $args[2] = array();
-            } elseif (is_string($args[2])) {
-                $args[2] = (array) $args[2];
-            }
+    public function ownsMany($class, $alias, $options=array())
+    {
+        $this->bind($class, $alias, IPF_ORM_Relation::MANY_COMPOSITE, $options);
+    }
 
-            $classes = array_merge($this->_options['parents'], array($this->getComponentName()));
+    public function hasOne($class, $alias, $options=array())
+    {
+        $this->bind($class, $alias, IPF_ORM_Relation::ONE_AGGREGATE, $options);
+    }
 
-            $e = explode('.', $args[1]);
-            if (in_array($e[0], $classes)) {
-                if ($options['type'] >= IPF_ORM_Relation::MANY) {
-                    $options['foreign'] = $e[1];
-                } else {
-                    $options['local'] = $e[1];
-                }
-            } else {
-                $e2 = explode(' as ', $args[0]);
-                if ($e[0] !== $e2[0] && ( ! isset($e2[1]) || $e[0] !== $e2[1])) {
-                    $options['refClass'] = $e[0];
-                }
-
-                $options['foreign'] = $e[1];
-            }
-
-            $options = array_merge($args[2], $options);
-        } else {
-            $options = array_merge($args[1], $options);
-        }
-
-        $this->_parser->bind($args[0], $options);
+    public function hasMany($class, $alias, $options=array())
+    {
+        $this->bind($class, $alias, IPF_ORM_Relation::MANY_AGGREGATE, $options);
     }
 
     public function hasRelation($alias)

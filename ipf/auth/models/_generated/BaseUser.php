@@ -29,21 +29,12 @@ abstract class BaseUser extends IPF_ORM_Record
 
   public function setUp()
   {
-    $this->hasMany('Role as Roles', array('refClass' => 'UserRole',
-                                          'local' => 'user_id',
-                                          'foreign' => 'role_id'));
-
-    $this->hasMany('Permission as Permissions', array('refClass' => 'UserPermission',
-                                                      'local' => 'user_id',
-                                                      'foreign' => 'permission_id'));
-
-    $this->hasMany('UserRole', array('local' => 'id',
-                                     'foreign' => 'user_id'));
-
-    $this->hasMany('UserPermission', array('local' => 'id',
-                                           'foreign' => 'user_id'));
-
-    $this->getTable()->addTemplate(new IPF_ORM_Template_Timestampable());
+    $table = $this->getTable();
+    $table->hasMany('Role', 'Roles', array('refClass' => 'UserRole', 'local' => 'user_id', 'foreign' => 'role_id'));
+    $table->hasMany('Permission', 'Permissions', array('refClass' => 'UserPermission', 'local' => 'user_id', 'foreign' => 'permission_id'));
+    $table->hasMany('UserRole', '', array('local' => 'id', 'foreign' => 'user_id'));
+    $table->hasMany('UserPermission', '', array('local' => 'id', 'foreign' => 'user_id'));
+    $table->addTemplate(new IPF_ORM_Template_Timestampable());
   }
 
   public static function table()

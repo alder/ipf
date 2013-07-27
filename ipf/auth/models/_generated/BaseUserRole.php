@@ -22,13 +22,9 @@ abstract class BaseUserRole extends IPF_ORM_Record
 
   public function setUp()
   {
-    $this->hasOne('User', array('local' => 'user_id',
-                                'foreign' => 'id',
-                                'onDelete' => 'CASCADE'));
-
-    $this->hasOne('Role', array('local' => 'role_id',
-                                'foreign' => 'id',
-                                'onDelete' => 'CASCADE'));
+    $table = $this->getTable();
+    $table->hasOne('User', '', array('local' => 'user_id', 'foreign' => 'id', 'onDelete' => 'CASCADE'));
+    $table->hasOne('Role', '', array('local' => 'role_id', 'foreign' => 'id', 'onDelete' => 'CASCADE'));
   }
 
   public static function table()
