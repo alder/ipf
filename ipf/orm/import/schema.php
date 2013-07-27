@@ -39,6 +39,7 @@ class IPF_ORM_Import_Schema
             'zerofill',
             'owner',
             'exclude',
+            'collate',
         ),
         'relation' => array(
             'key',

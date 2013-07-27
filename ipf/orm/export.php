@@ -226,8 +226,8 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         $charset   = (isset($field['charset']) && $field['charset']) ?
                     ' ' . $this->getCharsetFieldDeclaration($field['charset']) : '';
 
-        $collation = (isset($field['collation']) && $field['collation']) ?
-                    ' ' . $this->getCollationFieldDeclaration($field['collation']) : '';
+        $collation = (isset($field['collate']) && $field['collate']) ?
+                    ' COLLATE ' . $field['collate'] : '';
 
         $notnull   = (isset($field['notnull']) && $field['notnull']) ? ' NOT NULL' : '';
 
@@ -405,11 +405,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
     }
 
     public function getCharsetFieldDeclaration($charset)
-    {
-        return '';
-    }
-
-    public function getCollationFieldDeclaration($collation)
     {
         return '';
     }

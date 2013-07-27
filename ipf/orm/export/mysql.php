@@ -121,8 +121,8 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
         $charset   = (isset($field['charset']) && $field['charset']) ?
                     ' ' . $this->getCharsetFieldDeclaration($field['charset']) : '';
 
-        $collation = (isset($field['collation']) && $field['collation']) ?
-                    ' ' . $this->getCollationFieldDeclaration($field['collation']) : '';
+        $collation = (isset($field['collate']) && $field['collate']) ?
+                    ' COLLATE ' . $field['collate'] : '';
 
         $notnull   = (isset($field['notnull']) && $field['notnull']) ? ' NOT NULL' : '';
 

@@ -350,11 +350,6 @@ class IPF_ORM_DataDict_Mysql extends IPF_ORM_DataDict
         return 'CHARACTER SET ' . $charset;
     }
 
-    public function getCollationFieldDeclaration($collation)
-    {
-        return 'COLLATE ' . $collation;
-    }
-
     public function getIntegerDeclaration($name, $field)
     {
         $default = $autoinc = '';
