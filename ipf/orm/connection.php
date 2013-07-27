@@ -403,6 +403,16 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         }
     }
 
+    public function escapePattern($text)
+    {
+        $q = $this->string_quoting['escape_pattern'];
+        $text = str_replace($q, $q . $q, $text);
+        foreach ($this->wildcards as $wildcard) {
+            $text = str_replace($wildcard, $q . $wildcard, $text);
+        }
+        return $text;
+    }
+
     public function setDateFormat($format = null)
     {
     }
