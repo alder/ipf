@@ -115,33 +115,181 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
 
     public function getDeclaration($name, array $field)
     {
-        $default   = $this->getDefaultFieldDeclaration($field);
+        $declaration = $this->conn->quoteIdentifier($name, true) . ' ';
 
-        $charset   = (isset($field['charset']) && $field['charset']) ?
-                    ' CHARACTER SET ' . $field['charset'] : '';
+        if (!isset($field['type']))
+            throw new IPF_ORM_Exception('Missing column type.');
 
-        $collation = (isset($field['collate']) && $field['collate']) ?
-                    ' COLLATE ' . $field['collate'] : '';
+        switch ($field['type']) {
+            case 'char':
+                $length = ( ! empty($field['length'])) ? $field['length'] : false;
 
-        $notnull   = (isset($field['notnull']) && $field['notnull']) ? ' NOT NULL' : '';
+                $declaration .= $length ? 'CHAR('.$length.')' : 'CHAR(255)';
+                break;
+            case 'varchar':
+            case 'array':
+            case 'object':
+            case 'string':
+            case 'gzip':
+                if (!isset($field['length'])) {
+                    if (array_key_exists('default', $field)) {
+                        $field['length'] = $this->conn->varchar_max_length;
+                    } else {
+                        $field['length'] = false;
+                    }
+                }
 
-        $unique    = (isset($field['unique']) && $field['unique']) ?
-                    ' ' . $this->getUniqueFieldDeclaration() : '';
+                $length = ($field['length'] <= $this->conn->varchar_max_length) ? $field['length'] : false;
+                $fixed  = (isset($field['fixed'])) ? $field['fixed'] : false;
 
-        $check     = (isset($field['check']) && $field['check']) ?
-                    ' ' . $field['check'] : '';
-
-        $comment   = (isset($field['comment']) && $field['comment']) ?
-                    " COMMENT '" . $field['comment'] . "'" : '';
-
-        $method = 'get' . $field['type'] . 'Declaration';
-
-        if (method_exists($this->conn->dataDict, $method)) {
-            return $this->conn->dataDict->$method($name, $field);
-        } else {
-            $dec = $this->conn->dataDict->getNativeDeclaration($field);
+                $declaration .= $fixed ? ($length ? 'CHAR(' . $length . ')' : 'CHAR(255)')
+                    : ($length ? 'VARCHAR(' . $length . ')' : 'TEXT');
+                break;
+            case 'clob':
+                if (!empty($field['length'])) {
+                    $length = $field['length'];
+                    if ($length <= 255) {
+                        return 'TINYTEXT';
+                    } elseif ($length <= 65532) {
+                        return 'TEXT';
+                    } elseif ($length <= 16777215) {
+                        return 'MEDIUMTEXT';
+                    }
+                }
+                $declaration .= 'LONGTEXT';
+                break;
+            case 'blob':
+                if ( ! empty($field['length'])) {
+                    $length = $field['length'];
+                    if ($length <= 255) {
+                        return 'TINYBLOB';
+                    } elseif ($length <= 65532) {
+                        return 'BLOB';
+                    } elseif ($length <= 16777215) {
+                        return 'MEDIUMBLOB';
+                    }
+                }
+                $declaration .= 'LONGBLOB';
+                break;
+            case 'enum':
+                if ($this->conn->getAttribute(IPF_ORM::ATTR_USE_NATIVE_ENUM)) {
+                    $values = array();
+                    foreach ($field['values'] as $value) {
+                      $values[] = $this->conn->quote($value, 'varchar');
+                    }
+                    $declaration .= 'ENUM('.implode(', ', $values).')';
+                    break;
+                }
+                // fall back to integer
+            case 'integer':
+            case 'int':
+                $type = 'INT';
+                if (!empty($field['length'])) {
+                    $length = $field['length'];
+                    if ($length <= 1) {
+                        $type = 'TINYINT';
+                    } elseif ($length == 2) {
+                        $type = 'SMALLINT';
+                    } elseif ($length == 3) {
+                        $type = 'MEDIUMINT';
+                    } elseif ($length == 4) {
+                        $type = 'INT';
+                    } elseif ($length > 4) {
+                        $type = 'BIGINT';
+                    }
+                }
+                $declaration .= $type;
+                if (isset($field['unsigned']) && $field['unsigned'])
+                    $declaration .= ' UNSIGNED';
+                break;
+            case 'boolean':
+                $declaration .= 'TINYINT(1)';
+                break;
+            case 'date':
+                $declaration .= 'DATE';
+                break;
+            case 'time':
+                $declaration .= 'TIME';
+                break;
+            case 'datetime':
+                $declaration .= 'DATETIME';
+                break;
+            case 'timestamp':
+                $declaration .= 'TIMESTAMP';
+                break;
+            case 'float':
+            case 'double':
+                $declaration .= 'DOUBLE';
+                break;
+            case 'decimal':
+                $scale = !empty($field['scale']) ? $field['scale'] : $this->conn->getAttribute(IPF_ORM::ATTR_DECIMAL_PLACES);
+                if (!empty($field['length'])) {
+                    $length = $field['length'];
+                    if (is_array($length)) {
+                        list($length, $scale) = $length;
+                    }
+                } else {
+                    $length = 18;
+                }
+                $declaration .= 'DECIMAL('.$length.','.$scale.')';
+                break;
+            case 'bit':
+                $declaration .= 'BIT';
+                break;
+            default:
+                throw new IPF_ORM_Exception('Unknown field type \'' . $field['type'] .  '\'.');
         }
-        return $this->conn->quoteIdentifier($name, true) . ' ' . $dec . $charset . $default . $notnull . $comment . $unique . $check . $collation;
+
+        if (isset($field['charset']) && $field['charset'])
+            $declaration .= ' CHARACTER SET ' . $field['charset'];
+
+        if (isset($field['collate']) && $field['collate'])
+            $declaration .= ' COLLATE ' . $field['collate'];
+
+        if (isset($field['notnull']) && $field['notnull'])
+            $declaration .= ' NOT NULL';
+
+        if (!empty($field['autoincrement'])) {
+            $declaration .= ' AUTO_INCREMENT';
+        } else {
+            $declaration .= $this->getDefaultFieldDeclaration($field);
+
+            if (isset($field['unique']) && $field['unique'])
+                $declaration .= ' UNIQUE';
+        }
+
+        if (isset($field['comment']) && $field['comment'])
+            $declaration .= ' COMMENT ' . $this->conn->quote($field['comment'], 'varchar');
+
+        return $declaration;
+    }
+
+    private function getDefaultFieldDeclaration($field)
+    {
+        $default = '';
+        if (isset($field['default']) && (!isset($field['length']) || $field['length'] <= 255)) {
+            if ($field['default'] === '') {
+                $field['default'] = empty($field['notnull']) ? null : $this->valid_default_values[$field['type']];
+            }
+
+            if ($field['default'] === '' && ($this->conn->getAttribute(IPF_ORM::ATTR_PORTABILITY) & IPF_ORM::PORTABILITY_EMPTY_TO_NULL))
+                $field['default'] = null;
+
+            if (is_null($field['default'])) {
+                $default = ' DEFAULT NULL';
+            } else {
+                if ($field['type'] === 'boolean') {
+                    $fieldType = 'boolean';
+                    $field['default'] = $this->conn->convertBooleans($field['default']);
+                } elseif ($field['type'] == 'enum' && $this->conn->getAttribute(IPF_ORM::ATTR_USE_NATIVE_ENUM)) {
+                    $fieldType = 'varchar';
+                } else {
+                    $fieldType = $field['type'];
+                }
+                $default = ' DEFAULT ' . $this->conn->quote($field['default'], $fieldType);
+            }
+        }
+        return $default;
     }
 
     public function alterTableSql($name, array $changes, $check = false)
@@ -258,34 +406,6 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
         return $query;
     }
 
-    public function getDefaultFieldDeclaration($field)
-    {
-        $default = '';
-        if (isset($field['default']) && ( ! isset($field['length']) || $field['length'] <= 255)) {
-            if ($field['default'] === '') {
-                $field['default'] = empty($field['notnull'])
-                    ? null : $this->valid_default_values[$field['type']];
-
-                if ($field['default'] === ''
-                    && ($this->conn->getAttribute(IPF_ORM::ATTR_PORTABILITY) & IPF_ORM::PORTABILITY_EMPTY_TO_NULL)
-                ) {
-                    $field['default'] = ' ';
-                }
-            }
-    
-            // Proposed patch:
-            if ($field['type'] == 'enum' && $this->conn->getAttribute(IPF_ORM::ATTR_USE_NATIVE_ENUM)) {
-                $fieldType = 'varchar';
-            } else {
-                $fieldType = $field['type'];
-            }
-            
-            $default = ' DEFAULT ' . $this->conn->quote($field['default'], $fieldType);
-            //$default = ' DEFAULT ' . $this->conn->quote($field['default'], $field['type']);
-        }
-        return $default;
-    }
-
     public function getIndexDeclaration($name, array $definition)
     {
         $name   = $this->conn->formatter->getIndexName($name);
@@ -382,3 +502,4 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
         return $this->conn->exec('ALTER TABLE ' . $table . ' DROP FOREIGN KEY ' . $name);
     }
 }
+

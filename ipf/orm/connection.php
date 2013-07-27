@@ -12,7 +12,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
     private $modules = array('transaction' => false,
                              'expression'  => false,
-                             'dataDict'    => false,
                              'export'      => false,
                              'import'      => false,
                              'unitOfWork'  => false,

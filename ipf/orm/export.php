@@ -218,28 +218,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         return implode(', ', $queryFields);
     }
 
-    public function getDefaultFieldDeclaration($field)
-    {
-        $default = '';
-        if (isset($field['default'])) {
-            if ($field['default'] === '') {
-                $field['default'] = empty($field['notnull'])
-                    ? null : $this->valid_default_values[$field['type']];
-
-                if ($field['default'] === '' &&
-                   ($this->conn->getAttribute(IPF_ORM::ATTR_PORTABILITY) & IPF_ORM::PORTABILITY_EMPTY_TO_NULL)) {
-                    $field['default'] = null;
-                }
-            }
-
-            if ($field['type'] === 'boolean') {
-                $field['default'] = $this->conn->convertBooleans($field['default']);
-            }
-            $default = ' DEFAULT ' . $this->conn->quote($field['default'], $field['type']);
-        }
-        return $default;
-    }
-
     public function getCheckDeclaration(array $definition)
     {
         $constraints = array();
@@ -368,11 +346,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
               . implode(', ', array_map(array($this->conn, 'quoteIdentifier'), $definition['foreign'])) . ')';
 
         return $sql;
-    }
-
-    public function getUniqueFieldDeclaration()
-    {
-        return 'UNIQUE';
     }
 
     public function exportSortedClassesSql($classes, $groupByConnection = true)
