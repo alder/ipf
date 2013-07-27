@@ -22,15 +22,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         $this->_table->setOption('inheritanceMap', $map);
     }
 
-    public function setSubclasses($map)
-    {
-        if (isset($map[get_class($this)])) {
-            $this->_table->setOption('inheritanceMap', $map[get_class($this)]);
-            return;
-        }
-        $this->_table->setOption('subclasses', array_keys($map));
-    }
-
     public function attribute($attr, $value)
     {
         if ($value == null) {

@@ -45,8 +45,9 @@ class IPF_ORM_Import_Builder
         if (isset($definition['options']) && is_array($definition['options']) && !empty($definition['options']))
             $ret[] = $this->buildOptions($definition['options']);
 
-        if (isset($definition['inheritance']['subclasses']) && ! empty($definition['inheritance']['subclasses']))
-            $ret[] = "    ".'$this->setSubClasses('. self::varExport($definition['inheritance']['subclasses']).');';
+        if (isset($definition['inheritance']['subclasses']) && !empty($definition['inheritance']['subclasses'])) {
+            $ret[] = "    ".'$table->setSubClasses('. self::varExport($definition['inheritance']['subclasses']).');';
+        }
 
         $ret[] = '  }';
 

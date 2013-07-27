@@ -585,6 +585,16 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return isset($this->_columnNames[$fieldName]);
     }
 
+    public function setSubClasses(array $map)
+    {
+        $class = $this->getComponentName();
+        if (isset($map[$class])) {
+            $this->setOption('inheritanceMap', $map[$class]);
+        } else {
+            $this->setOption('subclasses', array_keys($map));
+        }
+    }
+
     public function setConnection(IPF_ORM_Connection $conn)
     {
         $this->_conn = $conn;
