@@ -98,7 +98,6 @@ final class IPF_ORM
     const ATTR_STRINGIFY_FETCHES    = 17;
     const ATTR_MAX_COLUMN_LEN       = 18;
 
-    const ATTR_QUOTE_IDENTIFIER     = 101;
     const ATTR_FIELD_CASE           = 102;
     const ATTR_IDXNAME_FORMAT       = 103;
     const ATTR_CMPNAME_FORMAT       = 118;

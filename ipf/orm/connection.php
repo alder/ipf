@@ -19,7 +19,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
 
     protected $properties = array('sql_comments'        => array(array('start' => '--', 'end' => "\n", 'escape' => false),
                                                                  array('start' => '/*', 'end' => '*/', 'escape' => false)),
-                                  'identifier_quoting'  => array('start' => '"', 'end' => '"','escape' => '"'),
+                                  'identifier_quoting'  => '"',
                                   'string_quoting'      => array('start' => "'",
                                                                  'end' => "'",
                                                                  'escape' => false,
@@ -351,18 +351,8 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         return $this->exec($query, array_values($fields));
     }
 
-    public function quoteIdentifier($str, $checkOption = true)
-    {
-        // quick fix for the identifiers that contain a dot
-        if (strpos($str, '.')) {
-            $e = explode('.', $str);
-            
-            return $this->formatter->quoteIdentifier($e[0], $checkOption) . '.' 
-                 . $this->formatter->quoteIdentifier($e[1], $checkOption);
-        }
-        return $this->formatter->quoteIdentifier($str, $checkOption);
-    }
-    
+    public abstract function quoteIdentifier($str);
+
     public function convertBooleans($item)
     {
         if (is_array($item)) {

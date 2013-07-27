@@ -19,19 +19,6 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
         return $text;
     }
 
-    public function quoteIdentifier($str, $checkOption = true)
-    {
-        if ($checkOption && ! $this->conn->getAttribute(IPF_ORM::ATTR_QUOTE_IDENTIFIER)) {
-            return $str;
-        }
-        $tmp = $this->conn->identifier_quoting;
-        $str = str_replace($tmp['end'],
-            $tmp['escape'] .
-            $tmp['end'], $str);
-
-        return $tmp['start'] . $str . $tmp['end'];
-    }
-    
     public function quote($input, $type = null)
     {
         if ($type == null) {

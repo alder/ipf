@@ -62,7 +62,6 @@ abstract class IPF_ORM_Configurable
                     }
                 }
                 break;
-            case IPF_ORM::ATTR_QUOTE_IDENTIFIER:
             case IPF_ORM::ATTR_PORTABILITY:
             case IPF_ORM::ATTR_DEFAULT_TABLE_TYPE:
             case IPF_ORM::ATTR_EMULATE_DATABASE:
