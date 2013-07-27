@@ -21,9 +21,9 @@ abstract class BaseUser extends IPF_ORM_Record
     $this->getTable()->setColumn('is_active', 'boolean', null, array('type' => 'boolean', 'notnull' => true, 'default' => false));
     $this->getTable()->setColumn('is_superuser', 'boolean', null, array('type' => 'boolean', 'notnull' => true, 'default' => false));
     $this->getTable()->setColumn('last_login', 'timestamp', null, array('type' => 'timestamp'));
-    $this->option('type', 'INNODB');
-    $this->option('collate', 'utf8_unicode_ci');
-    $this->option('charset', 'utf8');
+    $table->setOption('type', 'INNODB');
+    $table->setOption('collate', 'utf8_unicode_ci');
+    $table->setOption('charset', 'utf8');
 
   }
 

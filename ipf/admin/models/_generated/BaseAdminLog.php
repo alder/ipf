@@ -23,9 +23,9 @@ abstract class BaseAdminLog extends IPF_ORM_Record
     $table->addIndex('idx_object_class', array('fields' => 'object_class'));
     $table->addIndex('idx_created_at', array('fields' => 'created_at'));
     $table->addIndex('idx_action_flag', array('fields' => 'action_flag'));
-    $this->option('type', 'INNODB');
-    $this->option('collate', 'utf8_unicode_ci');
-    $this->option('charset', 'utf8');
+    $table->setOption('type', 'INNODB');
+    $table->setOption('collate', 'utf8_unicode_ci');
+    $table->setOption('charset', 'utf8');
 
   }
 

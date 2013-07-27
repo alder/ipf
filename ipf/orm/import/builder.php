@@ -293,7 +293,7 @@ class IPF_ORM_Import_Builder
                 $values = substr($values, 0, strlen($values) - 3);
             }
 
-            $build .= "    \$this->setAttribute(IPF_ORM::ATTR_" . strtoupper($key) . ", " . $values . ");" . PHP_EOL;
+            $build .= "    \$table->setAttribute(IPF_ORM::ATTR_" . strtoupper($key) . ", " . $values . ");" . PHP_EOL;
         }
 
         return $build;
@@ -303,9 +303,8 @@ class IPF_ORM_Import_Builder
     {
         $build = '';
         foreach ($options as $name => $value) {
-            $build .= "    \$this->option('$name', " . self::varExport($value) . ");" . PHP_EOL;
+            $build .= "    \$table->setOption('$name', " . self::varExport($value) . ");" . PHP_EOL;
         }
-
         return $build;
     }
 

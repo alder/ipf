@@ -17,11 +17,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         return $this->_table;
     }
 
-    public function setAttribute($attr, $value)
-    {
-        $this->_table->setAttribute($attr, $value);
-    }
-
     public function setInheritanceMap($map)
     {
         $this->_table->setOption('inheritanceMap', $map);
@@ -49,21 +44,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         } else {
             $this->_table->setAttribute($attr, $value);
         }    
-    }
-
-    public function option($name, $value = null)
-    {
-        if ($value === null) {
-            if (is_array($name)) {
-                foreach ($name as $k => $v) {
-                    $this->_table->setOption($k, $v);
-                }
-            } else {
-                return $this->_table->getOption($name);
-            }
-        } else {
-            $this->_table->setOption($name, $value);
-        }
     }
 
     public function ownsOne()
