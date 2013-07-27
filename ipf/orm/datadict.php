@@ -36,15 +36,5 @@ class IPF_ORM_DataDict extends IPF_ORM_Connection_Module
 
         return $change;
     }
-
-    public function parseBoolean($value)
-    {
-        // parse booleans
-        if ($value == 'true') {
-            $value = 1;
-        } elseif ($value == 'false') {
-            $value = 0;
-        }
-        return $value;
-    }
 }
+

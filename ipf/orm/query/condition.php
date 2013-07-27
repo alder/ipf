@@ -43,13 +43,23 @@ abstract class IPF_ORM_Query_Condition extends IPF_ORM_Query_Part
         return '(' . $r . ')';
     }
 
+    private function parseBoolean($value)
+    {
+        // parse booleans
+        if ($value == 'true') {
+            $value = 1;
+        } elseif ($value == 'false') {
+            $value = 0;
+        }
+        return $value;
+    }
+
     public function parseLiteralValue($value)
     {
         // check that value isn't a string
         if (strpos($value, '\'') === false) {
             // parse booleans
-            $value = $this->query->getConnection()
-                     ->dataDict->parseBoolean($value);
+            $value = $this->parseBoolean($value);
 
             $a = explode('.', $value);
 
