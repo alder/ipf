@@ -114,11 +114,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         }
     } 
 
-    public function loadTemplate($template, array $options = array())
-    {
-        $this->actAs($template, $options);
-    }
-
     public function bindQueryParts(array $queryParts)
     {
         $this->_table->bindQueryParts($queryParts);
@@ -129,35 +124,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
     {
         $generator->initialize($this->_table);
         $this->_table->addGenerator($generator, get_class($generator));
-    }
-
-    public function actAs($tpl, array $options = array())
-    {
-        if ( ! is_object($tpl)) {
-            $className = 'IPF_ORM_Template_' . $tpl;
-
-            if (class_exists($className, true)) {
-                $tpl = new $className($options);
-            } else if (class_exists($tpl, true)) {
-                $tpl = new $tpl($options);
-            } else {
-                throw new IPF_ORM_Record_Exception('Could not load behavior named: "' . $tpl . '"');
-            }
-        }
-
-        if ( ! ($tpl instanceof IPF_ORM_Template)) {
-            throw new IPF_ORM_Record_Exception('Loaded behavior class is not an istance of IPF_ORM_Template.');
-        }
-
-        $className = get_class($tpl);
-
-        $this->_table->addTemplate($className, $tpl);
-
-        $tpl->setTable($this->_table);
-        $tpl->setUp();
-        $tpl->setTableDefinition();
-
-        return $this;
     }
 
     public function check($constraint, $name = null)

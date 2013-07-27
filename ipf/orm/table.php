@@ -997,11 +997,30 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return isset($this->_templates[$template]);
     }
 
-    public function addTemplate($template, IPF_ORM_Template $impl)
+    public function addTemplate($tpl, array $options=array())
     {
-        $this->_templates[$template] = $impl;
+        if (!is_object($tpl)) {
+            $className = 'IPF_ORM_Template_' . $tpl;
 
-        return $this;
+            if (class_exists($className, true)) {
+                $tpl = new $className($options);
+            } else if (class_exists($tpl, true)) {
+                $tpl = new $tpl($options);
+            } else {
+                throw new IPF_ORM_Record_Exception('Could not load behavior named: "' . $tpl . '"');
+            }
+        }
+
+        if (!($tpl instanceof IPF_ORM_Template)) {
+            throw new IPF_ORM_Record_Exception('Loaded behavior class is not an istance of IPF_ORM_Template.');
+        }
+
+        $className = get_class($tpl);
+        $this->_templates[$className] = $tpl;
+
+        $tpl->setTable($this);
+        $tpl->setUp();
+        $tpl->setTableDefinition();
     }
 
     public function getGenerators()

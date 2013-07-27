@@ -228,12 +228,12 @@ class IPF_ORM_Import_Builder
             if (is_array($options) && !empty($options)) {
                 $optionsPhp = self::varExport($options);
 
-                $build .= "    \$this->loadTemplate('" . $name . "', " . $optionsPhp . ");" . PHP_EOL;
+                $build .= "    \$this->getTable()->addTemplate('" . $name . "', " . $optionsPhp . ");" . PHP_EOL;
             } else {
                 if (isset($templates[0])) {
-                    $build .= "    \$this->loadTemplate('" . $options . "');" . PHP_EOL;
+                    $build .= "    \$this->getTable()->addTemplate('" . $options . "');" . PHP_EOL;
                 } else {
-                    $build .= "    \$this->loadTemplate('" . $name . "');" . PHP_EOL;
+                    $build .= "    \$this->getTable()->addTemplate('" . $name . "');" . PHP_EOL;
                 }
             }
         }
@@ -258,7 +258,7 @@ class IPF_ORM_Import_Builder
 
     private function emitActAs($level, $name)
     {
-        return "    \$this->actAs(\$" . strtolower($name) . "$level);" . PHP_EOL;
+        return "    \$this->getTable()->addTemplate(\$" . strtolower($name) . "$level);" . PHP_EOL;
     }
 
     private function buildActAs($actAs)
