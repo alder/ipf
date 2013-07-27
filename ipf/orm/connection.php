@@ -14,7 +14,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
                              'expression'  => false,
                              'export'      => false,
                              'unitOfWork'  => false,
-                             'formatter'   => false,
                              );
 
     protected $properties = array('sql_comments'        => array(array('start' => '--', 'end' => "\n", 'escape' => false),
@@ -176,9 +175,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
             switch ($name) {
                 case 'unitOfWork':
                     $this->modules[$name] = new IPF_ORM_Connection_UnitOfWork($this);
-                    break;
-                case 'formatter':
-                    $this->modules[$name] = new IPF_ORM_Formatter($this);
                     break;
                 default:
                     $class = 'IPF_ORM_' . ucwords($name) . '_' . $this->getDriverName();

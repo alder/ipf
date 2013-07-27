@@ -379,11 +379,11 @@ class IPF_ORM_Query extends IPF_ORM_Query_Abstract implements Countable, Seriali
 
     public function parseClause($clause)
     {
-    	$clause = trim($clause);
+      	$clause = trim($clause);
 
-    	if (is_numeric($clause)) {
-    	   return $clause;
-    	}
+      	if (is_numeric($clause)) {
+      	    return $clause;
+      	}
 
         $terms = $this->_tokenizer->clauseExplode($clause, array(' ', '+', '-', '*', '/', '<', '>', '=', '>=', '<='));
 
