@@ -369,9 +369,38 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         return $item;
     }
 
-    public function quote($input, $type = null)
+    public function quote($input, $type=null)
     {
-        return $this->formatter->quote($input, $type);
+        if ($type === null)
+            $type = gettype($input);
+
+        switch ($type) {
+            case 'integer':
+            case 'enum':
+            case 'boolean':
+            case 'double':
+            case 'float':
+            case 'bool':
+            case 'decimal':
+            case 'int':
+                return $input;
+            case 'array':
+            case 'object':
+                $input = serialize($input);
+            case 'date':
+            case 'time':
+            case 'timestamp':
+            case 'string':
+            case 'char':
+            case 'varchar':
+            case 'text':
+            case 'gzip':
+            case 'blob':
+            case 'clob':
+                return $this->getDbh()->quote($input);
+            default:
+                throw new IPF_ORM_Exception('Unsupported type \''.$type.'\'.');
+        }
     }
 
     public function setDateFormat($format = null)
