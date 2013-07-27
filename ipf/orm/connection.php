@@ -17,7 +17,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
                              'import'      => false,
                              'unitOfWork'  => false,
                              'formatter'   => false,
-                             'util'        => false,
                              );
 
     protected $properties = array('sql_comments'        => array(array('start' => '--', 'end' => "\n", 'escape' => false),

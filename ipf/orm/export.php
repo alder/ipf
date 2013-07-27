@@ -218,35 +218,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         return implode(', ', $queryFields);
     }
 
-    public function getDeclaration($name, array $field)
-    {
-
-        $default   = $this->getDefaultFieldDeclaration($field);
-
-        $charset   = (isset($field['charset']) && $field['charset']) ?
-                    ' CHARACTER SET ' . $field['charset'] : '';
-
-        $collation = (isset($field['collate']) && $field['collate']) ?
-                    ' COLLATE ' . $field['collate'] : '';
-
-        $notnull   = (isset($field['notnull']) && $field['notnull']) ? ' NOT NULL' : '';
-
-        $unique    = (isset($field['unique']) && $field['unique']) ?
-                    ' ' . $this->getUniqueFieldDeclaration() : '';
-
-        $check     = (isset($field['check']) && $field['check']) ?
-                    ' ' . $field['check'] : '';
-
-        $method = 'get' . $field['type'] . 'Declaration';
-
-        if (method_exists($this->conn->dataDict, $method)) {
-            return $this->conn->dataDict->$method($name, $field);
-        } else {
-            $dec = $this->conn->dataDict->getNativeDeclaration($field);
-        }
-        return $this->conn->quoteIdentifier($name, true) . ' ' . $dec . $charset . $default . $notnull . $unique . $check . $collation;
-    }
-
     public function getDefaultFieldDeclaration($field)
     {
         $default = '';
