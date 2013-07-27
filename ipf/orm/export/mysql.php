@@ -115,11 +115,10 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
 
     public function getDeclaration($name, array $field)
     {
-
         $default   = $this->getDefaultFieldDeclaration($field);
 
         $charset   = (isset($field['charset']) && $field['charset']) ?
-                    ' ' . $this->getCharsetFieldDeclaration($field['charset']) : '';
+                    ' CHARACTER SET ' . $field['charset'] : '';
 
         $collation = (isset($field['collate']) && $field['collate']) ?
                     ' COLLATE ' . $field['collate'] : '';

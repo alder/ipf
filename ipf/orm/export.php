@@ -224,7 +224,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         $default   = $this->getDefaultFieldDeclaration($field);
 
         $charset   = (isset($field['charset']) && $field['charset']) ?
-                    ' ' . $this->getCharsetFieldDeclaration($field['charset']) : '';
+                    ' CHARACTER SET ' . $field['charset'] : '';
 
         $collation = (isset($field['collate']) && $field['collate']) ?
                     ' COLLATE ' . $field['collate'] : '';
@@ -402,11 +402,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
     public function getUniqueFieldDeclaration()
     {
         return 'UNIQUE';
-    }
-
-    public function getCharsetFieldDeclaration($charset)
-    {
-        return '';
     }
 
     public function exportSortedClassesSql($classes, $groupByConnection = true)

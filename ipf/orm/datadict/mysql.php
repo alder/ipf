@@ -345,11 +345,6 @@ class IPF_ORM_DataDict_Mysql extends IPF_ORM_DataDict
         }
     }
 
-    public function getCharsetFieldDeclaration($charset)
-    {
-        return 'CHARACTER SET ' . $charset;
-    }
-
     public function getIntegerDeclaration($name, $field)
     {
         $default = $autoinc = '';

@@ -40,6 +40,7 @@ class IPF_ORM_Import_Schema
             'owner',
             'exclude',
             'collate',
+            'charset',
         ),
         'relation' => array(
             'key',
