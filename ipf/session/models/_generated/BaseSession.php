@@ -12,9 +12,9 @@ abstract class BaseSession extends IPF_ORM_Record
   {
     $table = $this->getTable();
     $table->setTableName('session');
-    $this->getTable()->setColumn('session_key', 'string', 40, array('primary' => true, 'type' => 'string', 'length' => '40'));
-    $this->getTable()->setColumn('session_data', 'string', null, array('type' => 'string'));
-    $this->getTable()->setColumn('expire_data', 'timestamp', null, array('type' => 'timestamp'));
+    $table->setColumn('session_key', 'string', 40, array('primary' => true, 'type' => 'string', 'length' => '40'));
+    $table->setColumn('session_data', 'string', null, array('type' => 'string'));
+    $table->setColumn('expire_data', 'timestamp', null, array('type' => 'timestamp'));
   }
 
 

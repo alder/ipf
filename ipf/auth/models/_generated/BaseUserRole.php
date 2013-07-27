@@ -12,8 +12,8 @@ abstract class BaseUserRole extends IPF_ORM_Record
   {
     $table = $this->getTable();
     $table->setTableName('auth_user_role');
-    $this->getTable()->setColumn('user_id', 'integer', null, array('type' => 'integer', 'primary' => true));
-    $this->getTable()->setColumn('role_id', 'integer', null, array('type' => 'integer', 'primary' => true));
+    $table->setColumn('user_id', 'integer', null, array('type' => 'integer', 'primary' => true));
+    $table->setColumn('role_id', 'integer', null, array('type' => 'integer', 'primary' => true));
     $table->setOption('type', 'INNODB');
     $table->setOption('collate', 'utf8_unicode_ci');
     $table->setOption('charset', 'utf8');

@@ -12,15 +12,15 @@ abstract class BaseUser extends IPF_ORM_Record
   {
     $table = $this->getTable();
     $table->setTableName('auth_user');
-    $this->getTable()->setColumn('username', 'string', 32, array('type' => 'string', 'notblank' => true, 'notnull' => true, 'unique' => true, 'length' => '32'));
-    $this->getTable()->setColumn('password', 'string', 128, array('type' => 'string', 'notblank' => true, 'notnull' => true, 'length' => '128'));
-    $this->getTable()->setColumn('first_name', 'string', 32, array('type' => 'string', 'length' => '32'));
-    $this->getTable()->setColumn('last_name', 'string', 32, array('type' => 'string', 'length' => '32'));
-    $this->getTable()->setColumn('email', 'string', 200, array('type' => 'string', 'email' => true, 'notnull' => true, 'notblank' => true, 'unique' => true, 'length' => '200'));
-    $this->getTable()->setColumn('is_staff', 'boolean', null, array('type' => 'boolean', 'notnull' => true, 'default' => false));
-    $this->getTable()->setColumn('is_active', 'boolean', null, array('type' => 'boolean', 'notnull' => true, 'default' => false));
-    $this->getTable()->setColumn('is_superuser', 'boolean', null, array('type' => 'boolean', 'notnull' => true, 'default' => false));
-    $this->getTable()->setColumn('last_login', 'timestamp', null, array('type' => 'timestamp'));
+    $table->setColumn('username', 'string', 32, array('type' => 'string', 'notblank' => true, 'notnull' => true, 'unique' => true, 'length' => '32'));
+    $table->setColumn('password', 'string', 128, array('type' => 'string', 'notblank' => true, 'notnull' => true, 'length' => '128'));
+    $table->setColumn('first_name', 'string', 32, array('type' => 'string', 'length' => '32'));
+    $table->setColumn('last_name', 'string', 32, array('type' => 'string', 'length' => '32'));
+    $table->setColumn('email', 'string', 200, array('type' => 'string', 'email' => true, 'notnull' => true, 'notblank' => true, 'unique' => true, 'length' => '200'));
+    $table->setColumn('is_staff', 'boolean', null, array('type' => 'boolean', 'notnull' => true, 'default' => false));
+    $table->setColumn('is_active', 'boolean', null, array('type' => 'boolean', 'notnull' => true, 'default' => false));
+    $table->setColumn('is_superuser', 'boolean', null, array('type' => 'boolean', 'notnull' => true, 'default' => false));
+    $table->setColumn('last_login', 'timestamp', null, array('type' => 'timestamp'));
     $table->setOption('type', 'INNODB');
     $table->setOption('collate', 'utf8_unicode_ci');
     $table->setOption('charset', 'utf8');

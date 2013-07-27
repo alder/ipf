@@ -12,8 +12,8 @@ abstract class BaseRolePermission extends IPF_ORM_Record
   {
     $table = $this->getTable();
     $table->setTableName('auth_role_permission');
-    $this->getTable()->setColumn('role_id', 'integer', null, array('type' => 'integer', 'primary' => true));
-    $this->getTable()->setColumn('permission_id', 'integer', null, array('type' => 'integer', 'primary' => true));
+    $table->setColumn('role_id', 'integer', null, array('type' => 'integer', 'primary' => true));
+    $table->setColumn('permission_id', 'integer', null, array('type' => 'integer', 'primary' => true));
     $table->setOption('type', 'INNODB');
     $table->setOption('collate', 'utf8_unicode_ci');
     $table->setOption('charset', 'utf8');

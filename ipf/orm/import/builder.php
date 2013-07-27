@@ -164,7 +164,7 @@ class IPF_ORM_Import_Builder
         $result = array();
         foreach ($columns as $name => $column) {
             $columnName = isset($column['name']) ? $column['name']:$name;
-            $build = "    ".'$this->getTable()->setColumn(\'' . $columnName . '\', \'' . $column['type'] . '\'';
+            $build = "    ".'$table->setColumn(\'' . $columnName . '\', \'' . $column['type'] . '\'';
 
             if ($column['length']) {
                 if (is_numeric($column['length']))
