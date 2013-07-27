@@ -13,7 +13,6 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
     private $modules = array('transaction' => false,
                              'expression'  => false,
                              'export'      => false,
-                             'import'      => false,
                              'unitOfWork'  => false,
                              'formatter'   => false,
                              );
@@ -364,17 +363,20 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         return $this->formatter->quoteIdentifier($str, $checkOption);
     }
     
-    public function quoteMultipleIdentifier($arr, $checkOption = true)
-    {
-        foreach ($arr as $k => $v) {
-            $arr[$k] = $this->quoteIdentifier($v, $checkOption);
-        }
-        return $arr;
-    }
-
     public function convertBooleans($item)
     {
-        return $this->formatter->convertBooleans($item);
+        if (is_array($item)) {
+            foreach ($item as $k => $value) {
+                if (is_bool($value)) {
+                    $item[$k] = (int) $value;
+                }
+            }
+        } else {
+            if (is_bool($item)) {
+                $item = (int) $item;
+            }
+        }
+        return $item;
     }
 
     public function quote($input, $type = null)

@@ -4,7 +4,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
 {
     public function createDatabaseSql($name)
     {
-        return 'CREATE DATABASE ' . $this->conn->quoteIdentifier($name, true);
+        return 'CREATE DATABASE ' . $this->conn->quoteIdentifier($name);
     }
 
     public function dropDatabaseSql($name)
@@ -70,7 +70,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
             $queryFields .= ', PRIMARY KEY(' . implode(', ', $keyColumns) . ')';
         }
 
-        $query = 'CREATE TABLE ' . $this->conn->quoteIdentifier($name, true) . ' (' . $queryFields . ')';
+        $query = 'CREATE TABLE ' . $this->conn->quoteIdentifier($name) . ' (' . $queryFields . ')';
 
         $optionStrings = array();
 
@@ -115,7 +115,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
 
     public function getDeclaration($name, array $field)
     {
-        $declaration = $this->conn->quoteIdentifier($name, true) . ' ';
+        $declaration = $this->conn->quoteIdentifier($name) . ' ';
 
         if (!isset($field['type']))
             throw new IPF_ORM_Exception('Missing column type.');
@@ -357,7 +357,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
                 } else {
                     $oldFieldName = $fieldName;
                 }
-                $oldFieldName = $this->conn->quoteIdentifier($oldFieldName, true);
+                $oldFieldName = $this->conn->quoteIdentifier($oldFieldName);
                 $query .= 'CHANGE ' . $oldFieldName . ' ' 
                         . $this->getDeclaration($fieldName, $field['definition']);
             }
@@ -369,7 +369,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
                     $query.= ', ';
                 }
                 $field = $changes['rename'][$renamedField];
-                $renamedField = $this->conn->quoteIdentifier($renamedField, true);
+                $renamedField = $this->conn->quoteIdentifier($renamedField);
                 $query .= 'CHANGE ' . $renamedField . ' '
                         . $this->getDeclaration($field['name'], $field['definition']);
             }
@@ -379,7 +379,7 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
             return false;
         }
 
-        $name = $this->conn->quoteIdentifier($name, true);
+        $name = $this->conn->quoteIdentifier($name);
         
         return 'ALTER TABLE ' . $name . ' ' . $query;
     }
@@ -483,14 +483,14 @@ class IPF_ORM_Export_Mysql extends IPF_ORM_Export
 
     public function dropIndexSql($table, $name)
     {
-        $table  = $this->conn->quoteIdentifier($table, true);
-        $name   = $this->conn->quoteIdentifier($this->conn->formatter->getIndexName($name), true);
+        $table  = $this->conn->quoteIdentifier($table);
+        $name   = $this->conn->quoteIdentifier($this->conn->formatter->getIndexName($name));
         return 'DROP INDEX ' . $name . ' ON ' . $table;
     }
 
     public function dropTableSql($table)
     {
-        $table  = $this->conn->quoteIdentifier($table, true);
+        $table  = $this->conn->quoteIdentifier($table);
         return 'DROP TABLE ' . $table;
     }
 

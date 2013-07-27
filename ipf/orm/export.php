@@ -95,7 +95,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
             }
         }
 
-        $query = 'CREATE TABLE ' . $this->conn->quoteIdentifier($name, true) . ' (' . $queryFields;
+        $query = 'CREATE TABLE ' . $this->conn->quoteIdentifier($name) . ' (' . $queryFields;
         
         $check = $this->getCheckDeclaration($fields);
 
@@ -139,7 +139,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
 
         $fields = array();
         foreach (array_keys($definition['fields']) as $field) {
-            $fields[] = $this->conn->quoteIdentifier($field, true);
+            $fields[] = $this->conn->quoteIdentifier($field);
         }
         $query .= ' ('. implode(', ', $fields) . ')';
 

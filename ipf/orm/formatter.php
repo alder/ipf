@@ -19,22 +19,6 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
         return $text;
     }
 
-    public function convertBooleans($item)
-    {
-        if (is_array($item)) {
-            foreach ($item as $k => $value) {
-                if (is_bool($value)) {
-                    $item[$k] = (int) $value;
-                }
-            }
-        } else {
-            if (is_bool($item)) {
-                $item = (int) $item;
-            }
-        }
-        return $item;
-    }
-
     public function quoteIdentifier($str, $checkOption = true)
     {
         if ($checkOption && ! $this->conn->getAttribute(IPF_ORM::ATTR_QUOTE_IDENTIFIER)) {
@@ -48,15 +32,6 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
         return $tmp['start'] . $str . $tmp['end'];
     }
     
-    public function quoteMultipleIdentifier($arr, $checkOption = true)
-    {
-        foreach ($arr as $k => $v) {
-            $arr[$k] = $this->quoteIdentifier($v, $checkOption);
-        }
-
-        return $arr;
-    }
-
     public function quote($input, $type = null)
     {
         if ($type == null) {
@@ -87,16 +62,6 @@ class IPF_ORM_Formatter extends IPF_ORM_Connection_Module
         case 'clob':
             return $this->conn->getDbh()->quote($input);
         }
-    }
-
-    public function fixIndexName($idx)
-    {
-        $indexPattern   = '/^'.preg_replace('/%s/', '([a-z0-9_]+)', $this->conn->getAttribute(IPF_ORM::ATTR_IDXNAME_FORMAT)).'$/i';
-        $indexName      = preg_replace($indexPattern, '\\1', $idx);
-        if ($indexName && ! strcasecmp($idx, $this->getIndexName($indexName))) {
-            return $indexName;
-        }
-        return $idx;
     }
 
     public function getIndexName($idx)
