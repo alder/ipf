@@ -74,12 +74,14 @@ final class IPF
         return is_file($path);
     }
 
-    public static function setUp($project_path, $document_root)
+    public static function setUp($project_path, $document_root, $vendor_path=null)
     {
         if (php_sapi_name() === 'cli-server' && IPF::requestedFileExists())
             return false;
 
-        IPF_ClassLoader::getInstance($project_path);
+        if (!$vendor_path)
+              $vendor_path = $project_path . '/vendor';
+        IPF_ClassLoader::getInstance($vendor_path);
 
         IPF::$settings['ipf_path'] = dirname(__FILE__);
         IPF::$settings['project_path'] = $project_path;
@@ -145,23 +147,23 @@ class IPF_ClassLoader
 
     private static $loader = null;
 
-    public static function getInstance($project_path)
+    public static function getInstance($vendor_path)
     {
         if (self::$loader == null)
-            self::$loader = new IPF_ClassLoader($project_path);
+            self::$loader = new IPF_ClassLoader($vendor_path);
         return self::$loader;
     }
 
-    private function __construct($project_path)
+    private function __construct($vendor_path)
     {
-        $includePathsFile = $project_path . '/vendor/composer/include_paths.php';
+        $includePathsFile = $vendor_path . '/composer/include_paths.php';
         if (is_file($includePathsFile)) {
             $includePaths = require $includePathsFile;
             array_push($includePaths, get_include_path());
             set_include_path(join(PATH_SEPARATOR, $includePaths));
         }
 
-        $this->classMap = require $project_path . '/vendor/composer/autoload_classmap.php';
+        $this->classMap = require $vendor_path . '/composer/autoload_classmap.php';
 
         spl_autoload_register(array($this, 'load'), true, true);
     }
