@@ -34,8 +34,9 @@ class IPF_Command_Fixtures
                 $key = array($key);
             $records = $fixture['records'];
             echo "Loading $modelClass ";
+            $table = IPF_ORM::getTable($modelClass);
             foreach ($records as $record) {
-                $query = IPF_ORM::getTable($modelClass)
+                $query = $table
                     ->createQuery()
                     ->limit(1);
                 foreach ($key as $k)
