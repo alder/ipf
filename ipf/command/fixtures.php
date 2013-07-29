@@ -35,6 +35,7 @@ class IPF_Command_Fixtures
             $records = $fixture['records'];
             echo "Loading $modelClass ";
             $table = IPF_ORM::getTable($modelClass);
+            $table->getConnection()->beginTransaction();
             foreach ($records as $record) {
                 $query = $table
                     ->createQuery()
@@ -54,6 +55,7 @@ class IPF_Command_Fixtures
                 $model->save();
                 echo '.';
             }
+            $table->getConnection()->commit();
             echo "\n";
         }
     }
