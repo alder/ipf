@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/andy128k/ipf-template.git",
-                "reference": "9b00d636be5db7b6147fd6f6899068f26b8e17b1"
+                "reference": "1b527844fb55d7c2cae82ec0b2757adbc81c04d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andy128k/ipf-template/zipball/9b00d636be5db7b6147fd6f6899068f26b8e17b1",
-                "reference": "9b00d636be5db7b6147fd6f6899068f26b8e17b1",
+                "url": "https://api.github.com/repos/andy128k/ipf-template/zipball/1b527844fb55d7c2cae82ec0b2757adbc81c04d0",
+                "reference": "1b527844fb55d7c2cae82ec0b2757adbc81c04d0",
                 "shasum": ""
             },
             "require-dev": {
@@ -46,7 +46,7 @@
                 "source": "https://github.com/andy128k/ipf-template/tree/master",
                 "issues": "https://github.com/andy128k/ipf-template/issues"
             },
-            "time": "2013-07-30 22:13:38"
+            "time": "2013-07-30 22:57:26"
         },
         {
             "name": "andy128k/routeexpression",
