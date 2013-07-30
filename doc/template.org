@@ -10,71 +10,6 @@
 
 ** Tags
 
-*** print
-    Syntax: ={<expr>[modifiers]?}=
-
-    Outputs expression.
-
-*** if/elseif/else
-    Syntax: ={if <condition>}= <body> [ ={elseif <condition>}= <body> ]* [ ={else}= <body> ]? ={/if}=
-
-*** while
-    Syntax: ={while <condition>}= <body> ={/while}=
-
-*** foreach
-    Syntax: ~{foreach <collection> as [<key> =>]? <value>}~ <body> ~{/foreach}~
-
-    Iterate over collection.
-
-    Following variables are defined in a loop body:
-    + =foreach_counter0= -- zero based iteration counter
-    + =foreach_counter1= -- unit based iteration counter
-    + =foreach_first= -- is true on first iteration and false on the rest ones.
-
-*** assign
-    Syntax: ={assign <var> <eq-op> <expr>}=
-
-    Example: ~{assing $v += 1}~
-
-*** literal
-    Syntax: ={literal}= <body> ={/literal}=
-
-    Literally output enclosed text. Mostly used to wrap inlined JavaScript.
-
-*** include
-    Syntax: ={include "<filename>"}=
-    
-    Example: ={include "pagination.html"}=
-    
-    Substitutes another template.
-    
-*** block
-    Syntax: ={block <name>}= <body> ={/block}=
-
-    Defines or redefines named block.
-
-*** superblock
-    Syntax: ={superblock}=
-
-    Placeholder for content of inherited block.
-
-*** extends
-    Syntax: ={extends "<filename>"}=
-
-    Example: ={extends "base.html"}=
-
-    Declares current template as defived one. Top level blocks are substituted into corresponding blocks of base template.
-
-*** ldelim, rdelim
-    Syntax: ={ldelim}=, ={rdelim}=
-
-    Output '{' and '}'.
-
-*** trans, plural, blocktrans
-    No information about these tags
-
-** Predefined custom tags
-
 *** url
     Syntax: ={url '<view-name>'[, array([<arg>]*)]?}=
 
@@ -86,43 +21,6 @@
     Syntax: ={sql}=
 
     Prints SQL statistics.
-
-** Modifiers
-
-   Modifier is a transformation applied to a printed value.
-   Some modifiers have one or more parameters. All parameters have default values and can be omitted.
-
-   ={<expr> [|<modifier>[:<params>]?]*}=
-
-   Where =<params>= is a comma-separated list of parameters.
-
-   Examples: ={$content|safe}=, ={$content|strip_tags|limit_words:10}=
-
-*** Predefined modifiers
-
-    + =upper=
-    + =lower=
-    + =capitalize=
-    + =trim=
-
-    + =limit_words:<count>,<end>= -- Limits text to specified number of words (default is 100). Text is terminted by <end> string (default is ellipsis character).
-
-    + =date:<format>= -- format date. Default format is '%b %e, %Y'
-    + =time:<format>= -- format date and time. Default format is 'Y-m-d H:i:s'
-
-    + =floatformat:<decimals>,<point><thousands>= -- format float value. Default parameters are 2, '.', ','.
-
-    + =count= -- number of elements in collection
-
-    + =escxml= -- escape XM
-    + =escape= -- escape HTML
-    + =escurl= -- escape URL
-    + =strip_tags= -- remove all tags
-    + =nl2br= -- replaces all new line characters with '<br>' tags
-    + =unsafe=, =safe= -- outputs text unescaped
-
-    + =debug= -- print_r
-    + =fulldebug= -- var_export
 
 ** Configuration
 
