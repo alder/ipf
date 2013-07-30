@@ -29,7 +29,9 @@ final class IPF_Shortcuts
         }
         $context = new IPF_Template_Context($params);
 
-        $tmpl = new IPF_Template_File($tplfile);
+        $environment = IPF_Template_Environment::getDefault();
+
+        $tmpl = new IPF_Template_File($tplfile, $environment);
         return $tmpl->render($context);
     }
 

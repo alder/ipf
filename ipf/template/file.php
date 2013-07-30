@@ -4,9 +4,9 @@ class IPF_Template_File extends IPF_Template
 {
     private $tpl;
 
-    function __construct($template, $environment=null)
+    function __construct($template, IPF_Template_Environment $environment)
     {
-        parent::__construct($environment ? $environment : IPF_Template_Environment::getDefault());
+        parent::__construct($environment);
         $this->tpl = $template;
     }
 

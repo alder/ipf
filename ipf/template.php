@@ -4,7 +4,7 @@ abstract class IPF_Template
 {
     protected $environment;
 
-    public function __construct($environment)
+    public function __construct(IPF_Template_Environment $environment)
     {
         $this->environment = $environment;
     }
