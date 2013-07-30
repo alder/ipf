@@ -3,14 +3,8 @@
 class IPF_Template_Environment_FileSystem extends IPF_Template_Environment
 {
     public $folders = array();
-    public $cache = '';
+    public $cache = '/tmp';
     public $debug = false;
-
-    public function __construct($folders, $cache)
-    {
-        $this->folders = $folders;
-        $this->cache = $cache;
-    }
 
     public function loadTemplateFile($filename)
     {
