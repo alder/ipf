@@ -17,12 +17,19 @@ final class IPF_Shortcuts
 
     public static function RenderToString($tplfile, $params=array(), $request=null)
     {
-        $tmpl = new IPF_Template_File($tplfile);
-        if (is_null($request)) {
-            $context = new IPF_Template_Context($params);
-        } else {
-            $context = new IPF_Template_Context_Request($request, $params);
+        if ($request) {
+            $params = array_merge(array('request' => $request), $params);
+            foreach (IPF::get('template_context_processors', array()) as $proc) {
+                IPF::loadFunction($proc);
+                $params = array_merge($proc($request), $params);
+            }
+            foreach (IPF_Project::getInstance()->appList() as $app) {
+                $params = array_merge($app->templateContext($request), $params);
+            }
         }
+        $context = new IPF_Template_Context($params);
+
+        $tmpl = new IPF_Template_File($tplfile);
         return $tmpl->render($context);
     }
 
