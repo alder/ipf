@@ -32,7 +32,7 @@ class IPF_Template_Compiler
         'upper'       => 'strtoupper',
         'lower'       => 'strtolower',
         'escxml'      => 'htmlspecialchars',
-        'escape'      => 'IPF_Utils::escape',
+        'escape'      => 'IPF_Template_Modifier::escape',
         'strip_tags'  => 'strip_tags',
         'escurl'      => 'rawurlencode',
         'capitalize'  => 'ucwords',
@@ -43,15 +43,14 @@ class IPF_Template_Compiler
         'trim'        => 'trim',
         'unsafe'      => 'IPF_Template_SafeString::markSafe',
         'safe'        => 'IPF_Template_SafeString::markSafe',
-        'date'        => 'IPF_Template_dateFormat',
-        'time'        => 'IPF_Template_timeFormat',
-        'floatformat' => 'IPF_Template_floatFormat',
-        'limit_words' => 'IPF_Utils::limitWords',
+        'date'        => 'IPF_Template_Modifier::dateFormat',
+        'time'        => 'IPF_Template_Modifier::timeFormat',
+        'floatformat' => 'IPF_Template_Modifier::floatFormat',
+        'limit_words' => 'IPF_Template_Modifier::limitWords',
+        'limit_chars' => 'IPF_Template_Modifier::limitCharacters',
     );
 
     protected $_literals;
-
-    public $_usedModifiers = array();
 
     protected $_blockStack = array();
 
@@ -95,13 +94,6 @@ class IPF_Template_Compiler
     public function getCompiledTemplate()
     {
         $result = $this->compile();
-        if (count($this->_usedModifiers)) {
-            $code = array();
-            foreach ($this->_usedModifiers as $modifier) {
-                $code[] = 'IPF::loadFunction(\''.$modifier.'\'); ';
-            }
-            $result = '<?php '.implode("\n", $code).'?>'.$result;
-        }
         $result = str_replace(array('?><?php', '<?php ?>', '<?php  ?>'), '', $result);
         $result = str_replace("?>\n", "?>\n\n", $result);
         return $result;
@@ -156,7 +148,6 @@ class IPF_Template_Compiler
                 $compiler = clone($this);
                 $compiler->templateContent = substr($this->templateContent, $blocks[$i]['start'], $blocks[$i]['finish'] - $blocks[$i]['start']);
                 $_tmp = $compiler->compile();
-                $this->updateModifierStack($compiler);
                 if (!isset($this->_extendBlocks[$blockName])) {
                     $this->_extendBlocks[$blockName] = $_tmp;
                 } else {
@@ -232,10 +223,6 @@ class IPF_Template_Compiler
                 $res = $modifier.'('.$res.','.$m[2].')';
             } else {
                 $res = $modifier.'('.$res.')';
-            }
-
-            if (!in_array($modifier, $this->_usedModifiers)) {
-                $this->_usedModifiers[] = $modifier;
             }
         }
         return $res;
@@ -389,7 +376,6 @@ class IPF_Template_Compiler
             $includedTemplateContent = $this->environment->loadTemplateFile($argfct);
             $_comp = new IPF_Template_Compiler($includedTemplateContent, $this->environment);
             $res = $_comp->compile();
-            $this->updateModifierStack($_comp);
             break;
         default:
             $_start = true;
@@ -472,15 +458,6 @@ class IPF_Template_Compiler
             }
         }
         return $result;
-    }
-
-    protected function updateModifierStack($compiler)
-    {
-        foreach ($compiler->_usedModifiers as $_um) {
-            if (!in_array($_um, $this->_usedModifiers)) {
-                $this->_usedModifiers[] = $_um;
-            }
-        }
     }
 }
 
