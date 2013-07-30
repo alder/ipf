@@ -53,12 +53,6 @@ class IPF_Template_Compiler
 
     public $_usedModifiers = array();
 
-    protected $_allowedTags = array(
-        'url' => 'IPF_Template_Tag_Url',
-    );
-
-    protected $_extraTags = array();
-
     protected $_blockStack = array();
 
     protected $_transStack = array();
@@ -72,14 +66,8 @@ class IPF_Template_Compiler
 
     function __construct($templateContent, $environment)
     {
-        $allowedtags = IPF::get('template_tags', array());
-        $this->_allowedTags = array_merge($allowedtags, $this->_allowedTags);
         $modifiers = IPF::get('template_modifiers', array());
         $this->_modifier = array_merge($modifiers, $this->_modifier);
-
-        foreach ($this->_allowedTags as $name=>$model) {
-            $this->_extraTags[$name] = new $model();
-        }
 
         $this->templateContent = $templateContent;
         $this->environment = $environment;
@@ -399,42 +387,28 @@ class IPF_Template_Compiler
             $this->updateModifierStack($_comp);
             break;
         default:
-            $_end = false;
+            $_start = true;
             $oname = $name;
             if (substr($name, 0, 1) == '/') {
-                $_end = true;
+                $_start = false;
                 $name = substr($name, 1);
             }
             // Here we should allow custom blocks.
 
             // Here we start the template tag calls at the template tag
             // {tag ...} is not a block, so it must be a function.
-            if (!isset($this->_allowedTags[$name])) {
+            if (!$this->environment->isTagAllowed($name)) {
                 trigger_error(sprintf(__('The function tag "%s" is not allowed.'), $name), E_USER_ERROR);
             }
-            $argfct = $this->_parseFinal($args, self::$allowedAssign);
             // $argfct is a string that can be copy/pasted in the PHP code
             // but we need the array of args.
-            $res = '';
-            if (isset($this->_extraTags[$name])) {
-                if (false == $_end) {
-                    if (method_exists($this->_extraTags[$name], 'start')) {
-                        $res .= '$_extra_tag = IPF::factory(\''.$this->_allowedTags[$name].'\', $t); $_extra_tag->start('.$argfct.'); ';
-                    }
-                    if (method_exists($this->_extraTags[$name], 'genStart')) {
-                        $res .= $this->_extraTags[$name]->genStart();
-                    }
-                } else {
-                    if (method_exists($this->_extraTags[$name], 'end')) {
-                        $res .= '$_extra_tag = IPF::factory(\''.$this->_allowedTags[$name].'\', $t); $_extra_tag->end('.$argfct.'); ';
-                    }
-                    if (method_exists($this->_extraTags[$name], 'genEnd')) {
-                        $res .= $this->_extraTags[$name]->genEnd();
-                    }
-                }
-            }
-            if ($res == '') {
-                trigger_error(sprintf(__('The function tag "{%s ...}" is not supported.'), $oname), E_USER_ERROR);
+            $argfct = $this->_parseFinal($args, self::$allowedAssign);
+
+            $res = '$_extra_tag = new '.$this->environment->allowedTags[$name].'($t);';
+            if ($_start) {
+                $res .= '$_extra_tag->start('.$argfct.'); ';
+            } else {
+                $res .= '$_extra_tag->end('.$argfct.'); ';
             }
         }
         return $res;

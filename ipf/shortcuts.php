@@ -29,10 +29,33 @@ final class IPF_Shortcuts
         }
         $context = new IPF_Template_Context($params);
 
-        $environment = IPF_Template_Environment::getDefault();
-
-        $tmpl = new IPF_Template_File($tplfile, $environment);
+        $tmpl = new IPF_Template_File($tplfile, self::getDefaultTemplateEnvironment());
         return $tmpl->render($context);
+    }
+
+    private static $defaultEnvironment = null;
+
+    private static function getDefaultTemplateEnvironment()
+    {
+        if (!self::$defaultEnvironment) {
+            $dirs = array();
+
+            $projectTemplates = IPF::get('project_path') . '/templates';
+            if (is_dir($projectTemplates))
+                $dirs[] = $projectTemplates;
+
+            foreach (IPF_Project::getInstance()->appList() as $app) {
+                $applicationTemplates = $app->getPath() . 'templates';
+                if (is_dir($applicationTemplates))
+                    $dirs[] = $applicationTemplates;
+            }
+
+            self::$defaultEnvironment = new IPF_Template_Environment_FileSystem($dirs, IPF::get('tmp'));
+
+            self::$defaultEnvironment->allowedTags['url'] = 'IPF_Template_Tag_Url';
+            self::$defaultEnvironment->allowedTags = array_merge(IPF::get('template_tags', array()), self::$defaultEnvironment->allowedTags);
+        }
+        return self::$defaultEnvironment;
     }
 
     public static function GetFormForModel($model, $data=null, $extra=array(), $label_suffix=null)

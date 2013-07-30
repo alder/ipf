@@ -123,13 +123,6 @@ final class IPF
             throw new IPF_Exception('Impossible to load the function: '.$function.' in '.$file);
     }
 
-    public static function factory($model, $params=null)
-    {
-        if ($params !== null)
-            return new $model($params);
-        return new $model();
-    }
-
     public static function getUploadPath()
     {
         return IPF::get('document_root') . IPF::getUploadUrl();
