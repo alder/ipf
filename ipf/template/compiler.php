@@ -28,28 +28,6 @@ class IPF_Template_Compiler
         self::$allowedForeach = array_merge(self::$allowedInExpr, array(T_AS));
     }
 
-    protected $_modifier = array(
-        'upper'       => 'strtoupper',
-        'lower'       => 'strtolower',
-        'escxml'      => 'htmlspecialchars',
-        'escape'      => 'IPF_Template_Modifier::escape',
-        'strip_tags'  => 'strip_tags',
-        'escurl'      => 'rawurlencode',
-        'capitalize'  => 'ucwords',
-        'debug'       => 'print_r', // Not var_export because of recursive issues.
-        'fulldebug'   => 'var_export',
-        'count'       => 'count',
-        'nl2br'       => 'nl2br',
-        'trim'        => 'trim',
-        'unsafe'      => 'IPF_Template_SafeString::markSafe',
-        'safe'        => 'IPF_Template_SafeString::markSafe',
-        'date'        => 'IPF_Template_Modifier::dateFormat',
-        'time'        => 'IPF_Template_Modifier::timeFormat',
-        'floatformat' => 'IPF_Template_Modifier::floatFormat',
-        'limit_words' => 'IPF_Template_Modifier::limitWords',
-        'limit_chars' => 'IPF_Template_Modifier::limitCharacters',
-    );
-
     protected $_literals;
 
     protected $_blockStack = array();
@@ -65,9 +43,6 @@ class IPF_Template_Compiler
 
     function __construct($templateContent, $environment)
     {
-        $modifiers = IPF::get('template_modifiers', array());
-        $this->_modifier = array_merge($modifiers, $this->_modifier);
-
         $this->templateContent = $templateContent;
         $this->environment = $environment;
     }
@@ -212,17 +187,17 @@ class IPF_Template_Compiler
                 return '';
             }
 
-            if (isset($this->_modifier[$m[1]])) {
+            if ($this->environment->hasModifier($m[1])) {
                 trigger_error(sprintf(__('Unknown modifier: (%s) %s'), $expr, $m[1]), E_USER_ERROR);
                 return '';
             }
 
-            $modifier = $this->_modifier[$m[1]];
+            $mod = $this->environment->getModifier($m[1]);
 
             if (isset($m[2])) {
-                $res = $modifier.'('.$res.','.$m[2].')';
+                $res = $mod.'('.$res.','.$m[2].')';
             } else {
-                $res = $modifier.'('.$res.')';
+                $res = $mod.'('.$res.')';
             }
         }
         return $res;
@@ -395,7 +370,7 @@ class IPF_Template_Compiler
             // but we need the array of args.
             $argfct = $this->_parseFinal($args, self::$allowedAssign);
 
-            $res = '$_extra_tag = new '.$this->environment->allowedTags[$name].'($t);';
+            $res = '$_extra_tag = new '.$this->environment->getTag($name).'($t);';
             if ($_start) {
                 $res .= '$_extra_tag->start('.$argfct.'); ';
             } else {

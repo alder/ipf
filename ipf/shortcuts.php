@@ -52,8 +52,12 @@ final class IPF_Shortcuts
 
             self::$defaultEnvironment = new IPF_Template_Environment_FileSystem($dirs, IPF::get('tmp'));
 
-            self::$defaultEnvironment->allowedTags['url'] = 'IPF_Template_Tag_Url';
-            self::$defaultEnvironment->allowedTags = array_merge(IPF::get('template_tags', array()), self::$defaultEnvironment->allowedTags);
+            self::$defaultEnvironment->tags['url'] = 'IPF_Template_Tag_Url';
+            // extra tags
+            self::$defaultEnvironment->tags = array_merge(IPF::get('template_tags', array()), self::$defaultEnvironment->tags);
+
+            // extra modifiers
+            self::$defaultEnvironment->modifiers = array_merge(IPF::get('template_modifiers', array()), self::$defaultEnvironment->modifiers);
         }
         return self::$defaultEnvironment;
     }
