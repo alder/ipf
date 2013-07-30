@@ -51,6 +51,7 @@ final class IPF_Shortcuts
             }
 
             self::$defaultEnvironment = new IPF_Template_Environment_FileSystem($dirs, IPF::get('tmp'));
+            self::$defaultEnvironment->debug = IPF::get('debug');
 
             self::$defaultEnvironment->tags['url'] = 'IPF_Template_Tag_Url';
             // extra tags

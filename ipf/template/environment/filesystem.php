@@ -4,6 +4,7 @@ class IPF_Template_Environment_FileSystem extends IPF_Template_Environment
 {
     public $folders = array();
     public $cache = '';
+    public $debug = false;
 
     public function __construct($folders, $cache)
     {
@@ -29,7 +30,7 @@ class IPF_Template_Environment_FileSystem extends IPF_Template_Environment
     {
         $_tmp = var_export($this->folders, true);
         $filename = $this->cache.'/IPF_Template-'.md5($_tmp.(string)$template).'.phps';
-        if (IPF::get('debug') or !file_exists($filename)) {
+        if ($this->debug or !file_exists($filename)) {
             $this->write($filename, $template->compile());
         }
         return $filename;
