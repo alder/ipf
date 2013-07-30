@@ -220,17 +220,22 @@ class IPF_Template_Compiler
                 trigger_error(sprintf(__('Invalid modifier syntax: (%s) %s'), $expr, $modifier), E_USER_ERROR);
                 return '';
             }
-            $targs = array($res);
-            if (isset($m[2])) {
-                $res = $this->_modifier[$m[1]].'('.$res.','.$m[2].')';
-            } elseif (isset($this->_modifier[$m[1]])) {
-                $res = $this->_modifier[$m[1]].'('.$res.')';
-            } else {
+
+            if (isset($this->_modifier[$m[1]])) {
                 trigger_error(sprintf(__('Unknown modifier: (%s) %s'), $expr, $m[1]), E_USER_ERROR);
                 return '';
             }
-            if (!in_array($this->_modifier[$m[1]], $this->_usedModifiers)) {
-                $this->_usedModifiers[] = $this->_modifier[$m[1]];
+
+            $modifier = $this->_modifier[$m[1]];
+
+            if (isset($m[2])) {
+                $res = $modifier.'('.$res.','.$m[2].')';
+            } else {
+                $res = $modifier.'('.$res.')';
+            }
+
+            if (!in_array($modifier, $this->_usedModifiers)) {
+                $this->_usedModifiers[] = $modifier;
             }
         }
         return $res;
