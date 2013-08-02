@@ -77,52 +77,6 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         throw new IPF_ORM_Exception('Create database not supported by this driver.');
     }
 
-    public function createTableSql($name, array $fields, array $options = array())
-    {
-        if ( ! $name) {
-            throw new IPF_ORM_Exception('no valid table name specified');
-        }
-
-        if (empty($fields)) {
-            throw new IPF_ORM_Exception('no fields specified for table ' . $name);
-        }
-
-        $queryFields = $this->getFieldDeclarationList($fields);
-
-
-        if (isset($options['primary']) && ! empty($options['primary'])) {
-            $queryFields .= ', PRIMARY KEY(' . implode(', ', array_values($options['primary'])) . ')';
-        }
-
-        if (isset($options['indexes']) && ! empty($options['indexes'])) {
-            foreach($options['indexes'] as $index => $definition) {
-                $queryFields .= ', ' . $this->getIndexDeclaration($index, $definition);
-            }
-        }
-
-        $query = 'CREATE TABLE ' . $this->conn->quoteIdentifier($name) . ' (' . $queryFields;
-        
-        $check = $this->getCheckDeclaration($fields);
-
-        if ( ! empty($check)) {
-            $query .= ', ' . $check;
-        }
-
-        $query .= ')';
-
-        $sql[] = $query;
-
-        if (isset($options['foreignKeys'])) {
-
-            foreach ((array) $options['foreignKeys'] as $k => $definition) {
-                if (is_array($definition)) {
-                    $sql[] = $this->createForeignKeySql($name, $definition);
-                }
-            }
-        }
-        return $sql;
-    }
-
     public function createConstraint($table, $name, $definition)
     {
         $sql = $this->createConstraintSql($table, $name, $definition);
@@ -439,27 +393,24 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
          }
      }
 
-    public function exportClassesSql(array $models)
+    public function exportClassesSql($name)
     {
         $sql = array();
+
+        $table  = IPF_ORM::getTable($name);
+
+        $data = $this->getExportableFormat($table);
+
+        $query = $this->createTableSql($data['tableName'], $data['columns'], $data['options']);
+
+        if (is_array($query)) {
+            $sql = array_merge($sql, $query);
+        } else {
+            $sql[] = $query;
+        }
         
-        foreach ($models as $name) {
-            $record = new $name();
-            $table  = $record->getTable();
-
-            $data = $table->getExportableFormat();
-
-            $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
-
-            if (is_array($query)) {
-                $sql = array_merge($sql, $query);
-            } else {
-                $sql[] = $query;
-            }
-            
-            if ($table->getAttribute(IPF_ORM::ATTR_EXPORT) & IPF_ORM::EXPORT_PLUGINS) {
-                $sql = array_merge($sql, $this->exportGeneratorsSql($table));
-            }
+        if ($table->getAttribute(IPF_ORM::ATTR_EXPORT) & IPF_ORM::EXPORT_PLUGINS) {
+            $sql = array_merge($sql, $this->exportGeneratorsSql($table));
         }
         
         $sql = array_unique($sql);
@@ -499,15 +450,95 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
             
             // Make sure plugin has a valid table
             if ($table instanceof IPF_ORM_Table) {
-                $data = $table->getExportableFormat();
-
-                $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
+                $data = $this->getExportableFormat($table);
+                $query = $this->createTableSql($data['tableName'], $data['columns'], $data['options']);
 
                 $sql = array_merge($sql, (array) $query);
             }
         }
 
         return $sql;
+    }
+
+    private function getExportableFormat($table)
+    {
+        $columns = array();
+        $primary = array();
+
+        foreach ($table->getColumns() as $name => $definition) {
+
+            if (isset($definition['owner'])) {
+                continue;
+            }
+
+            switch ($definition['type']) {
+                case 'enum':
+                    if (isset($definition['default'])) {
+                        $definition['default'] = $table->enumIndex($name, $definition['default']);
+                    }
+                    break;
+                case 'boolean':
+                    if (isset($definition['default'])) {
+                        $definition['default'] = $table->getConnection()->convertBooleans($definition['default']);
+                    }
+                    break;
+            }
+            $columns[$name] = $definition;
+
+            if (isset($definition['primary']) && $definition['primary']) {
+                $primary[] = $name;
+            }
+        }
+
+        $options['foreignKeys'] = isset($table->_options['foreignKeys']) ?
+                $table->_options['foreignKeys'] : array();
+
+        if ($table->getAttribute(IPF_ORM::ATTR_EXPORT) & IPF_ORM::EXPORT_CONSTRAINTS) {
+            $constraints = array();
+
+            $emptyIntegrity = array('onUpdate' => null,
+                                    'onDelete' => null);
+
+            foreach ($table->getRelations() as $name => $relation) {
+                $fk = $relation->toArray();
+                $fk['foreignTable'] = $relation->getTable()->getTableName();
+
+                if ($relation->getTable() === $table && in_array($relation->getLocal(), $primary)) {
+                    if ($relation->hasConstraint()) {
+                        throw new IPF_ORM_Exception("Badly constructed integrity constraints.");
+                    }
+                    continue;
+                }
+
+                $integrity = array('onUpdate' => $fk['onUpdate'],
+                                   'onDelete' => $fk['onDelete']);
+
+                if ($relation instanceof IPF_ORM_Relation_LocalKey) {
+                    $def = array('local'        => $relation->getLocal(),
+                                 'foreign'      => $relation->getForeign(),
+                                 'foreignTable' => $relation->getTable()->getTableName());
+
+                    if (($key = array_search($def, $options['foreignKeys'])) === false) {
+                        $options['foreignKeys'][] = $def;
+                        $constraints[] = $integrity;
+                    } else {
+                        if ($integrity !== $emptyIntegrity) {
+                            $constraints[$key] = $integrity;
+                        }
+                    }
+                }
+            }
+
+            foreach ($constraints as $k => $def) {
+                $options['foreignKeys'][$k] = array_merge($options['foreignKeys'][$k], $def);
+            }
+        }
+
+        $options['primary'] = $primary;
+        
+        return array('tableName' => $table->getOption('tableName'),
+                     'columns'   => $columns,
+                     'options'   => array_merge($table->getOptions(), $options));
     }
 }
 
