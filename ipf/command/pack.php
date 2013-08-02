@@ -19,7 +19,8 @@ class IPF_Command_Pack
             chdir($workingDirectory);
         }
 
-        (new IPF_Command_DBDump)->run(array('--quiet'));
+        $dumpCommand = new IPF_Command_DBDump;
+        $dumpCommand->run(array('--quiet'));
 
         IPF_Shell::unlink($outputFileName);
 

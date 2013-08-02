@@ -17,13 +17,16 @@ class IPF_Command_Unpack
         IPF_Shell::unlink('upload.tar');
         IPF_Shell::unlink('dump.sql');
 
-        (new Archive_Tar($inputFileName))->extract('.');
+        $archive = new Archive_Tar($inputFileName);
+        $archive->extract('.');
 
-        (new IPF_Command_DBRestore)->run(array('--quiet'));
+        $restoreCommand = new IPF_Command_DBRestore;
+        $restoreCommand->run(array('--quiet'));
         IPF_Shell::unlink('dump.sql');
 
         $uploadsDir = IPF::get('document_root') . IPF::getUploadUrl();
-        (new Archive_Tar('upload.tar'))->extract($uploadsDir . '/..');
+        $archive = new Archive_Tar('upload.tar');
+        $archive->extract($uploadsDir . '/..');
         IPF_Shell::unlink('upload.tar');
     }
 }
