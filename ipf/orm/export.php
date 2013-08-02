@@ -368,7 +368,7 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
                  );
              }
 
-             $sql = $connection->export->exportClassesSql(array($class));
+             $sql = $this->exportClassesSql($class);
 
              // Build array of all the creates
              // We need these to happen first

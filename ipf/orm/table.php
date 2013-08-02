@@ -992,14 +992,12 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     public function bindQueryParts(array $queryParts)
     {
         $this->_options['queryParts'] = $queryParts;
-
         return $this;
     }
 
     public function bindQueryPart($queryPart, $value)
     {
         $this->_options['queryParts'][$queryPart] = $value;
-
         return $this;
     }
 
@@ -1043,11 +1041,10 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
 
     public function getBoundQueryPart($queryPart)
     {
-        if ( ! isset($this->_options['queryParts'][$queryPart])) {
+        if (isset($this->_options['queryParts'][$queryPart]))
+            return $this->_options['queryParts'][$queryPart];
+        else
             return null;
-        }
-
-        return $this->_options['queryParts'][$queryPart];
     }
 
     public function __toString()
