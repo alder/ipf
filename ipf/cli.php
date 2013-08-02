@@ -48,14 +48,25 @@ class IPF_Cli
         print "\n";
     }
 
+    private function getArgs()
+    {
+        global $argv;
+        if (is_array($argv))
+            return $argv;
+        if (@is_array($_SERVER['argv']))
+            return $_SERVER['argv'];
+        if (@is_array($GLOBALS['HTTP_SERVER_VARS']['argv']))
+            return $GLOBALS['HTTP_SERVER_VARS']['argv'];
+        throw new IPF_Exception("IPF_Cli: Could not read command arguments (register_argc_argv=Off?)");
+    }
+
     public function run()
     {
         print "IPF command line tool. Version: ".IPF_Version::$name."\n";
         print "Project config: ".IPF::get('settings_file')."\n\n";
 
-        $opt  = new IPF_Getopt();
-        //$z = $opt->getopt2($opt->readPHPArgv(), array('s',)); //, array('s',));
-        $args = $opt->readPHPArgv();
+        $args = $this->getArgs();
+
         if (count($args) < 2) {
             $this->usage();
             return;
