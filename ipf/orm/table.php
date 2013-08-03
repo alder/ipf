@@ -296,12 +296,12 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         $this->_options[$name] = $value;
     }
 
-    public function getOption($name)
+    public function getOption($name, $default=null)
     {
         if (isset($this->_options[$name])) {
             return $this->_options[$name];
         }
-        return null;
+        return $default;
     }
 
     public function getColumnName($fieldName)
@@ -317,12 +317,12 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         return strtolower($fieldName);
     }
 
-    public function getColumnDefinition($columnName)
+    public function getColumnDefinition($columnName, $default=false)
     {
-        if ( ! isset($this->_columns[$columnName])) {
-            return false;
+        if (isset($this->_columns[$columnName])) {
+            return $this->_columns[$columnName];
         }
-        return $this->_columns[$columnName];
+        return false;
     }
 
     public function getFieldName($columnName)
