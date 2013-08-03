@@ -48,10 +48,11 @@ abstract class IPF_ORM_Relation implements ArrayAccess
 
     public function hasConstraint()
     {
-        return ($this->definition['constraint'] ||
-                ($this->definition['onUpdate']) ||
-                ($this->definition['onDelete']));
+        return $this->definition['constraint'] ||
+               $this->definition['onUpdate'] ||
+               $this->definition['onDelete'];
     }
+
     public function isDeferred()
     {
         return $this->definition['deferred'];
@@ -182,3 +183,4 @@ abstract class IPF_ORM_Relation implements ArrayAccess
         return implode("\n", $r);
     }
 }
+

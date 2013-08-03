@@ -36,3 +36,4 @@ class IPF_ORM_Relation_LocalKey extends IPF_ORM_Relation
         return $alias . '.' . $this->definition['foreign'] . ' = ?';
     }
 }
+

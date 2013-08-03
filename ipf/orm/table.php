@@ -197,11 +197,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         }
     }
 
-    public function addForeignKey(array $definition)
-    {
-        $this->_options['foreignKeys'][] = $definition;
-    }
-
     public function addCheckConstraint($definition, $name)
     {
         if (is_string($name)) {
