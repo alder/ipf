@@ -702,7 +702,7 @@ abstract class IPF_ORM_Connection extends IPF_ORM_Configurable implements Counta
         return $this->getAttribute(IPF_ORM::ATTR_QUERY_CACHE);
     }
 
-    public function lastInsertId($table = null, $field = null)
+    public function lastInsertId()
     {
         return $this->getDbh()->lastInsertId();
     }
