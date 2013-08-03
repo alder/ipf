@@ -196,9 +196,9 @@ final class IPF_ORM
         return $models;
     }
 
-    public static function createTablesFromModels($app)
+    public static function createTablesFromModels($models)
     {
-        IPF_ORM_Manager::connection()->export->exportClasses($app->modelList());
+        IPF_ORM_Manager::connection()->export->exportClasses($models);
     }
 
     public static function generateSqlFromModels($app)

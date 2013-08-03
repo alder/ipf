@@ -80,7 +80,7 @@ class IPF_Auth_App extends IPF_Application
                 $export->dropTable(IPF_ORM::getTable('UserRole')->getTableName());
                 $export->dropTable(IPF_ORM::getTable('UserPermission')->getTableName());
                 $auth_app = new IPF_Auth_App();
-                IPF_ORM::createTablesFromModels($auth_app);
+                IPF_ORM::createTablesFromModels($auth_app->modelList());
 
                 $toAdd = $permissions;
             }
