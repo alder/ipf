@@ -154,8 +154,8 @@ final class IPF_ORM
     const EXPORT_NONE               = 0;
     const EXPORT_TABLES             = 1;
     const EXPORT_CONSTRAINTS        = 2;
-    const EXPORT_PLUGINS            = 4;
     const EXPORT_ALL                = 7;
+
     const HYDRATE_RECORD            = 2;
     const HYDRATE_ARRAY             = 3;
 

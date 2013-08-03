@@ -37,12 +37,6 @@ abstract class IPF_ORM_Record_Abstract extends IPF_ORM_Access
         }    
     }
 
-    public function loadGenerator(IPF_ORM_Record_Generator $generator)
-    {
-        $generator->initialize($this->_table);
-        $this->_table->addGenerator($generator, get_class($generator));
-    }
-
     public function check($constraint, $name = null)
     {
         if (is_array($constraint)) {

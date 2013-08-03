@@ -33,7 +33,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
     protected $_parser;
 
     protected $_templates   = array();
-    protected $_generators     = array();
     protected $_invokedMethods = array();
 
     public $listeners = array();
@@ -875,35 +874,6 @@ class IPF_ORM_Table extends IPF_ORM_Configurable implements Countable
         $this->_templates[$className] = $tpl;
 
         $tpl->setTableDefinition($this);
-    }
-
-    public function getGenerators()
-    {
-        return $this->_generators;
-    }
-
-    public function getGenerator($generator)
-    {
-        if ( ! isset($this->_generators[$generator])) {
-            throw new IPF_ORM_Exception('Generator ' . $generator . ' not loaded');
-        }
-
-        return $this->_generators[$generator];
-    }
-
-    public function hasGenerator($generator)
-    {
-        return isset($this->_generators[$generator]);
-    }
-
-    public function addGenerator(IPF_ORM_Record_Generator $generator, $name = null)
-    {
-        if ($name === null) {
-            $this->_generators[] = $generator;
-        } else {
-            $this->_generators[$name] = $generator;
-        }
-        return $this;
     }
 
     public function bindQueryParts(array $queryParts)

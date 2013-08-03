@@ -408,54 +408,10 @@ class IPF_ORM_Export extends IPF_ORM_Connection_Module
         } else {
             $sql[] = $query;
         }
-        
-        if ($table->getAttribute(IPF_ORM::ATTR_EXPORT) & IPF_ORM::EXPORT_PLUGINS) {
-            $sql = array_merge($sql, $this->exportGeneratorsSql($table));
-        }
-        
+
         $sql = array_unique($sql);
         
         rsort($sql);
-
-        return $sql;
-    }
-
-    public function getAllGenerators(IPF_ORM_Table $table)
-    {
-        $generators = array();
-
-        foreach ($table->getGenerators() as $name => $generator) {
-            if ($generator === null) {
-                continue;                       
-            }
-
-            $generators[] = $generator;
-
-            $generatorTable = $generator->getTable();
-            
-            if ($generatorTable instanceof IPF_ORM_Table) {
-                $generators = array_merge($generators, $this->getAllGenerators($generatorTable));
-            }
-        }
-
-        return $generators;
-    }
-
-    public function exportGeneratorsSql(IPF_ORM_Table $table)
-    {
-        $sql = array();
-
-        foreach ($this->getAllGenerators($table) as $name => $generator) {
-            $table = $generator->getTable();
-            
-            // Make sure plugin has a valid table
-            if ($table instanceof IPF_ORM_Table) {
-                $data = $this->getExportableFormat($table);
-                $query = $this->createTableSql($data['tableName'], $data['columns'], $data['options']);
-
-                $sql = array_merge($sql, (array) $query);
-            }
-        }
 
         return $sql;
     }
