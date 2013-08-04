@@ -106,6 +106,12 @@ final class IPF
         return $default;
     }
 
+    private static function include_existing($filename)
+    {
+        if (is_file($filename))
+            include_once $filename;
+    }
+
     public static function loadFunction($function)
     {
         if (function_exists($function))
@@ -117,8 +123,10 @@ final class IPF
         $elts = explode('_', $function);
         array_pop($elts);
         $file = '/' . strtolower(implode(DIRECTORY_SEPARATOR, $elts)).'.php';
-        @include_once IPF::$settings['ipf_path'] . $file;
-        @include_once IPF::$settings['project_path'] . $file;
+
+        self::include_existing(IPF::$settings['ipf_path'] . $file);
+        self::include_existing(IPF::$settings['project_path'] . $file);
+
         if (!function_exists($function))
             throw new IPF_Exception('Impossible to load the function: '.$function.' in '.$file);
     }
