@@ -82,9 +82,14 @@ class IPF_ORM_Validator
             return true;
         } else if ($type == 'array' || $type == 'object') {
             $length = strlen(serialize($value));
+        } else if ($type == 'decimal') {
+            if (!$maximumLength)
+                $maximumLength = 18;
+            $length = strlen($value);
         } else {
             $length = strlen($value);
         }
+
         if ($length > $maximumLength) {
             return false;
         }
