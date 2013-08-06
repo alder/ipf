@@ -9,11 +9,14 @@ class IPF_Form_Field_Date extends IPF_Form_Field
        '%d %b %Y', '%d %b, %Y',      // '25 Oct 2006', '25 Oct, 2006'
        '%B %d %Y', '%B %d, %Y',      // 'October 25 2006', 'October 25, 2006'
        '%d %B %Y', '%d %B, %Y',      // '25 October 2006', '25 October, 2006'
-                                  );
+    );
 
     public function clean($value)
     {
         parent::clean($value);
+        if (in_array($value, $this->empty_values))
+            return null;
+
         foreach ($this->input_formats as $format) {
             if (false !== ($date = strptime($value, $format))) {
                 $day = str_pad($date['tm_mday'], 2, '0', STR_PAD_LEFT);
