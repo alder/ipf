@@ -42,7 +42,7 @@ class IPF_Auth_App extends IPF_Application
                 $adminModel = IPF_Admin_Model::getModelAdmin($modelName);
                 if ($adminModel) {
                     foreach ($adminModel->getPerms(null) as $permName) {
-                        $permissions[] = $appname.'|'.$modelName.'|'.$permName;
+                        $permissions[] = get_class($app).'|'.$modelName.'|'.$permName;
                     }
                 }
             }
