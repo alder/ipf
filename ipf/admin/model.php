@@ -437,11 +437,22 @@ class IPF_Admin_Model
             } else {
                 $t = $o->getTable()->getTypeOf($h['name']);
                 $str = $o->$h['name'];
-                if ($t=='boolean'){
-                    if ($str)
-                        $str = '<img src="'.IPF::get('static_url').'admin/img/icon-yes.gif" alt="True" />';
-                    else
-                        $str = '<img src="'.IPF::get('static_url').'admin/img/icon-no.gif" alt="False" />';
+                switch ($t) {
+                    case 'boolean':
+                        if ($str)
+                            $str = '<img src="'.IPF::get('static_url').'admin/img/icon-yes.gif" alt="True" />';
+                        else
+                            $str = '<img src="'.IPF::get('static_url').'admin/img/icon-no.gif" alt="False" />';
+                        break;
+                    case 'timestamp':
+                        $date = DateTime::createFromFormat('Y-m-d', $str);
+                        if ($date == false) {
+                            date_default_timezone_set('UTC');
+                            $date = new DateTime("@".strtotime ($str));
+                            $date->setTimeZone(new DateTimezone(IPF::get('time_zone')));
+                            $str = gmdate('Y-m-d H:i:s', $date->format('U') + $date->getOffset());
+                        }
+                        break;
                 }
             }
             $row[$h['name']] = $str;
