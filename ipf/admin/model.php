@@ -447,9 +447,8 @@ class IPF_Admin_Model
                     case 'timestamp':
                         $date = DateTime::createFromFormat('Y-m-d', $str);
                         if ($date == false) {
-                            date_default_timezone_set('UTC');
-                            $date = new DateTime("@".strtotime ($str));
-                            $date->setTimeZone(new DateTimezone(IPF::get('time_zone')));
+                            $date = new DateTime($str, new DateTimezone('UTC'));
+                            $date->setTimeZone(new DateTimezone('Europe/Kiev'));
                             $str = gmdate('Y-m-d H:i:s', $date->format('U') + $date->getOffset());
                         }
                         break;
